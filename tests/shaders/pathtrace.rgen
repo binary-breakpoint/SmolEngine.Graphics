@@ -1,0 +1,125 @@
+
+#version 460
+
+#extension GL_GOOGLE_include_directive : enable         // To be able to use #include
+#extension GL_EXT_ray_tracing : require                 // This is about ray tracing
+#extension GL_EXT_scalar_block_layout : enable          // Align structure layout to scalar
+#extension GL_ARB_shader_clock : enable                 // Using clockARB
+#extension GL_EXT_shader_image_load_formatted : enable  // The folowing extension allow to pass images as function parameters
+#extension GL_EXT_scalar_block_layout : enable          // Usage of 'scalar' block layout
+
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : require
+#extension GL_EXT_buffer_reference2 : require
+
+layout(binding = 0) uniform accelerationStructureEXT topLevelAS;
+layout(binding = 1, rgba8) uniform image2D image;
+layout(binding = 2) uniform SceneState
+{
+  mat4 viewInverse;  // Camera inverse view matrix
+  mat4 projInverse;  // Camera inverse projection matrix
+
+  ivec2 imageSize;
+  uint frameIndex;
+  uint maxSamples;
+
+  float focalDist;
+  uint maxDepth;
+  uint numLights;
+  uint pad;
+
+} RtState;
+
+#include "Include/Globals.glsl"
+#include "Include/Layouts.glsl"
+
+layout(location = 0) rayPayloadEXT PtPayload prd;
+layout(location = 1) rayPayloadEXT ShadowHitPayload shadow_payload;
+
+#include "Include/Pathtrace.glsl"
+#include "Include/Random.glsl"
+#include "Include/Common.glsl"
+#include "Include/Tonemapping.glsl"
+
+// http://www.thetenthplanet.de/archives/5367
+// Apply dithering to hide banding artifacts.
+vec3 dither(vec3 linear_color, vec3 noise, float quant)
+{
+  vec3 c0    = floor(linearTosRGB(linear_color) / quant) * quant;
+  vec3 c1    = c0 + quant;
+  vec3 discr = mix(sRGBToLinear(c0), sRGBToLinear(c1), noise);
+  return mix(c0, c1, lessThan(discr, linear_color));
+}
+
+// http://user.ceng.metu.edu.tr/~akyuz/files/hdrgpu.pdf
+const mat3 RGB2XYZ = mat3(0.4124564, 0.3575761, 0.1804375, 0.2126729, 0.7151522, 0.0721750, 0.0193339, 0.1191920, 0.9503041);
+float      luminance(vec3 color)
+{
+  return dot(color, vec3(0.2126f, 0.7152f, 0.0722f));  //color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722;
+}
+
+struct Tonemapper
+{
+	float      brightness;
+	float      contrast;
+	float      saturation;
+	float      vignette;
+	float      avgLum;
+	float      zoom;
+	vec2       renderingRatio;
+	int        autoExposure;
+	float      ywhite;
+	float      key; 
+};
+
+void main()
+{
+	Tonemapper tm;
+	tm.brightness = 1.0f;
+	tm.contrast = 1.0f;
+	tm.saturation = 1.0f;
+	tm.vignette = 0.0f;
+	tm.avgLum = 1.0f;
+	tm.zoom = 1.0f;
+	tm.renderingRatio = vec2(1.0f, 1.0f);
+	tm.autoExposure = 0;
+	tm.ywhite = 0.5f;
+	tm.key = 0.5f; 
+
+	ivec2 imageCoords = ivec2(gl_LaunchIDEXT.xy);
+	prd.seed = initRandom(gl_LaunchSizeEXT.xy, gl_LaunchIDEXT.xy, RtState.frameIndex);
+
+	vec3 pixelColor = vec3(0);
+	for(int smpl = 0; smpl < RtState.maxSamples; ++smpl)
+	{
+		pixelColor += samplePixel(imageCoords, RtState.imageSize);
+	}
+
+	pixelColor /= RtState.maxSamples;
+  	pixelColor = toneMapACES(pixelColor);
+
+  	// Remove banding
+  	uvec3 r = pcg3d(uvec3(imageCoords, 0));
+  	vec3 noise = uintBitsToFloat(0x3f800000 | (r >> 9)) - 1.0f;
+  	pixelColor = dither(sRGBToLinear(pixelColor), noise, 1. / 255.);
+
+ 	pixelColor = clamp(mix(vec3(0.5), pixelColor, tm.contrast), 0, 1);
+  	pixelColor = pow(pixelColor, vec3(1.0 / tm.brightness));
+
+  	// saturation
+  	vec3 i = vec3(dot(pixelColor, vec3(0.299, 0.587, 0.114)));
+  	pixelColor  = mix(i, pixelColor, tm.saturation);
+
+	// Do accumulation over time
+  	if(RtState.frameIndex > 0)
+ 	{	
+    	vec3 old_color  = imageLoad(image, imageCoords).xyz;
+    	vec3 new_result = mix(old_color, pixelColor, 1.0f / float(RtState.frameIndex + 1));
+
+    	imageStore(image, imageCoords, vec4(new_result, 1.f));
+  	}
+  	else
+  	{
+    	// First frame, replace the value in the buffer
+    	imageStore(image, imageCoords, vec4(pixelColor, 1.f));
+  	}
+}
