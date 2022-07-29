@@ -37,10 +37,11 @@ namespace Dia
 		void ProcessEvents();
 		void ShutDown();
 
+		Data* GetData();
+		const WindowCreateDesc& GetCreateDesc() const;
 		GLFWwindow* GetNativeWindow() const;
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		Data* GetData();
 
 		void SetWidth(uint32_t value);
 		void SetHeight(uint32_t value);
@@ -48,7 +49,8 @@ namespace Dia
 		void SetTitle(const std::string& name);
 
 	private:
-		GLFWwindow* m_Window ;
+		WindowCreateDesc m_CreateDesc;
+		GLFWwindow* m_Window;
 		Data m_Data;
 	};
 

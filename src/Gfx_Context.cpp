@@ -26,16 +26,19 @@ namespace Dia
 
 	void Gfx_Context::Create(GfxContextCreateDesc* desc)
 	{
+		assert(desc != nullptr);
+		assert(desc->myWindowDesc != nullptr);
+
 		m_Desc = *desc;
-		m_Root = desc->myAssetFolder;
+		m_Root = desc->myAssetPath;
 		m_EventHandler.OnEventFn = std::bind(&Gfx_Context::OnEvent, this, std::placeholders::_1);
 
-		// Creates GLFW window
-		m_Window = std::make_shared<Gfx_Window>();
-		desc->myWindowCI.myEventHandler = &m_EventHandler;
-		m_Window->Create(&desc->myWindowCI);
+		WindowCreateDesc* winDesc = desc->myWindowDesc;
 
-		// Creates API context
+		m_Window = std::make_shared<Gfx_Window>();
+		desc->myWindowDesc->myEventHandler = &m_EventHandler;
+		m_Window->Create(winDesc);
+
 		CreateAPIContext();
 
 		m_ShaderIncluder = std::make_shared<Gfx_ShaderIncluder>();
@@ -48,9 +51,9 @@ namespace Dia
 		{
 			FramebufferCreateDesc fbDesc = {};
 			fbDesc.mySampler = Gfx_World::GetSampler();
-			fbDesc.myWidth = desc->myWindowCI.myWidth;
-			fbDesc.myHeight = desc->myWindowCI.myHeight;
-			fbDesc.myIsTargetsSwapchain = desc->myWindowCI.myTargetsSwapchain;
+			fbDesc.myWidth = winDesc->myWidth;
+			fbDesc.myHeight = winDesc->myHeight;
+			fbDesc.myIsTargetsSwapchain = winDesc->myTargetsSwapchain;
 			fbDesc.myIsResizable = true;
 			fbDesc.myIsAutoSync = false;
 			fbDesc.myIsUsedByImGui = true;
@@ -165,9 +168,11 @@ namespace Dia
 
 	void Gfx_Context::Resize(uint32_t* width, uint32_t* height)
 	{
-		m_Swapchain.OnResize(width, height, m_Desc.myWindowCI.myVSync, &m_CmdBuffer);
+		const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
 
-		if (m_Desc.myWindowCI.myAutoResize) [[likely]]
+		m_Swapchain.OnResize(width, height, winDesc.myVSync, &m_CmdBuffer);
+
+		if (winDesc.myAutoResize) [[likely]]
 		{
 			SetFramebufferSize(*width, *height);
 		}
@@ -242,15 +247,17 @@ namespace Dia
 			m_Allocator = new Gfx_VulkanAllocator();
 			m_Allocator->Init(&m_Device, &m_Instance);
 
+			const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
+
 			swapchain_initialized = m_Swapchain.Init(&m_Instance, &m_Device,
-				GetWindow()->GetNativeWindow(), m_Desc.myWindowCI.myTargetsSwapchain ? false : true);
+				GetWindow()->GetNativeWindow(), winDesc.myTargetsSwapchain ? false : true);
 
 			if (swapchain_initialized)
 			{
-				uint32_t* width = &m_Desc.myWindowCI.myWidth;
-				uint32_t* height = &m_Desc.myWindowCI.myHeight;
+				uint32_t* width = &m_Window->GetData()->myWidth;
+				uint32_t* height = &m_Window->GetData()->myHeight;
 
-				m_Swapchain.Create(width, height, m_Desc.myWindowCI.myVSync);
+				m_Swapchain.Create(width, height, winDesc.myVSync);
 				m_Semaphore.Create(&m_Device);
 				m_Swapchain.Prepare(*width, *height);
 

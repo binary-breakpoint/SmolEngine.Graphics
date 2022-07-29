@@ -90,14 +90,6 @@ namespace Dia
 			style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.36f, 0.36f, 0.36f, 1.00f);
 		}
 
-		ImFontConfig config;
-		config.OversampleH = 3;
-		config.OversampleV = 1;
-		config.GlyphExtraSpacing.x = 1.0f;
-		std::string fontPath = Gfx_Context::GetSingleton()->GetAssetsPath() + "Fonts/Font1.ttf";
-
-		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 17.0f, &config);
-
 		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
 
 		OnSetup();

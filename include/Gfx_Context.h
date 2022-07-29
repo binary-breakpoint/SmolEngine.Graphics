@@ -24,9 +24,9 @@ namespace Dia
 
 	struct GfxContextCreateDesc
 	{
-		WindowCreateDesc myWindowCI{};
+		WindowCreateDesc* myWindowDesc = nullptr;
 		FeaturesFlags myFeaturesFlags = FeaturesFlags::ImguiEnable | FeaturesFlags::RendererEnable;
-		std::string myAssetFolder = "assets/";
+		std::string myAssetPath = "";
 	};
 
 	class Gfx_Context

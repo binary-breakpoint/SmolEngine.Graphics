@@ -16,9 +16,12 @@ namespace Dia
 
 	void Gfx_Window::Create(WindowCreateDesc* desc)
 	{
+		assert(desc != nullptr);
+
 		s_DataPtr = &m_Data;
 		s_EventHandler = desc->myEventHandler;
 
+		m_CreateDesc = *desc;
 		m_Data.myTitle = desc->myTitle;
 		m_Data.myHeight = desc->myHeight;
 		m_Data.myWidth = desc->myWidth;
@@ -155,6 +158,11 @@ namespace Dia
 	Gfx_Window::Data* Gfx_Window::GetData()
 	{
 		return &m_Data;
+	}
+
+	const WindowCreateDesc& Gfx_Window::GetCreateDesc() const
+	{
+		return m_CreateDesc;
 	}
 
 	uint32_t Gfx_Window::GetWidth() const

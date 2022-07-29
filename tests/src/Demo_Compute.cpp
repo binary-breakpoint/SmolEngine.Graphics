@@ -18,9 +18,11 @@ int main(int argc, char** argv)
 {
 	Gfx_Context* context = new Gfx_Context();
 	{
+		WindowCreateDesc winDesc{};
+		winDesc.myTitle = "Demo Compute";
+
 		GfxContextCreateDesc contextDesc{};
-		contextDesc.myWindowCI.myTitle = "Demo Compute";
-		contextDesc.myAssetFolder = "../assets/";
+		contextDesc.myWindowDesc = &winDesc;
 
 		context->Create(&contextDesc);
 	}

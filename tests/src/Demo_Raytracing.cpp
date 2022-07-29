@@ -108,9 +108,11 @@ int main(int argc, char** argv)
 {
 	Gfx_Context* context = new Gfx_Context();
 	{
+		WindowCreateDesc winDesc{};
+		winDesc.myTitle = "Demo Raytracing";
+
 		GfxContextCreateDesc contextDesc{};
-		contextDesc.myWindowCI.myTitle = "Demo Raytracing";
-		contextDesc.myAssetFolder = "../assets/";
+		contextDesc.myWindowDesc = &winDesc;
 
 		context->Create(&contextDesc);
 	}
