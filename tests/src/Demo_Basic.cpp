@@ -1,6 +1,6 @@
 #include "Gfx_Core.h"
 
-using namespace Dia;
+using namespace SmolEngine;
 
 struct PushConstant
 {

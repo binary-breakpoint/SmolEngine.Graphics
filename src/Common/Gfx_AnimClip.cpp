@@ -20,7 +20,7 @@
 #include <cereal/archives/json.hpp>
 #include <glm/gtc/type_ptr.inl>
 
-namespace Dia
+namespace SmolEngine
 {
 	struct AnimationClipStorage
 	{

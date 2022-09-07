@@ -3,7 +3,7 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_Log* Gfx_Log::s_Instance = new Gfx_Log();
 

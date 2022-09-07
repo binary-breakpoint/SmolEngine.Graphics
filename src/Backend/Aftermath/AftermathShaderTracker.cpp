@@ -2,7 +2,7 @@
 #ifdef AFTERMATH
 #include "Backends/Vulkan/Aftermath/AftermathShaderTracker.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	bool AftermathShaderTracker::FindShaderBinary(const GFSDK_Aftermath_ShaderHash& shaderHash, std::vector<uint8_t>& shader) const
 	{

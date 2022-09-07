@@ -14,7 +14,7 @@ VKBP_DISABLE_WARNINGS()
 #include <map>
 #include <vector>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_ShaderIncluder final : public glslang::TShader::Includer
 	{

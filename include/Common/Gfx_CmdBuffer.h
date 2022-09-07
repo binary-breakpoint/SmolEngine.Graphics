@@ -3,7 +3,7 @@
 
 #include "Backend/Gfx_VulkanCore.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	struct CmdBufferCreateDesc
 	{

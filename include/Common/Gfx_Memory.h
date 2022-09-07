@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-namespace Dia
+namespace SmolEngine
 {
 	extern "C++"
 	{

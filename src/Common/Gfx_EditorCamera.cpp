@@ -15,7 +15,7 @@
 
 #define M_PI 3.14159f
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_EditorCamera::Gfx_EditorCamera(EditorCameraCreateDesc* ci)
 	{

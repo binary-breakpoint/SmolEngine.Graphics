@@ -2,7 +2,7 @@
 #include "Common/Gfx_PixelStorage.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_PixelStorage::Gfx_PixelStorage() :
 		m_Alloc{nullptr},

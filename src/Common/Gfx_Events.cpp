@@ -1,7 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Common/Gfx_Events.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	void Gfx_EventSender::SendEvent(Gfx_Event & event, Gfx_Event::Type eventType, Gfx_Event::Category eventCategory, int action, int key)
 	{

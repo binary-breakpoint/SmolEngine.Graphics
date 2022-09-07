@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	static VKAPI_ATTR VkBool32 VKAPI_CALL VulkanInstance_DebugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -60,9 +60,9 @@ namespace Dia
 		{
 			appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 
-			appInfo.pApplicationName = "Dia";
+			appInfo.pApplicationName = "SmolEngine";
 			appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-			appInfo.pEngineName = "Dia";
+			appInfo.pEngineName = "SmolEngine";
 			appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 			appInfo.apiVersion = VK_API_VERSION_1_3;
 		}

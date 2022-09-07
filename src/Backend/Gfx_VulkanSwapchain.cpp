@@ -15,7 +15,7 @@ static PFN_vkGetSwapchainImagesKHR fpGetSwapchainImagesKHR = nullptr;
 static PFN_vkAcquireNextImageKHR fpAcquireNextImageKHR = nullptr;
 static PFN_vkQueuePresentKHR fpQueuePresentKHR = nullptr;
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_VulkanSwapchain::Gfx_VulkanSwapchain()
 		:

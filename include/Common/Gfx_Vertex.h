@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	struct PBRVertex // TODO: compress
 	{

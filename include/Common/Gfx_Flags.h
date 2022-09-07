@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Dia
+namespace SmolEngine
 {
 	enum class Format : int
 	{

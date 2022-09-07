@@ -6,7 +6,7 @@
 
 #include <imgui/examples/imgui_impl_vulkan.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	FramebufferAttachment::FramebufferAttachment(Format format, const glm::vec4& color, const std::string& name)
 		:

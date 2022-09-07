@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Sampler;
 	class Gfx_CmdBuffer;

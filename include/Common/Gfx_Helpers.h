@@ -5,7 +5,7 @@
 #include <string>
 #include <glm/glm.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	enum class CachedPathType
 	{

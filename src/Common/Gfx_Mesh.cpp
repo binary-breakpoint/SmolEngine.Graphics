@@ -10,7 +10,7 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/archives/json.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_Mesh::Gfx_Mesh()
         :

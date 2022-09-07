@@ -4,7 +4,7 @@
 #include "Common/Gfx_PixelStorage.h"
 #include "Common/Gfx_Asset.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	struct TextureCreateDesc
 	{

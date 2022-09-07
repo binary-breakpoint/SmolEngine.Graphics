@@ -3,7 +3,7 @@
 #include "Common/Gfx_Descriptor.h"
 #include "Common/Gfx_Shader.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_CompPipeline::Gfx_CompPipeline()
 		:

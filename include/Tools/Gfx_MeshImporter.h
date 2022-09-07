@@ -11,7 +11,7 @@ namespace tinygltf
 	class Model;
 }
 
-namespace Dia
+namespace SmolEngine
 {					    
 	struct Primitive
 	{

@@ -2,7 +2,7 @@
 #include "Common/Gfx_Helpers.h"
 #include "Backend/Gfx_VulkanCore.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_CmdBuffer;
 	struct FramebufferCreateDesc;

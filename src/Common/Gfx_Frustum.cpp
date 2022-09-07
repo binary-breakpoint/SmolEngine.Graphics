@@ -1,7 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Common/Gfx_Frustum.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	void Gfx_Frustum::SetRadius(float value)
 	{

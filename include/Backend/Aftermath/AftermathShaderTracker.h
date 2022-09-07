@@ -6,7 +6,7 @@
 #include <map>
 #include <mutex>
 
-namespace Dia
+namespace SmolEngine
 {
     class AftermathShaderTracker
     {

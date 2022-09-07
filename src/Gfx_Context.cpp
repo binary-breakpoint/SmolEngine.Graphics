@@ -8,7 +8,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_Context* Gfx_Context::s_Instance = nullptr;
 

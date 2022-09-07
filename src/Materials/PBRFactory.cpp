@@ -7,7 +7,7 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/archives/json.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	PBRFactory::PBRFactory()
 	{

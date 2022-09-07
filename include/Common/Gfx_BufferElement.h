@@ -1,7 +1,7 @@
 #pragma once
 #include "Common/Gfx_Helpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	struct Gfx_BufferElement
 	{

@@ -4,7 +4,7 @@
 #include <vector>
 #include <vulkan/vulkan_win32.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_VulkanInstance;
 

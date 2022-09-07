@@ -4,7 +4,7 @@
 #include "Common/Gfx_Vertex.h"
 #include "Common/Gfx_Flags.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Mesh;
 	class Gfx_Shader;

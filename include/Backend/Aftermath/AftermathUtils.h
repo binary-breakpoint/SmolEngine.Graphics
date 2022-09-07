@@ -93,7 +93,7 @@ inline std::string  AftermathErrorMessage(GFSDK_Aftermath_Result result)
         GFSDK_Aftermath_Result _result = FC;                                                                \
         if (!GFSDK_Aftermath_SUCCEED(_result))                                                              \
         {                                                                                                   \
-            Dia::Gfx_Log::LogError(AftermathErrorMessage(_result).c_str());                                              \
+            SmolEngine::Gfx_Log::LogError(AftermathErrorMessage(_result).c_str());                                              \
             MessageBoxA(0, AftermathErrorMessage(_result).c_str(), "Aftermath Error", MB_OK);               \
             exit(1);                                                                                        \
         }                                                                                                   \

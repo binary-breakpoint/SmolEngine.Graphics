@@ -16,7 +16,7 @@
 
 #include <functional>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Sampler;
 	class Gfx_Framebuffer;

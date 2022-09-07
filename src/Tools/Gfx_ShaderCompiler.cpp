@@ -13,7 +13,7 @@ VKBP_DISABLE_WARNINGS()
 #include <spirv_cross/spirv_glsl.hpp>
 #include <spirv_cross/spirv_hlsl.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	class TPreamble {
 	public:

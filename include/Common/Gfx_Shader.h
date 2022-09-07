@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <map>
 
-namespace Dia
+namespace SmolEngine
 {
 	struct ShaderCreateDesc
 	{

@@ -1,7 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Tools/Gfx_ShaderIncluder.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_ShaderIncluder::Gfx_ShaderIncluder()
 	{

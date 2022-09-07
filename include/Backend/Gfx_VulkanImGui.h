@@ -4,7 +4,7 @@
 
 struct GLFWwindow;
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_VulkanCmdBuffer;
 	class Gfx_VulkanSwapchain;

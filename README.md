@@ -1,5 +1,5 @@
-# Dia
-![Dia](https://i.imgur.com/lILYHnN.png)
+# SmolEngine.Graphics
+![SmolEngine.Graphics](https://i.imgur.com/lILYHnN.png)
 
 ## Features
 - [x] Cross-platform (Windows/Linux, WIP: Android)
@@ -18,7 +18,7 @@
 ```c++
 #include <Gfx_Core.h>
 
-using namespace Dia;
+using namespace SmolEngine.Graphics;
 
 struct PushConstant
 {
@@ -30,11 +30,13 @@ int main(int argc, char** argv)
 {
 	Gfx_Context* context = new Gfx_Context(); 
 	{
+		WindowCreateDesc winDesc{};
+		winDesc.myTitle = "Demo Compute";
+		
 		GfxContextCreateDesc contextDesc{};
-		contextDesc.myWindowCI.myTitle = "Demo Basic";
-		contextDesc.myAssetFolder = "../assets/";
-
-		context->Create(&contextDesc);
+		contextDesc.myWindowDesc = &winDesc;
+		
+		context->Create(&contextDesc);	
 	}
 
 	Gfx_Shader gfxShader;

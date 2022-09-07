@@ -12,7 +12,7 @@
 
 using namespace tinygltf;
 
-namespace Dia
+namespace SmolEngine
 {
 	void LoadNode(const tinygltf::Node& inputNode, const tinygltf::Model& input, uint32_t nodeIndex, ImportedDataGlTF* out_data)
 	{

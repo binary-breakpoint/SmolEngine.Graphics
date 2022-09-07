@@ -1,7 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Common/Gfx_IndexBuffer.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	static VkBufferUsageFlags locGetIndexBufferUsageFlags()
 	{

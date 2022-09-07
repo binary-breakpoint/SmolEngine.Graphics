@@ -12,7 +12,7 @@ extern "C++"
 #include <spdlog/sinks/stdout_color_sinks.h>
 }
 
-namespace Dia
+namespace SmolEngine
 {
 	using source_location = std::source_location;
 	[[nodiscard]] constexpr auto get_log_source_location(

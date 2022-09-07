@@ -2,7 +2,7 @@
 #include "Backend/Gfx_VulkanSemaphore.h"
 
 
-namespace Dia
+namespace SmolEngine
 {
     Gfx_VulkanSemaphore::Gfx_VulkanSemaphore()
     {

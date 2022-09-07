@@ -2,7 +2,7 @@
 #include "Common/Gfx_CmdBuffer.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_CmdBuffer::Gfx_CmdBuffer()
 		:

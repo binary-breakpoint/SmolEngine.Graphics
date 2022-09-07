@@ -3,7 +3,7 @@
 
 #include <vulkan_memory_allocator/vk_mem_alloc.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_VulkanDevice;
 	class Gfx_VulkanInstance;

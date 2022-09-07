@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <array>
 
-namespace Dia
+namespace SmolEngine
 {
     struct Gfx_BoundingBox
     {

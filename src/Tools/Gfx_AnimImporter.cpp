@@ -3,7 +3,7 @@
 
 #include <regex>
 
-namespace Dia
+namespace SmolEngine
 {
 	bool Gfx_AnimImporter::ImportGltf(const std::string& filePath, const std::string& exePath)
 	{

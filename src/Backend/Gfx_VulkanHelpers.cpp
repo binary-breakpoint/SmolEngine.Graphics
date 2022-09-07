@@ -6,7 +6,7 @@
 #include "Common/Gfx_PixelStorage.h"
 #include "Common/Gfx_Framebuffer.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	std::mutex* s_locVulkanHelpersMutex = new std::mutex();
 

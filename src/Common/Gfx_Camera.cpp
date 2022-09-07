@@ -7,7 +7,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_major_storage.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 
 	Gfx_ViewProjection::Gfx_ViewProjection(Gfx_Camera* cam)

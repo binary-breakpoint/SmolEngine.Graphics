@@ -2,7 +2,7 @@
 #include "Common/Gfx_Memory.h"
 #include "Common/Gfx_Events.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	typedef enum class KeyCode : uint16_t
 	{
@@ -170,144 +170,144 @@ namespace Dia
 	}
 
 // From glfw3.h
-#define F_KEY_SPACE           ::Dia::Key::Space
-#define F_KEY_APOSTROPHE      ::Dia::Key::Apostrophe    /* ' */
-#define F_KEY_COMMA           ::Dia::Key::Comma         /* , */
-#define F_KEY_MINUS           ::Dia::Key::Minus         /* - */
-#define F_KEY_PERIOD          ::Dia::Key::Period        /* . */
-#define F_KEY_SLASH           ::Dia::Key::Slash         /* / */
-#define F_KEY_0               ::Dia::Key::D0
-#define F_KEY_1               ::Dia::Key::D1
-#define F_KEY_2               ::Dia::Key::D2
-#define F_KEY_3               ::Dia::Key::D3
-#define F_KEY_4               ::Dia::Key::D4
-#define F_KEY_5               ::Dia::Key::D5
-#define F_KEY_6               ::Dia::Key::D6
-#define F_KEY_7               ::Dia::Key::D7
-#define F_KEY_8               ::Dia::Key::D8
-#define F_KEY_9               ::Dia::Key::D9
-#define F_KEY_SEMICOLON       ::Dia::Key::Semicolon     /* ; */
-#define F_KEY_EQUAL           ::Dia::Key::Equal         /* = */
-#define F_KEY_A               ::Dia::Key::A
-#define F_KEY_B               ::Dia::Key::B
-#define F_KEY_C               ::Dia::Key::C
-#define F_KEY_D               ::Dia::Key::D
-#define F_KEY_E               ::Dia::Key::E
-#define F_KEY_F               ::Dia::Key::F
-#define F_KEY_G               ::Dia::Key::G
-#define F_KEY_H               ::Dia::Key::H
-#define F_KEY_I               ::Dia::Key::I
-#define F_KEY_J               ::Dia::Key::J
-#define F_KEY_K               ::Dia::Key::K
-#define F_KEY_L               ::Dia::Key::L
-#define F_KEY_M               ::Dia::Key::M
-#define F_KEY_N               ::Dia::Key::N
-#define F_KEY_O               ::Dia::Key::O
-#define F_KEY_P               ::Dia::Key::P
-#define F_KEY_Q               ::Dia::Key::Q
-#define F_KEY_R               ::Dia::Key::R
-#define F_KEY_S               ::Dia::Key::S
-#define F_KEY_T               ::Dia::Key::T
-#define F_KEY_U               ::Dia::Key::U
-#define F_KEY_V               ::Dia::Key::V
-#define F_KEY_W               ::Dia::Key::W
-#define F_KEY_X               ::Dia::Key::X
-#define F_KEY_Y               ::Dia::Key::Y
-#define F_KEY_Z               ::Dia::Key::Z
-#define F_KEY_LEFT_BRACKET    ::Dia::Key::LeftBracket   /* [ */
-#define F_KEY_BACKSLASH       ::Dia::Key::Backslash     /* \ */
-#define F_KEY_RIGHT_BRACKET   ::Dia::Key::RightBracket  /* ] */
-#define F_KEY_GRAVE_ACCENT    ::Dia::Key::GraveAccent   /* ` */
-#define F_KEY_WORLD_1         ::Dia::Key::World1        /* non-US #1 */
-#define F_KEY_WORLD_2         ::Dia::Key::World2        /* non-US #2 */
+#define F_KEY_SPACE           ::SmolEngine::Key::Space
+#define F_KEY_APOSTROPHE      ::SmolEngine::Key::Apostrophe    /* ' */
+#define F_KEY_COMMA           ::SmolEngine::Key::Comma         /* , */
+#define F_KEY_MINUS           ::SmolEngine::Key::Minus         /* - */
+#define F_KEY_PERIOD          ::SmolEngine::Key::Period        /* . */
+#define F_KEY_SLASH           ::SmolEngine::Key::Slash         /* / */
+#define F_KEY_0               ::SmolEngine::Key::D0
+#define F_KEY_1               ::SmolEngine::Key::D1
+#define F_KEY_2               ::SmolEngine::Key::D2
+#define F_KEY_3               ::SmolEngine::Key::D3
+#define F_KEY_4               ::SmolEngine::Key::D4
+#define F_KEY_5               ::SmolEngine::Key::D5
+#define F_KEY_6               ::SmolEngine::Key::D6
+#define F_KEY_7               ::SmolEngine::Key::D7
+#define F_KEY_8               ::SmolEngine::Key::D8
+#define F_KEY_9               ::SmolEngine::Key::D9
+#define F_KEY_SEMICOLON       ::SmolEngine::Key::Semicolon     /* ; */
+#define F_KEY_EQUAL           ::SmolEngine::Key::Equal         /* = */
+#define F_KEY_A               ::SmolEngine::Key::A
+#define F_KEY_B               ::SmolEngine::Key::B
+#define F_KEY_C               ::SmolEngine::Key::C
+#define F_KEY_D               ::SmolEngine::Key::D
+#define F_KEY_E               ::SmolEngine::Key::E
+#define F_KEY_F               ::SmolEngine::Key::F
+#define F_KEY_G               ::SmolEngine::Key::G
+#define F_KEY_H               ::SmolEngine::Key::H
+#define F_KEY_I               ::SmolEngine::Key::I
+#define F_KEY_J               ::SmolEngine::Key::J
+#define F_KEY_K               ::SmolEngine::Key::K
+#define F_KEY_L               ::SmolEngine::Key::L
+#define F_KEY_M               ::SmolEngine::Key::M
+#define F_KEY_N               ::SmolEngine::Key::N
+#define F_KEY_O               ::SmolEngine::Key::O
+#define F_KEY_P               ::SmolEngine::Key::P
+#define F_KEY_Q               ::SmolEngine::Key::Q
+#define F_KEY_R               ::SmolEngine::Key::R
+#define F_KEY_S               ::SmolEngine::Key::S
+#define F_KEY_T               ::SmolEngine::Key::T
+#define F_KEY_U               ::SmolEngine::Key::U
+#define F_KEY_V               ::SmolEngine::Key::V
+#define F_KEY_W               ::SmolEngine::Key::W
+#define F_KEY_X               ::SmolEngine::Key::X
+#define F_KEY_Y               ::SmolEngine::Key::Y
+#define F_KEY_Z               ::SmolEngine::Key::Z
+#define F_KEY_LEFT_BRACKET    ::SmolEngine::Key::LeftBracket   /* [ */
+#define F_KEY_BACKSLASH       ::SmolEngine::Key::Backslash     /* \ */
+#define F_KEY_RIGHT_BRACKET   ::SmolEngine::Key::RightBracket  /* ] */
+#define F_KEY_GRAVE_ACCENT    ::SmolEngine::Key::GraveAccent   /* ` */
+#define F_KEY_WORLD_1         ::SmolEngine::Key::World1        /* non-US #1 */
+#define F_KEY_WORLD_2         ::SmolEngine::Key::World2        /* non-US #2 */
 
 /* FunctFn keys */
-#define F_KEY_ESCAPE          ::Dia::Key::Escape
-#define F_KEY_ENTER           ::Dia::Key::Enter
-#define F_KEY_TAB             ::Dia::Key::Tab
-#define F_KEY_BACKSPACE       ::Dia::Key::Backspace
-#define F_KEY_INSERT          ::Dia::Key::Insert
-#define F_KEY_DELETE          ::Dia::Key::Delete
-#define F_KEY_RIGHT           ::Dia::Key::Right
-#define F_KEY_LEFT            ::Dia::Key::Left
-#define F_KEY_DOWN            ::Dia::Key::Down
-#define F_KEY_UP              ::Dia::Key::Up
-#define F_KEY_PAGE_UP         ::Dia::Key::PageUp
-#define F_KEY_PAGE_DOWN       ::Dia::Key::PageDown
-#define F_KEY_HOME            ::Dia::Key::Home
-#define F_KEY_END             ::Dia::Key::End
-#define F_KEY_CAPS_LOCK       ::Dia::Key::CapsLock
-#define F_KEY_SCROLL_LOCK     ::Dia::Key::ScrollLock
-#define F_KEY_NUM_LOCK        ::Dia::Key::NumLock
-#define F_KEY_PRINT_SCREEN    ::Dia::Key::PrintScreen
-#define F_KEY_PAUSE           ::Dia::Key::Pause
-#define F_KEY_F1              ::Dia::Key::F1
-#define F_KEY_F2              ::Dia::Key::F2
-#define F_KEY_F3              ::Dia::Key::F3
-#define F_KEY_F4              ::Dia::Key::F4
-#define F_KEY_F5              ::Dia::Key::F5
-#define F_KEY_F6              ::Dia::Key::F6
-#define F_KEY_F7              ::Dia::Key::F7
-#define F_KEY_F8              ::Dia::Key::F8
-#define F_KEY_F9              ::Dia::Key::F9
-#define F_KEY_F10             ::Dia::Key::F10
-#define F_KEY_F11             ::Dia::Key::F11
-#define F_KEY_F12             ::Dia::Key::F12
-#define F_KEY_F13             ::Dia::Key::F13
-#define F_KEY_F14             ::Dia::Key::F14
-#define F_KEY_F15             ::Dia::Key::F15
-#define F_KEY_F16             ::Dia::Key::F16
-#define F_KEY_F17             ::Dia::Key::F17
-#define F_KEY_F18             ::Dia::Key::F18
-#define F_KEY_F19             ::Dia::Key::F19
-#define F_KEY_F20             ::Dia::Key::F20
-#define F_KEY_F21             ::Dia::Key::F21
-#define F_KEY_F22             ::Dia::Key::F22
-#define F_KEY_F23             ::Dia::Key::F23
-#define F_KEY_F24             ::Dia::Key::F24
-#define F_KEY_F25             ::Dia::Key::F25
+#define F_KEY_ESCAPE          ::SmolEngine::Key::Escape
+#define F_KEY_ENTER           ::SmolEngine::Key::Enter
+#define F_KEY_TAB             ::SmolEngine::Key::Tab
+#define F_KEY_BACKSPACE       ::SmolEngine::Key::Backspace
+#define F_KEY_INSERT          ::SmolEngine::Key::Insert
+#define F_KEY_DELETE          ::SmolEngine::Key::Delete
+#define F_KEY_RIGHT           ::SmolEngine::Key::Right
+#define F_KEY_LEFT            ::SmolEngine::Key::Left
+#define F_KEY_DOWN            ::SmolEngine::Key::Down
+#define F_KEY_UP              ::SmolEngine::Key::Up
+#define F_KEY_PAGE_UP         ::SmolEngine::Key::PageUp
+#define F_KEY_PAGE_DOWN       ::SmolEngine::Key::PageDown
+#define F_KEY_HOME            ::SmolEngine::Key::Home
+#define F_KEY_END             ::SmolEngine::Key::End
+#define F_KEY_CAPS_LOCK       ::SmolEngine::Key::CapsLock
+#define F_KEY_SCROLL_LOCK     ::SmolEngine::Key::ScrollLock
+#define F_KEY_NUM_LOCK        ::SmolEngine::Key::NumLock
+#define F_KEY_PRINT_SCREEN    ::SmolEngine::Key::PrintScreen
+#define F_KEY_PAUSE           ::SmolEngine::Key::Pause
+#define F_KEY_F1              ::SmolEngine::Key::F1
+#define F_KEY_F2              ::SmolEngine::Key::F2
+#define F_KEY_F3              ::SmolEngine::Key::F3
+#define F_KEY_F4              ::SmolEngine::Key::F4
+#define F_KEY_F5              ::SmolEngine::Key::F5
+#define F_KEY_F6              ::SmolEngine::Key::F6
+#define F_KEY_F7              ::SmolEngine::Key::F7
+#define F_KEY_F8              ::SmolEngine::Key::F8
+#define F_KEY_F9              ::SmolEngine::Key::F9
+#define F_KEY_F10             ::SmolEngine::Key::F10
+#define F_KEY_F11             ::SmolEngine::Key::F11
+#define F_KEY_F12             ::SmolEngine::Key::F12
+#define F_KEY_F13             ::SmolEngine::Key::F13
+#define F_KEY_F14             ::SmolEngine::Key::F14
+#define F_KEY_F15             ::SmolEngine::Key::F15
+#define F_KEY_F16             ::SmolEngine::Key::F16
+#define F_KEY_F17             ::SmolEngine::Key::F17
+#define F_KEY_F18             ::SmolEngine::Key::F18
+#define F_KEY_F19             ::SmolEngine::Key::F19
+#define F_KEY_F20             ::SmolEngine::Key::F20
+#define F_KEY_F21             ::SmolEngine::Key::F21
+#define F_KEY_F22             ::SmolEngine::Key::F22
+#define F_KEY_F23             ::SmolEngine::Key::F23
+#define F_KEY_F24             ::SmolEngine::Key::F24
+#define F_KEY_F25             ::SmolEngine::Key::F25
 /* Keypa*/
 
-#define F_KEY_KP_0            ::Dia::Key::KP0
-#define F_KEY_KP_1            ::Dia::Key::KP1
-#define F_KEY_KP_2            ::Dia::Key::KP2
-#define F_KEY_KP_3            ::Dia::Key::KP3
-#define F_KEY_KP_4            ::Dia::Key::KP4
-#define F_KEY_KP_5            ::Dia::Key::KP5
-#define F_KEY_KP_6            ::Dia::Key::KP6
-#define F_KEY_KP_7            ::Dia::Key::KP7
-#define F_KEY_KP_8            ::Dia::Key::KP8
-#define F_KEY_KP_9            ::Dia::Key::KP9
-#define F_KEY_KP_DECIMAL      ::Dia::Key::KPDecimal
-#define F_KEY_KP_DIVIDE       ::Dia::Key::KPDivide
-#define F_KEY_KP_MULTIPLY     ::Dia::Key::KPMultiply
-#define F_KEY_KP_SUBTRACT     ::Dia::Key::KPSubtract
-#define F_KEY_KP_ADD          ::Dia::Key::KPAdd
-#define F_KEY_KP_ENTER        ::Dia::Key::KPEnter
-#define F_KEY_KP_EQUAL        ::Dia::Key::KPEqual
+#define F_KEY_KP_0            ::SmolEngine::Key::KP0
+#define F_KEY_KP_1            ::SmolEngine::Key::KP1
+#define F_KEY_KP_2            ::SmolEngine::Key::KP2
+#define F_KEY_KP_3            ::SmolEngine::Key::KP3
+#define F_KEY_KP_4            ::SmolEngine::Key::KP4
+#define F_KEY_KP_5            ::SmolEngine::Key::KP5
+#define F_KEY_KP_6            ::SmolEngine::Key::KP6
+#define F_KEY_KP_7            ::SmolEngine::Key::KP7
+#define F_KEY_KP_8            ::SmolEngine::Key::KP8
+#define F_KEY_KP_9            ::SmolEngine::Key::KP9
+#define F_KEY_KP_DECIMAL      ::SmolEngine::Key::KPDecimal
+#define F_KEY_KP_DIVIDE       ::SmolEngine::Key::KPDivide
+#define F_KEY_KP_MULTIPLY     ::SmolEngine::Key::KPMultiply
+#define F_KEY_KP_SUBTRACT     ::SmolEngine::Key::KPSubtract
+#define F_KEY_KP_ADD          ::SmolEngine::Key::KPAdd
+#define F_KEY_KP_ENTER        ::SmolEngine::Key::KPEnter
+#define F_KEY_KP_EQUAL        ::SmolEngine::Key::KPEqual
 
-#define F_KEY_LEFT_SHIFT      ::Dia::Key::LeftShift
-#define F_KEY_LEFT_CONTROL    ::Dia::Key::LeftControl
-#define F_KEY_LEFT_ALT        ::Dia::Key::LeftAlt
-#define F_KEY_LEFT_SUPER      ::Dia::Key::LeftSuper
-#define F_KEY_RIGHT_SHIFT     ::Dia::Key::RightShift
-#define F_KEY_RIGHT_CONTROL   ::Dia::Key::RightControl
-#define F_KEY_RIGHT_ALT       ::Dia::Key::RightAlt
-#define F_KEY_RIGHT_SUPER     ::Dia::Key::RightSuper
-#define F_KEY_MENU            ::Dia::Key::Menu
+#define F_KEY_LEFT_SHIFT      ::SmolEngine::Key::LeftShift
+#define F_KEY_LEFT_CONTROL    ::SmolEngine::Key::LeftControl
+#define F_KEY_LEFT_ALT        ::SmolEngine::Key::LeftAlt
+#define F_KEY_LEFT_SUPER      ::SmolEngine::Key::LeftSuper
+#define F_KEY_RIGHT_SHIFT     ::SmolEngine::Key::RightShift
+#define F_KEY_RIGHT_CONTROL   ::SmolEngine::Key::RightControl
+#define F_KEY_RIGHT_ALT       ::SmolEngine::Key::RightAlt
+#define F_KEY_RIGHT_SUPER     ::SmolEngine::Key::RightSuper
+#define F_KEY_MENU            ::SmolEngine::Key::Menu
 
-#define F_MOUSE_BUTTON_0      ::Dia::Mouse::Button0
-#define F_MOUSE_BUTTON_1      ::Dia::Mouse::Button1
-#define F_MOUSE_BUTTON_2      ::Dia::Mouse::Button2
-#define F_MOUSE_BUTTON_3      ::Dia::Mouse::Button3
-#define F_MOUSE_BUTTON_4      ::Dia::Mouse::Button4
-#define F_MOUSE_BUTTON_5      ::Dia::Mouse::Button5
-#define F_MOUSE_BUTTON_6      ::Dia::Mouse::Button6
-#define F_MOUSE_BUTTON_7      ::Dia::Mouse::Button7
-#define F_MOUSE_BUTTON_LAST   ::Dia::Mouse::ButtonLast
-#define F_MOUSE_BUTTON_LEFT   ::Dia::Mouse::ButtonLeft
-#define F_MOUSE_BUTTON_RIGHT  ::Dia::Mouse::ButtonRight
-#define F_MOUSE_BUTTON_MIDDLE ::Dia::Mouse::ButtonMiddle
+#define F_MOUSE_BUTTON_0      ::SmolEngine::Mouse::Button0
+#define F_MOUSE_BUTTON_1      ::SmolEngine::Mouse::Button1
+#define F_MOUSE_BUTTON_2      ::SmolEngine::Mouse::Button2
+#define F_MOUSE_BUTTON_3      ::SmolEngine::Mouse::Button3
+#define F_MOUSE_BUTTON_4      ::SmolEngine::Mouse::Button4
+#define F_MOUSE_BUTTON_5      ::SmolEngine::Mouse::Button5
+#define F_MOUSE_BUTTON_6      ::SmolEngine::Mouse::Button6
+#define F_MOUSE_BUTTON_7      ::SmolEngine::Mouse::Button7
+#define F_MOUSE_BUTTON_LAST   ::SmolEngine::Mouse::ButtonLast
+#define F_MOUSE_BUTTON_LEFT   ::SmolEngine::Mouse::ButtonLeft
+#define F_MOUSE_BUTTON_RIGHT  ::SmolEngine::Mouse::ButtonRight
+#define F_MOUSE_BUTTON_MIDDLE ::SmolEngine::Mouse::ButtonMiddle
 
 	class Gfx_Input
 	{

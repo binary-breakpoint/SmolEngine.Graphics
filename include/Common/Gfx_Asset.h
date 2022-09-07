@@ -1,7 +1,7 @@
 #pragma once
 #include "Gfx_Memory.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Asset
 	{

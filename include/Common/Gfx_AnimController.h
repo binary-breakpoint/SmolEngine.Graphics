@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_AnimController
 	{

@@ -2,7 +2,7 @@
 #include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Buffer.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_IndexBuffer final: public Gfx_Asset
 	{

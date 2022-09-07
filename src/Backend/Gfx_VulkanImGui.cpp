@@ -16,7 +16,7 @@
 #include <implot/implot.h>
 #include <imgizmo/src/ImGuizmo.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	void Gfx_VulkanImGui::Create()
 	{

@@ -2,7 +2,7 @@
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_Texture.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_World
 	{

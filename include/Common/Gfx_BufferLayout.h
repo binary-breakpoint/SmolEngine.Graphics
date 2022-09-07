@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_BufferLayout
 	{

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common/Gfx_Events.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Camera;
 

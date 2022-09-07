@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	static Gfx_Window::Data* s_DataPtr = nullptr;
 	static Gfx_EventSender*  s_EventHandler = nullptr;

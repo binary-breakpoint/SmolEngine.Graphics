@@ -3,7 +3,7 @@
 #include "Backend/Gfx_VulkanDevice.h"
 #include "Backend/Gfx_VulkanInstance.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_VulkanAllocator* Gfx_VulkanAllocator::s_Instance = nullptr;
 

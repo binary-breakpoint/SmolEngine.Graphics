@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Dia
+namespace SmolEngine
 {
 	enum class OzzPath
 	{

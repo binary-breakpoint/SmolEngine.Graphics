@@ -2,7 +2,7 @@
 
 #include <limits>
 
-using namespace Dia;
+using namespace SmolEngine;
 
 struct PushConstant
 {

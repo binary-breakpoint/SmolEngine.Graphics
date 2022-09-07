@@ -14,7 +14,7 @@
 #include <GLFW/glfw3native.h>
 #include <GLFW/glfw3.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	uint32_t Gfx_Helpers::GetFormatSize(Format format)
 	{

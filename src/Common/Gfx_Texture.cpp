@@ -9,7 +9,7 @@
 #include <cereal/archives/json.hpp>
 #include <imgui/examples/imgui_impl_vulkan.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	bool TextureCreateDesc::Save(const std::string& filePath)
 	{

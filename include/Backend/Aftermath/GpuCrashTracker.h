@@ -6,7 +6,7 @@
 #include "Backends/Vulkan/Aftermath/AftermathUtils.h"
 #include "Backends/Vulkan/Aftermath/AftermathShaderTracker.h"
 
-namespace Dia
+namespace SmolEngine
 {
     //*********************************************************
     // Implements GPU crash dump tracking using the Nsight

@@ -4,7 +4,7 @@
 #include <glm/detail/type_vec3.hpp>
 #include <glm/mat4x4.hpp>
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_BoundingBox::Gfx_BoundingBox()
 	{

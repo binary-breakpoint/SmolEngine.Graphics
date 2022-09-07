@@ -1,7 +1,7 @@
 #pragma once
 #include "Common/Gfx_Asset.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Shader;
 	class Gfx_Descriptor;

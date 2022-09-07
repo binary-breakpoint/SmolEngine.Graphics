@@ -1,5 +1,5 @@
 
-workspace "Dia"
+workspace "SmolEngine.Graphics"
 architecture "x64"
 startproject "Compute Demo"
 
@@ -28,7 +28,7 @@ group "Executables"
 include "tests"
 group ""
 
-project "Dia"
+project "SmolEngine.Graphics"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"

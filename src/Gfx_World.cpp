@@ -2,7 +2,7 @@
 #include "Gfx_World.h"
 #include "Common/Gfx_Texture.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_World* Gfx_World::s_Instance = nullptr;
 

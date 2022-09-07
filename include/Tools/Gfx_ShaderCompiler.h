@@ -1,7 +1,7 @@
 #pragma once
 #include "Common/Gfx_Shader.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	struct ShaderCompileDesc
 	{

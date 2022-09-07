@@ -3,7 +3,7 @@
 #include "Common/Gfx_Helpers.h"
 #include "Tools/Gfx_ShaderCompiler.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	ShaderCreateDesc& Gfx_Shader::GetDesc()
 	{

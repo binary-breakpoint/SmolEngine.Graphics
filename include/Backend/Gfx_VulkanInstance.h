@@ -1,7 +1,7 @@
 #pragma once
 #include "Backend/Gfx_VulkanCore.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_VulkanInstance
 	{

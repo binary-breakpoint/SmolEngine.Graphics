@@ -4,7 +4,7 @@
 
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_AccelStructure::Gfx_AccelStructure()
 		:

@@ -8,7 +8,7 @@
 
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	static bool locIsBlendEnableEnabled(const PipelineCreateDesc* desc)
 	{

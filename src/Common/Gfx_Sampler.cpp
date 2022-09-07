@@ -2,7 +2,7 @@
 #include "Common/Gfx_Sampler.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_Sampler::Gfx_Sampler() : 
 		m_Sampler{nullptr} {}

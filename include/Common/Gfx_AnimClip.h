@@ -12,7 +12,7 @@ namespace cereal
 	class access;
 }
 
-namespace Dia
+namespace SmolEngine
 {
 	struct AnimClipDesc
 	{

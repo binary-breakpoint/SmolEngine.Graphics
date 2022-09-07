@@ -2,7 +2,7 @@
 #include "Backend/Gfx_VulkanDevice.h"
 #include "Backend/Gfx_VulkanInstance.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_VulkanDevice::Gfx_VulkanDevice() :
 		m_GraphicsQueue{ nullptr },

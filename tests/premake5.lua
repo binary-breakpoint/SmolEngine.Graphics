@@ -47,7 +47,7 @@ includedirs
 
 links
 {
-    "Dia"
+    "SmolEngine.Graphics"
 }
 
 filter "system:windows"
@@ -122,7 +122,7 @@ includedirs
 
 links
 {
-    "Dia"
+    "SmolEngine.Graphics"
 }
 
 filter "system:windows"
@@ -197,7 +197,7 @@ includedirs
 
 links
 {
-    "Dia"
+    "SmolEngine.Graphics"
 }
 
 filter "system:windows"

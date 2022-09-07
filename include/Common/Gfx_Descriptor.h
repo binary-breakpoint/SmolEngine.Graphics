@@ -9,7 +9,7 @@
 #include <string>
 #include <optional>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Buffer;
 	class Gfx_Shader;

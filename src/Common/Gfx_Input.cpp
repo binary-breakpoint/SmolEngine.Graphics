@@ -3,7 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Dia
+namespace SmolEngine
 {
 	bool Gfx_Input::IsKeyPressed(KeyCode key)
 	{

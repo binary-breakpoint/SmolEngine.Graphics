@@ -5,7 +5,7 @@
 #include "Common/Gfx_Descriptor.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	Gfx_RtPipeline::Gfx_RtPipeline()
 		:

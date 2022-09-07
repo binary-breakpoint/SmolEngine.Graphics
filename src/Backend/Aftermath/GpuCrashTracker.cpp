@@ -2,7 +2,7 @@
 #ifdef AFTERMATH
 #include "Backends/Vulkan/Aftermath/GpuCrashTracker.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	GpuCrashTracker::GpuCrashTracker()
 		: m_initialized(false)
@@ -83,7 +83,7 @@ namespace Dia
         // Add some basic description about the crash. This is called after the GPU crash happens, but before
         // the actual GPU crash dump callback. The provided data is included in the crash dump and can be
         // retrieved using GFSDK_Aftermath_GpuCrashDump_GetDescription().
-        addDescription(GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationName, "Dia");
+        addDescription(GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationName, "SmolEngine");
         addDescription(GFSDK_Aftermath_GpuCrashDumpDescriptionKey_ApplicationVersion, "v0.1");
         addDescription(GFSDK_Aftermath_GpuCrashDumpDescriptionKey_UserDefined + 1, "Engine State: Rendering.");
     }

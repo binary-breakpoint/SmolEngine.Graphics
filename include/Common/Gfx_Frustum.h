@@ -4,7 +4,7 @@
 
 #include <array>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Frustum
 	{

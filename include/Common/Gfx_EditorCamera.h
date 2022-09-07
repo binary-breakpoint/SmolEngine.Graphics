@@ -2,7 +2,7 @@
 #include "Common/Gfx_Camera.h"
 #include "Common/Gfx_Events.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Framebuffer;
 

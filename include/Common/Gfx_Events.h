@@ -3,7 +3,7 @@
 
 #include <functional>
 
-namespace Dia
+namespace SmolEngine
 {
 	class Gfx_Event
 	{

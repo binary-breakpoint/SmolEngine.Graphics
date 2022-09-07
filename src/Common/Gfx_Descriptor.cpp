@@ -3,7 +3,7 @@
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_PixelStorage.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	static VkDescriptorType locGetDescriptorType(DescriptorType type)
 	{

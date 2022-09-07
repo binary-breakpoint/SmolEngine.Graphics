@@ -1,7 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Common/Gfx_AnimController.h"
 
-namespace Dia
+namespace SmolEngine
 {
 	bool Gfx_AnimController::AddClip(const AnimClipCreateDesc& info, const std::string& name, bool active)
 	{
