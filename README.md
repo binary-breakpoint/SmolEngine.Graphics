@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 	Gfx_Context* context = new Gfx_Context(); 
 	{
 		WindowCreateDesc winDesc{};
-		winDesc.myTitle = "Demo Compute";
+		winDesc.myTitle = "Demo";
 		
 		GfxContextCreateDesc contextDesc{};
 		contextDesc.myWindowDesc = &winDesc;
