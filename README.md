@@ -18,7 +18,7 @@
 ```c++
 #include <Gfx_Core.h>
 
-using namespace SmolEngine.Graphics;
+using namespace SmolEngine;
 
 struct PushConstant
 {
