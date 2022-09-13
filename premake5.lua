@@ -66,7 +66,6 @@ project "SmolEngine.Graphics"
 
 		"vendor/",
 		"vendor/implot/",
-		"vendor/spdlog/include",
 		"vendor/glm",
 		"vendor/imgui",
 		"vendor/imgizmo/src",
