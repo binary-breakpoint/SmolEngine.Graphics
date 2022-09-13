@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <string>
 
+#include "Common/Gfx_Log.h"
 #include "Gfx_Context.h"
 
 

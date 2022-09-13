@@ -45,9 +45,12 @@ namespace SmolEngine
 		VmaAllocationInfo allocInfo{};
 		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &allocInfo);
 
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		s_Instance->m_TotalAllocatedBytes += allocInfo.size;
-		Gfx_Log::LogInfo("[VMA]: allocating buffer; size = {}, pool size = {}", allocInfo.size, s_Instance->m_TotalAllocatedBytes);
+
+		std::stringstream ss;
+		ss << "[VMA]: allocating buffer; size = " << std::to_string(allocInfo.size) << ", pool size = " << std::to_string(s_Instance->m_TotalAllocatedBytes);
+		GFX_LOG(ss.str(), Gfx_Log::Level::Info)
 #endif 
 		return allocation;
 	}
@@ -62,9 +65,12 @@ namespace SmolEngine
 		VmaAllocationInfo allocInfo;
 		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &allocInfo);
 
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		s_Instance->m_TotalAllocatedBytes += allocInfo.size;
-		Gfx_Log::LogInfo("[VMA]: allocating image; size = {}, pool size = {}", allocInfo.size, s_Instance->m_TotalAllocatedBytes);
+
+		std::stringstream ss;
+		ss << "[VMA]: allocating image; size = " << std::to_string(allocInfo.size) << ", pool size = " << std::to_string(s_Instance->m_TotalAllocatedBytes);
+		GFX_LOG(ss.str(), Gfx_Log::Level::Info)
 #endif
 		return allocation;
 	}

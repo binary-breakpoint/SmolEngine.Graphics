@@ -14,7 +14,7 @@ namespace SmolEngine
 		// DLSS - vkCmdCuLaunchKernelNVX: required parameter pLaunchInfo->pParams specified as NULL.
 		const int ignoredWarning = 2044605652;
 		if(pCallbackData->messageIdNumber != ignoredWarning)
-			Gfx_Log::LogInfo(pCallbackData->pMessage);
+			GFX_LOG(std::string(pCallbackData->pMessage), Gfx_Log::Level::Error)
 
 		return VK_FALSE;
 	}

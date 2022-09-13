@@ -2,6 +2,8 @@
 #include "Backend/Gfx_VulkanDevice.h"
 #include "Backend/Gfx_VulkanInstance.h"
 
+#include <vulkan/vulkan_win32.h>
+
 namespace SmolEngine
 {
 	Gfx_VulkanDevice::Gfx_VulkanDevice() :
@@ -22,17 +24,13 @@ namespace SmolEngine
 		{
 			std::stringstream ss;
 			ss << "Vulkan Info:\n\n";
-			ss << "           Vulkan API Version: {}\n";
-			ss << "           Selected Device: {}\n";
-			ss << "           Driver Version: {}\n";
-			ss << "           Raytracing Enabled: {}\n";
-			ss << "           Max push_constant size: {}\n\n";
+			ss << "           Vulkan API Version: " << std::to_string(m_DeviceProperties.apiVersion) << "\n";
+			ss << "           Selected Device: " << std::string(m_DeviceProperties.deviceName) << "\n";
+			ss << "           Driver Version: " << std::to_string(m_DeviceProperties.driverVersion) << "\n";
+			ss << "           Raytracing Enabled: " << std::to_string(m_RayTracingEnabled) << "\n";
+			ss << "           Max push_constant size: " << std::to_string(m_DeviceProperties.limits.maxPushConstantsSize) << "\n\n";
 
-			Gfx_Log::LogInfo(ss.str(),
-				m_DeviceProperties.apiVersion,
-				std::string(m_DeviceProperties.deviceName),
-				m_DeviceProperties.driverVersion, m_RayTracingEnabled,
-				m_DeviceProperties.limits.maxPushConstantsSize);
+			GFX_LOG(ss.str(), Gfx_Log::Level::Info)
 
 			return SetupLogicalDevice();
 		}
@@ -405,7 +403,8 @@ namespace SmolEngine
 			typeBits >>= 1;
 		}
 
-		RUNTIME_ERROR("VulkanDevice: Could not find a suitable memory type!");
+		GFX_ASSERT(true, "VulkanDevice: Could not find a suitable memory type!")
+		return 0;
 	}
 
 	const VkQueue Gfx_VulkanDevice::GetQueue(Gfx_VulkanDevice::QueueFamilyFlags flag) const

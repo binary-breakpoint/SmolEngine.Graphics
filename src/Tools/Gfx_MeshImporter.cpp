@@ -330,12 +330,6 @@ namespace SmolEngine
 			}
 		}
 
-		if(!error.empty())
-			Gfx_Log::LogError(error);
-
-		if(!warning.empty())
-			Gfx_Log::LogWarn(warning);
-
 		return fileLoaded;
 	}
 

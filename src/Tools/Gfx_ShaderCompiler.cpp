@@ -189,11 +189,8 @@ namespace SmolEngine
 	{
 		std::ifstream file(desc.myFilePath);
 		std::stringstream buffer;
-		if (!file)
-		{
-			Gfx_Log::LogError("Could not load file " + desc.myFilePath);
-			return;
-		}
+
+		GFX_ASSERT(file, "Could not load file")
 
 		buffer << file.rdbuf();
 		std::string src = buffer.str();
@@ -335,9 +332,10 @@ namespace SmolEngine
 		Resources.limits.generalVariableIndexing = 1;
 		Resources.limits.generalConstantMatrixVectorIndexing = 1;
 
+
 		if (!shader.parse(&Resources, 100, false, messages, *includer))
 		{
-			RUNTIME_ERROR(std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()));
+			GFX_LOG(std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()), Gfx_Log::Level::Error)
 		}
 
 		// Add shader to new program object.
@@ -347,14 +345,12 @@ namespace SmolEngine
 		// Link program.
 		if (!program.link(messages))
 		{
-			Gfx_Log::LogInfo(std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog()));
+			GFX_LOG(std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog()), Gfx_Log::Level::Error)
 		}
 
 		glslang::TIntermediate* intermediate = program.getIntermediate(language);
-		if (!intermediate)
-		{
-			RUNTIME_ERROR("Failed to get shared intermediate code.\n");
-		}
+
+		GFX_ASSERT(intermediate, "Failed to get shared intermediate code");
 
 		spv::SpvBuildLogger logger;
 		glslang::SpvOptions options = {};
@@ -362,10 +358,8 @@ namespace SmolEngine
 
 		glslang::GlslangToSpv(*intermediate, out_binaries, &logger, &options);
 		std::string error = logger.getAllMessages();
-		if (!error.empty())
-		{
-			RUNTIME_ERROR(error);
-		}
+
+		GFX_ASSERT_PURE(!error.empty())
 
 		// Shutdown glslang library.
 		glslang::FinalizeProcess();

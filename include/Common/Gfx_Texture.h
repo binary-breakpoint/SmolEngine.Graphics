@@ -3,6 +3,10 @@
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_PixelStorage.h"
 #include "Common/Gfx_Asset.h"
+#include "Common/Gfx_Flags.h"
+
+#include <string>
+#include <unordered_map>
 
 namespace SmolEngine
 {
@@ -19,8 +23,8 @@ namespace SmolEngine
 		std::string myFilePath = "";
 		bool myImGUIHandleEnable = false;
 
-		bool Save(const std::string& filePath);
-		bool Load(const std::string& filePath);
+		void Save(const std::string& filePath);
+		void Load(const std::string& filePath);
 
 	private:
 		friend class cereal::access;

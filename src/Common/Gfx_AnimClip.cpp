@@ -24,61 +24,44 @@ namespace SmolEngine
 {
 	struct AnimationClipStorage
 	{
-		ozz::animation::Skeleton              m_Skeleton;
-		ozz::animation::Animation             m_Clip;
-		ozz::animation::SamplingCache         m_Cache;
-		ozz::vector<ozz::math::SoaTransform>  m_Locals;
-		ozz::vector<ozz::math::Float4x4>      m_Models;
-		std::vector<glm::mat4>                m_InverseBindMatrices;
+		ozz::animation::Skeleton m_Skeleton;
+		ozz::animation::Animation m_Clip;
+		ozz::animation::SamplingCache m_Cache;
+		ozz::vector<ozz::math::SoaTransform> m_Locals;
+		ozz::vector<ozz::math::Float4x4> m_Models;
+		std::vector<glm::mat4> m_InverseBindMatrices;
 	};
 
-	bool LoadSkeleton(const char* _filename, ozz::animation::Skeleton* _skeleton) 
+	void LoadSkeleton(const char* _filename, ozz::animation::Skeleton* _skeleton) 
 	{
 		ozz::io::File file(_filename, "rb");
-		if (!file.opened()) 
-		{
-			Gfx_Log::LogError("Failed to open skeleton file: {}", _filename);
-			return false;
-		}
+		GFX_ASSERT(file.opened(), "Failed to open skeleton file")
 
 		ozz::io::IArchive archive(&file);
-		if (!archive.TestTag<ozz::animation::Skeleton>()) 
-		{
-			Gfx_Log::LogError("Failed to load skeleton instance from file: {}", _filename);
-			return false;
-		}
+		GFX_ASSERT(archive.TestTag<ozz::animation::Skeleton>(), "Failed to load skeleton instance from file: " + std::string(_filename))
 
 		archive >> *_skeleton;
-		return true;
 	}
 
-	bool LoadAnimation(const char* _filename, ozz::animation::Animation* _animation) 
+	void LoadAnimation(const char* _filename, ozz::animation::Animation* _animation)
 	{
 		ozz::io::File file(_filename, "rb");
-		if (!file.opened()) 
-		{
-			Gfx_Log::LogError("Failed to open animation file: {}", _filename);
-			return false;
-		}
+		GFX_ASSERT(file.opened(), "Failed to open skeleton file")
 
 		ozz::io::IArchive archive(&file);
-		if (!archive.TestTag<ozz::animation::Animation>()) 
-		{
-			Gfx_Log::LogError("Failed to load animation instance from file: {}", _filename);
-			return false;
-		}
+		GFX_ASSERT(archive.TestTag<ozz::animation::Animation>(), "Failed to load animation instance from file: " + std::string(_filename))
 
 		archive >> *_animation;
-		return true;
 	}
 
 	bool Gfx_AnimClip::Create(const AnimClipCreateDesc& createInfo)
 	{
 		m_Storage = std::make_shared<AnimationClipStorage>();
 
-		if (LoadAnimation(createInfo.myAnimationPath.c_str(), &m_Storage->m_Clip) &&
-			LoadSkeleton(createInfo.mySkeletonPath.c_str(), &m_Storage->m_Skeleton) &&
-			Gfx_MeshImporter::ImportInverseBindMatrices(createInfo.myModelPath, m_Storage->m_InverseBindMatrices))
+		LoadAnimation(createInfo.myAnimationPath.c_str(), &m_Storage->m_Clip);
+		LoadSkeleton(createInfo.mySkeletonPath.c_str(), &m_Storage->m_Skeleton);
+
+		if (Gfx_MeshImporter::ImportInverseBindMatrices(createInfo.myModelPath, m_Storage->m_InverseBindMatrices))
 		{
 			const int numSoaJoints = m_Storage->m_Skeleton.num_soa_joints();
 			const int numTracks = m_Storage->m_Clip.num_tracks();
@@ -92,8 +75,9 @@ namespace SmolEngine
 
 				m_Info = createInfo;
 				m_Duration = m_Storage->m_Clip.duration();
-				return true;
 			}
+
+			return true;
 		}
 		
 		return false;
@@ -193,11 +177,8 @@ namespace SmolEngine
 	{
 		std::stringstream storage;
 		std::ifstream file(filePath);
-		if (!file)
-		{
-			Gfx_Log::LogError("Could not open the file: {}", filePath);
-			return false;
-		}
+
+		GFX_ASSERT(file, "Could not open the file: " + filePath)
 
 		storage << file.rdbuf();
 		{

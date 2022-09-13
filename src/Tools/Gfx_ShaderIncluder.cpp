@@ -30,11 +30,8 @@ namespace SmolEngine
 				{
 					std::ifstream file(path);
 					std::stringstream buffer;
-					if (!file)
-					{
-						Gfx_Log::LogError("Could not load file " + path.string());
-						return nullptr;
-					}
+
+					GFX_ASSERT(file, "Could not load file " + path.string())
 
 					{
 						buffer << file.rdbuf();

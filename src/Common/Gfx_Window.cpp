@@ -27,14 +27,11 @@ namespace SmolEngine
 		m_Data.myWidth = desc->myWidth;
 
 		glfwInit();
-		glfwSetErrorCallback([](int error, const char* description) { Gfx_Log::LogError("GLFW Error ({0}): {1}", error, description); });
+		glfwSetErrorCallback([](int error, const char* description) { GFX_LOG(description, Gfx_Log::Level::Error) });
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		m_Window = glfwCreateWindow((int)desc->myWidth, (int)desc->myHeight, desc->myTitle.c_str(), nullptr, nullptr);
-		if (!m_Window)
-		{
-			RUNTIME_ERROR("Failed to create window!");
-		}
+		GFX_ASSERT(m_Window, "Failed to create window!")
 
 		if (desc->myFullscreen)
 		{
@@ -182,7 +179,7 @@ namespace SmolEngine
 
 	void Gfx_Window::SetVSync(bool enabled)
 	{
-		Gfx_Log::LogInfo("VSync enabled: {0}", enabled);
+		GFX_LOG("VSync enabled: " + std::to_string(enabled), Gfx_Log::Level::Info)
 		enabled ? glfwSwapInterval(1) : glfwSwapInterval(0);
 	}
 }

@@ -2,7 +2,6 @@
 
 #include "Gfx_Context.h"
 
-#include "Common/Gfx_Log.h"
 #include "Common/Gfx_Framebuffer.h"
 #include "Common/Gfx_Mesh.h"
 #include "Common/Gfx_Shader.h"
@@ -20,3 +19,5 @@
 #include "Common/Gfx_AccelStructure.h"
 
 #include <imgui/imgui.h>
+
+#include "Common/Gfx_Log.h"

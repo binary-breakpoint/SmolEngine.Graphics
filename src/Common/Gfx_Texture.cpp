@@ -11,7 +11,7 @@
 
 namespace SmolEngine
 {
-	bool TextureCreateDesc::Save(const std::string& filePath)
+	void TextureCreateDesc::Save(const std::string& filePath)
 	{
 		std::stringstream storage;
 		{
@@ -20,33 +20,27 @@ namespace SmolEngine
 		}
 
 		std::ofstream myfile(filePath);
+		GFX_ASSERT(myfile.is_open(), "Could not open the file")
+
 		if (myfile.is_open())
 		{
 			myfile << storage.str();
 			myfile.close();
-			return true;
 		}
-
-		return false;
 	}
 
-	bool TextureCreateDesc::Load(const std::string& filePath)
+	void TextureCreateDesc::Load(const std::string& filePath)
 	{
 		std::stringstream storage;
 		std::ifstream file(filePath);
-		if (!file)
-		{
-			Gfx_Log::LogError("Could not open the file: {}", filePath);
-			return false;
-		}
+
+		GFX_ASSERT(file, "Could not open the file")
 
 		storage << file.rdbuf();
 		{
 			cereal::JSONInputArchive input{ storage };
 			input(myWidth, myHeight, myMipLevels, myArrayLayers, myFormat, myFilePath, myImGUIHandleEnable, myUsage);
 		}
-
-		return true;
 	}
 
 	Gfx_Texture::Gfx_Texture()
@@ -71,8 +65,7 @@ namespace SmolEngine
 			stbi_uc* data = nullptr;
 			{
 				data = stbi_load(info->myFilePath.c_str(), &width, &height, &channels, 4);
-				if (!data)
-					RUNTIME_ERROR("VulkanTexture:: Texture not found! file: {}", info->myFilePath);
+				GFX_ASSERT(data, "VulkanTexture:: Texture not found!")
 
 				info->myWidth = width;
 				info->myWidth = height;

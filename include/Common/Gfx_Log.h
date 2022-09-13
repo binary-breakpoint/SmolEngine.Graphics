@@ -1,115 +1,53 @@
 #pragma once
 #include "Common/Gfx_Memory.h"
 
-#include <sstream>
-#include <mutex>
-#include <source_location>
-
-extern "C++"
-{
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/fmt.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-}
+#include <functional>
+#include <utility>
 
 namespace SmolEngine
 {
-	using source_location = std::source_location;
-	[[nodiscard]] constexpr auto get_log_source_location(
-		const source_location& location) {
-		return spdlog::source_loc{ location.file_name(),
-								  static_cast<std::int32_t>(location.line()),
-								  location.function_name() };
-	}
-
-	struct format_with_location {
-		std::string_view value;
-		spdlog::source_loc loc;
-
-		template <typename String>
-		format_with_location(
-			const String& s,
-			const source_location& location = source_location::current())
-			: value{ s }, loc{ get_log_source_location(location) } {}
-	};
-
-	enum class LogLevel
-	{
-		Info,
-		Warning,
-		Error
-	};
-
 	class Gfx_Log
 	{
 	public:
+		enum class Level
+		{
+			Info,
+			Warning,
+			Error
+		};
+
 		Gfx_Log();
 		~Gfx_Log();
 
-		template<typename... Args>
-		static void LogError(const format_with_location& fmt, Args&& ...args)
+		template<typename String>
+		static void Log(Level level, const String& fmt)
 		{
-			Log(LogLevel::Error, fmt, std::forward<Args>(args)...);
-		}
-
-		template<typename... Args>
-		static void LogInfo(const format_with_location& fmt, Args&& ...args)
-		{
-			Log(LogLevel::Info, fmt, std::forward<Args>(args)...);
-		}
-
-		template<typename... Args>
-		static void LogWarn(const format_with_location& fmt, Args&& ...args)
-		{
-			Log(LogLevel::Warning, fmt, std::forward<Args>(args)...);
-		}
-
-		template<typename... Args>
-		static void Log(LogLevel level, const format_with_location& fmt, Args&& ...args)
-		{
-			const std::lock_guard<std::mutex> lock(s_Instance->m_Mutex);
-
-			spdlog::level::level_enum spdLevel = spdlog::level::trace;
-
-			switch (level)
-			{
-			case LogLevel::Warning:
-			{
-				spdLevel = spdlog::level::warn;
-				break;
-			}
-			case LogLevel::Error:
-			{
-				spdLevel = spdlog::level::err;
-				break;
-			}
-			case LogLevel::Info:
-			{
-				spdlog::level::trace;
-				break;
-			}
-			}
-
-			s_Instance->m_Logger->log(fmt.loc, spdLevel, fmt.value, std::forward<Args>(args)...);
-
+#ifdef SMOLENGINE_DEBUG
 			const auto& callback = s_Instance->m_Callback;
 			if (callback != nullptr)
-			{
-				// temp
-			}
+				callback(std::forward<const std::string>(fmt), level);
+#endif
 		}
 
-		static void SetCallback(const std::function<void(const std::string&&, LogLevel)>& callback)
+		static void SetCallback(const std::function<void(const std::string&&, Level)>& callback)
 		{
 			s_Instance->m_Callback = callback;
 		}
 
-	public:
 		static Gfx_Log* s_Instance;
-		std::mutex m_Mutex{};
-		std::shared_ptr<spdlog::logger> m_Logger = nullptr;
-		std::function<void(const std::string&&, LogLevel)> m_Callback = nullptr;
+
+	private:
+		std::function<void(const std::string&&, Level)> m_Callback;
 	};
 
-#define RUNTIME_ERROR(msg, ...) Gfx_Log::LogError(msg, __VA_ARGS__); abort()
+#ifdef SMOLENGINE_DEBUG
+#define GFX_ASSERT(condition, msg)	if(!condition) { Gfx_Log::Log(Gfx_Log::Level::Error, msg); assert(condition); }
+#define GFX_ASSERT_PURE(condition) assert(condition);
+#define GFX_LOG(msg, level) Gfx_Log::Log(level, msg);
+#else
+#define GFX_ASSERT(condition, msg)
+#define GFX_ASSERT_PURE(condition)
+#define GFX_LOG(msg, level)	
+#endif
+
 }

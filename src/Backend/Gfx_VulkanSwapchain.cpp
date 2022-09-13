@@ -76,12 +76,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanSwapchain::Create(uint32_t* width, uint32_t* height, bool vSync)
 	{
-		if (!m_Device || !m_Instance)
-		{
-			Gfx_Log::LogError("VulkanDevice or VulkanInstance is nullptr");
-			assert(m_Device != nullptr || m_Instance != nullptr);
-			return;
-		}
+		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 		
 		VkSwapchainKHR oldSwapchain = m_Swapchain;
 
@@ -276,8 +271,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanSwapchain::CleanUp()
 	{
-		if (!m_Device || !m_Instance)
-			RUNTIME_ERROR("VulkanDevice or VulkanInstance is nullptr");
+		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		if (m_Swapchain != VK_NULL_HANDLE)
 		{
@@ -311,12 +305,7 @@ namespace SmolEngine
 
 	VkResult Gfx_VulkanSwapchain::AcquireNextImage(VkSemaphore presentCompleteSemaphore)
 	{
-		if (!m_Device || !m_Instance)
-		{
-			Gfx_Log::LogError("VulkanDevice or VulkanInstance is nullptr");
-			assert(m_Device != nullptr || m_Instance != nullptr);
-			return VK_ERROR_UNKNOWN;
-		}
+		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		// By setting timeout to UINT64_MAX we will always wait until the next image has been acquired or an actual error is thrown
 		// With that we don't have to handle VK_NOT_READY
@@ -325,10 +314,7 @@ namespace SmolEngine
 
 	VkResult Gfx_VulkanSwapchain::QueuePresent(VkQueue queue, VkSemaphore waitSemaphore)
 	{
-		if (!m_Device || !m_Instance)
-		{
-			RUNTIME_ERROR("VulkanDevice or VulkanInstance is nullptr");
-		}
+		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		VkPresentInfoKHR presentInfo = {};
 		{
@@ -551,12 +537,8 @@ namespace SmolEngine
 		{
 			ivAttachment[0] = m_Buffers[i].View;
 			result = (vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCI, nullptr, &m_Framebuffers[i]));
-			VK_CHECK_RESULT(result);
 
-			if (result != VK_SUCCESS)
-			{
-				Gfx_Log::LogError("VulkanFramebuffer::Create: Failed to create framebuffer object!");
-			}
+			GFX_ASSERT(result == VK_SUCCESS, "VulkanFramebuffer::Create: Failed to create framebuffer object!")
 		}
 
 		m_ClearAttachments[0].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -638,11 +620,7 @@ namespace SmolEngine
 			}
 		}
 
-		if (!formatFound)
-		{
-			Gfx_Log::LogError("Depth Stencil Format not found!"); 
-			abort();
-		}
+		GFX_ASSERT(formatFound, "Depth Stencil Format not found!")
 	}
 
 	void Gfx_VulkanSwapchain::FreeResources()

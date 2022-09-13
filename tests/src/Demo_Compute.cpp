@@ -1,6 +1,8 @@
 #include "Gfx_Core.h"
 
 #include <limits>
+#include <iostream>
+#include <Windows.h>
 
 using namespace SmolEngine;
 
@@ -10,12 +12,16 @@ struct PushConstant
 	float time;
 };
 
-#ifdef DIA_DIST
+#ifdef SMOLENGINE_DIST
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 #else
 int main(int argc, char** argv)
 #endif 
 {
+#ifndef SMOLENGINE_DIST
+	Gfx_Log::SetCallback([](const std::string&& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
+#endif 
+
 	Gfx_Context* context = new Gfx_Context();
 	{
 		WindowCreateDesc winDesc{};
@@ -87,7 +93,7 @@ int main(int argc, char** argv)
 		float deltaTime = context->CalculateDeltaTime();
 
 		time += 0.002f;
-		if (time == std::numeric_limits<float>::max())
+		if (time == 5000.0f)
 			time = 0.0f;
 
 		context->BeginFrame(deltaTime);

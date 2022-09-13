@@ -139,12 +139,6 @@ namespace SmolEngine
 		Menu = 348
 	} Key;
 
-	inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode)
-	{
-		os << static_cast<int32_t>(keyCode);
-		return os;
-	}
-
 	typedef enum class MouseCode : uint16_t
 	{
 		// From glfw3.h
@@ -162,12 +156,6 @@ namespace SmolEngine
 		ButtonRight = Button1,
 		ButtonMiddle = Button2
 	} Mouse;
-
-	inline std::ostream& operator<<(std::ostream& os, MouseCode mouseCode)
-	{
-		os << static_cast<int32_t>(mouseCode);
-		return os;
-	}
 
 // From glfw3.h
 #define F_KEY_SPACE           ::SmolEngine::Key::Space

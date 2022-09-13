@@ -63,13 +63,15 @@ defines
 
 filter "configurations:Debug"
 symbols "on"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Release"
 optimize "full"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Dist"
 optimize "full"
-defines "DIA_DIST"
+defines "SMOLENGINE_DIST"
 filter {}
 ----------------------------------------------------------------------------------------------------------
 
@@ -138,13 +140,15 @@ defines
 
 filter "configurations:Debug"
 symbols "on"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Release"
 optimize "full"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Dist"
 optimize "full"
-defines "DIA_DIST"
+defines "SMOLENGINE_DIST"
 filter {}
 -----------------------------------------------------------------
 
@@ -213,11 +217,13 @@ defines
 
 filter "configurations:Debug"
 symbols "on"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Release"
 optimize "full"
+defines "SMOLENGINE_DEBUG"
 
 filter "configurations:Dist"
 optimize "full"
-defines "DIA_DIST"
+defines "SMOLENGINE_DIST"
 filter {}

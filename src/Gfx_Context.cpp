@@ -233,47 +233,39 @@ namespace SmolEngine
 
 	void Gfx_Context::CreateAPIContext()
 	{
-		assert(glfwVulkanSupported() == GLFW_TRUE);
-		bool swapchain_initialized = false;
-		{
-			m_Instance.Init();
+		GFX_ASSERT_PURE(glfwVulkanSupported() == GLFW_TRUE)
+
+		m_Instance.Init();
+
 #ifdef AFTERMATH
-			// Enable Nsight Aftermath GPU crash dump creation.
-			// This needs to be done before the Vulkan device is created.
-			m_CrachTracker.Initialize();
+		// Enable Nsight Aftermath GPU crash dump creation.
+		// This needs to be done before the Vulkan device is created.
+		m_CrachTracker.Initialize();
 #endif
-			m_Device.Init(&m_Instance);
+		m_Device.Init(&m_Instance);
 
-			m_Allocator = new Gfx_VulkanAllocator();
-			m_Allocator->Init(&m_Device, &m_Instance);
+		m_Allocator = new Gfx_VulkanAllocator();
+		m_Allocator->Init(&m_Device, &m_Instance);
 
-			const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
+		const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
 
-			swapchain_initialized = m_Swapchain.Init(&m_Instance, &m_Device,
-				GetWindow()->GetNativeWindow(), winDesc.myTargetsSwapchain ? false : true);
+		bool initialized = m_Swapchain.Init(&m_Instance, &m_Device, GetWindow()->GetNativeWindow(), !winDesc.myTargetsSwapchain);
 
-			if (swapchain_initialized)
-			{
-				uint32_t* width = &m_Window->GetData()->myWidth;
-				uint32_t* height = &m_Window->GetData()->myHeight;
+		GFX_ASSERT(initialized, "Couldn't create swapchain!")
 
-				m_Swapchain.Create(width, height, winDesc.myVSync);
-				m_Semaphore.Create(&m_Device);
-				m_Swapchain.Prepare(*width, *height);
+		uint32_t* width = &m_Window->GetData()->myWidth;
+		uint32_t* height = &m_Window->GetData()->myHeight;
 
-				// Initialize ImGUI
-				if ((m_Desc.myFeaturesFlags &
-					FeaturesFlags::ImguiEnable) == FeaturesFlags::ImguiEnable) [[unlikely]]
-				{
-					m_ImGuiContext = std::make_shared<Gfx_VulkanImGui>();
-					m_ImGuiContext->Create();
-				}
-			}
-			else
-			{
-				Gfx_Log::LogError("Couldn't create Vulkan context!");
-				abort();
-			}
+		m_Swapchain.Create(width, height, winDesc.myVSync);
+		m_Semaphore.Create(&m_Device);
+		m_Swapchain.Prepare(*width, *height);
+
+		// Initialize ImGUI
+		if ((m_Desc.myFeaturesFlags &
+			FeaturesFlags::ImguiEnable) == FeaturesFlags::ImguiEnable) [[unlikely]]
+		{
+			m_ImGuiContext = std::make_shared<Gfx_VulkanImGui>();
+			m_ImGuiContext->Create();
 		}
 	}
 

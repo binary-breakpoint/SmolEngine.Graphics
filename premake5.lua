@@ -139,7 +139,7 @@ project "SmolEngine.Graphics"
 
 		defines
 		{
-			"DIA_DEBUG"
+			"SMOLENGINE_DEBUG"
 		}
 
 	filter "configurations:Release"
@@ -164,9 +164,14 @@ project "SmolEngine.Graphics"
 			"%{VULKAN_SDK}/Lib/SPIRV.lib",
 		}
 
+		defines
+		{
+			"SMOLENGINE_DEBUG"
+		}
+
 		filter "configurations:Dist"
 		optimize "full"
-		defines "DIA_DIST"
+		defines "SMOLENGINE_DIST"
 
 		links 
 		{ 

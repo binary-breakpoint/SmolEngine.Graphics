@@ -1,5 +1,8 @@
 #include "Gfx_Core.h"
 
+#include <iostream>
+#include <Windows.h>
+
 using namespace SmolEngine;
 
 struct PushConstant
@@ -8,12 +11,16 @@ struct PushConstant
 	glm::mat4 proj;
 };
 
-#ifdef DIA_DIST
+#ifdef SMOLENGINE_DIST
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 #else
 int main(int argc, char** argv)
 #endif 
 {
+#ifndef SMOLENGINE_DIST
+	Gfx_Log::SetCallback([](const std::string&& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
+#endif 
+
 	Gfx_Context* context = new Gfx_Context(); 
 	{
 		WindowCreateDesc winDesc{};
