@@ -2,6 +2,8 @@
 #include "Common/Gfx_PixelStorage.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
+#include <vulkan_memory_allocator/vk_mem_alloc.h>
+
 namespace SmolEngine
 {
 	Gfx_PixelStorage::Gfx_PixelStorage() :

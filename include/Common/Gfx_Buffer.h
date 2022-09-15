@@ -15,12 +15,14 @@ namespace SmolEngine
 			Staging,
 		};
 
-		void* myData = nullptr;
-		size_t mySize = 0;
+		BufferCreateDesc();
+
+		void* myData;
+		size_t mySize;
 		VkBufferUsageFlags myBufferUsage;
-		VkSharingMode mySharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
-		VmaMemoryUsage myMemUsage = VMA_MEMORY_USAGE_CPU_TO_GPU;
-		CreateFlags myFlags = CreateFlags::Default;
+		VkSharingMode mySharingMode;
+		VmaMemoryUsage myMemUsage;
+		CreateFlags myFlags;
 	};
 
 	class Gfx_Buffer final: public Gfx_Asset

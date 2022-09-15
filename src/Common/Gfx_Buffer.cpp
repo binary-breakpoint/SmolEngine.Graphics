@@ -4,6 +4,8 @@
 
 #include "Backend/Gfx_VulkanHelpers.h"
 
+#include <vulkan_memory_allocator/vk_mem_alloc.h>
+
 namespace SmolEngine
 {
 	Gfx_Buffer::Gfx_Buffer() :
@@ -160,7 +162,7 @@ namespace SmolEngine
 
 	void* Gfx_Buffer::MapMemory()
 	{
-		uint8_t* destData = Gfx_VulkanAllocator::MapMemory<uint8_t>(m_Alloc);
+		uint8_t* destData = Gfx_VulkanAllocator::MapMemory(m_Alloc);
 		m_Mapped = destData;
 		return m_Mapped;
 	}
@@ -208,5 +210,14 @@ namespace SmolEngine
 	{
 		return m_Usage;
 	}
+
+	BufferCreateDesc::BufferCreateDesc()
+		:
+		myData{nullptr},
+		mySize{0},
+		myBufferUsage{0},
+		mySharingMode{VkSharingMode::VK_SHARING_MODE_EXCLUSIVE},
+		myMemUsage{VMA_MEMORY_USAGE_CPU_TO_GPU},
+		myFlags{CreateFlags::Default} {}
 
 }

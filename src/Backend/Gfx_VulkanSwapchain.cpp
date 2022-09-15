@@ -5,6 +5,8 @@
 #include "Backend/Gfx_VulkanDevice.h"
 #include <GLFW/glfw3.h>
 
+#include <vulkan_memory_allocator/vk_mem_alloc.h>
+
 static PFN_vkGetPhysicalDeviceSurfaceSupportKHR fpGetPhysicalDeviceSurfaceSupportKHR = nullptr;
 static PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR fpGetPhysicalDeviceSurfaceCapabilitiesKHR = nullptr;
 static PFN_vkGetPhysicalDeviceSurfaceFormatsKHR fpGetPhysicalDeviceSurfaceFormatsKHR = nullptr;
@@ -446,6 +448,7 @@ namespace SmolEngine
 		imageCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		imageCI.extent = { m_Width, m_Height, 1 };
 		imageCI.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+
 		m_DepthStencil->Alloc = Gfx_VulkanAllocator::AllocImage(imageCI, VMA_MEMORY_USAGE_GPU_ONLY, m_DepthStencil->Image);
 
 		VkImageViewCreateInfo depthStencilViewCI = {};

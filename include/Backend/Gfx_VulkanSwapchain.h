@@ -28,8 +28,8 @@ namespace SmolEngine
 		struct DepthStencil
 		{
 			VkImage Image = VK_NULL_HANDLE;
-			VkImageView ImageView = VK_NULL_HANDLE;;
-			VmaAllocation Alloc = VK_NULL_HANDLE;;
+			VkImageView ImageView = VK_NULL_HANDLE;
+			VmaAllocation Alloc = VK_NULL_HANDLE;
 		};
 
 		Gfx_VulkanSwapchain();

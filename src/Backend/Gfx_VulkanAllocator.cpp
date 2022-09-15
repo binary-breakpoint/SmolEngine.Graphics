@@ -3,6 +3,8 @@
 #include "Backend/Gfx_VulkanDevice.h"
 #include "Backend/Gfx_VulkanInstance.h"
 
+#include <vulkan_memory_allocator/vk_mem_alloc.h>
+
 namespace SmolEngine
 {
 	Gfx_VulkanAllocator* Gfx_VulkanAllocator::s_Instance = nullptr;
@@ -110,13 +112,15 @@ namespace SmolEngine
 		vmaUnmapMemory(s_Instance->m_Allocator, allocation);
 	}
 
-	void Gfx_VulkanAllocator::GetAllocInfo(VmaAllocation allocation, VmaAllocationInfo& outInfo)
+	uint8_t* Gfx_VulkanAllocator::MapMemory(VmaAllocation allocation)
 	{
-		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &outInfo);
+		uint8_t* mappedMemory;
+		vmaMapMemory(Gfx_VulkanAllocator::s_Instance->m_Allocator, allocation, (void**)&mappedMemory);
+		return mappedMemory;
 	}
 
-	VmaAllocator& Gfx_VulkanAllocator::GetAllocator()
+	void Gfx_VulkanAllocator::GetAllocInfo(VmaAllocation allocation, VmaAllocationInfo*& outInfo)
 	{
-		return s_Instance->m_Allocator;
+		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, outInfo);
 	}
 }

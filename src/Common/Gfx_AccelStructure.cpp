@@ -4,6 +4,8 @@
 
 #include "Backend/Gfx_VulkanHelpers.h"
 
+#include <vulkan_memory_allocator/vk_mem_alloc.h>
+
 namespace SmolEngine
 {
 	Gfx_AccelStructure::Gfx_AccelStructure()
