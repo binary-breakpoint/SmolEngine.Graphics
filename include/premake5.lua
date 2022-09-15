@@ -1,8 +1,11 @@
+group "Dependencies"
 include "../vendor/glfw"
 include "../vendor/imgizmo"
 include "../vendor/imgui"
 include "../vendor/ozz-animation"
+group ""
 
+group "Engine"
 project "SmolEngine.Graphics"
 	kind "StaticLib"
 	language "C++"
@@ -159,3 +162,5 @@ project "SmolEngine.Graphics"
 			"%{VULKAN_SDK}/Lib/SPVRemapper.lib",
 			"%{VULKAN_SDK}/Lib/SPIRV.lib",
 		}
+
+group ""
