@@ -3,8 +3,8 @@ project "ImGizmo"
     language "C"
     staticruntime "off"
     
-    targetdir ("../libs/" .. outputdir .. "/%{prj.name}")
-    objdir ("../libs/bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
     files
     {

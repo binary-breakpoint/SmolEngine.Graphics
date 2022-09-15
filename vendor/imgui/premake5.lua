@@ -4,8 +4,8 @@ project "ImGui"
 	cppdialect "C++20"
 	staticruntime "off"
 
-	targetdir ("../../vendor/libs/" .. outputdir .. "/%{prj.name}")
-	objdir ("../../vendor/libs/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("lib/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	
     VULKAN_SDK = os.getenv("VULKAN_SDK")

@@ -43,10 +43,18 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
-vendor/libs/
+include/bin/
+include/bin-int/
+
+vendor/glfw/lib/
+vendor/glfw/bin-int/
+vendor/imgizmo/lib/
+vendor/imgizmo/bin-int/
+vendor/imgui/lib/
+vendor/ozz-animation/bin-int/
+vendor/ozz-animation/lib/
 tests/bin/
 tests/bin-int/
-!vendor/mono/bin/ h
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
