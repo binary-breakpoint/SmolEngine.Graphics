@@ -403,7 +403,7 @@ namespace SmolEngine
 			typeBits >>= 1;
 		}
 
-		GFX_ASSERT(true, "VulkanDevice: Could not find a suitable memory type!")
+		GFX_ASSERT_MSG(true, "VulkanDevice: Could not find a suitable memory type!")
 		return 0;
 	}
 

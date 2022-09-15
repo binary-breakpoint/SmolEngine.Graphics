@@ -31,7 +31,7 @@ namespace SmolEngine
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		m_Window = glfwCreateWindow((int)desc->myWidth, (int)desc->myHeight, desc->myTitle.c_str(), nullptr, nullptr);
-		GFX_ASSERT(m_Window, "Failed to create window!")
+		GFX_ASSERT_MSG(m_Window, "Failed to create window!")
 
 		if (desc->myFullscreen)
 		{

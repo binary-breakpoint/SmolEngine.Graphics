@@ -239,7 +239,7 @@ namespace SmolEngine
         std::stringstream storage;
         std::ifstream file(path);
 
-        GFX_ASSERT(file, "Could not open the file " + path)
+        GFX_ASSERT_MSG(file, "Could not open the file " + path)
 
         storage << file.rdbuf();
         {

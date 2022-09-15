@@ -77,7 +77,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanAllocator::AllocFree(VmaAllocation allocation)
 	{
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		VmaAllocationInfo allocInfo;
 		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &allocInfo);
 		s_Instance->m_TotalAllocatedBytes -= allocInfo.size;
@@ -87,7 +87,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanAllocator::FreeImage(VkImage image, VmaAllocation allocation)
 	{
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		VmaAllocationInfo allocInfo;
 		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &allocInfo);
 		s_Instance->m_TotalAllocatedBytes -= allocInfo.size;
@@ -97,7 +97,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanAllocator::FreeBuffer(VkBuffer buffer, VmaAllocation allocation)
 	{
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		VmaAllocationInfo allocInfo;
 		vmaGetAllocationInfo(s_Instance->m_Allocator, allocation, &allocInfo);
 		s_Instance->m_TotalAllocatedBytes -= allocInfo.size;

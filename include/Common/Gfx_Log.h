@@ -41,12 +41,12 @@ namespace SmolEngine
 	};
 
 #ifdef SMOLENGINE_DEBUG
-#define GFX_ASSERT(condition, msg)	if(!condition) { Gfx_Log::Log(Gfx_Log::Level::Error, msg); assert(condition); }
-#define GFX_ASSERT_PURE(condition) assert(condition);
+#define GFX_ASSERT_MSG(condition, msg)	if(!condition) { Gfx_Log::Log(Gfx_Log::Level::Error, msg); assert(condition); }
+#define GFX_ASSERT(condition) assert(condition);
 #define GFX_LOG(msg, level) Gfx_Log::Log(level, msg);
 #else
-#define GFX_ASSERT(condition, msg)
-#define GFX_ASSERT_PURE(condition)
+#define GFX_ASSERT_MSG(condition, msg)
+#define GFX_ASSERT(condition)
 #define GFX_LOG(msg, level)	
 #endif
 

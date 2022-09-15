@@ -143,7 +143,7 @@ namespace SmolEngine
 			if (resource.myType == DescriptorType::SEPARATE_SAMPLER || resource.myType == DescriptorType::IMAGE_2D
 				|| resource.myType == DescriptorType::TEXTURE_2D || resource.myType == DescriptorType::COMBINED_IMAGE_SAMPLER_2D)
 			{
-				GFX_ASSERT((resource.myPixelStorage || resource.mySampler), "myPixelStorage == nullptr || mySampler == nullptr")
+				GFX_ASSERT_MSG((resource.myPixelStorage || resource.mySampler), "myPixelStorage == nullptr || mySampler == nullptr")
 
 				VkDescriptorImageInfo imageInfo{};
 				imageInfo.sampler = resource.mySampler->GetSampler();

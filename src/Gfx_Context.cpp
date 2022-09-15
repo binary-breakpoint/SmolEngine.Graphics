@@ -125,7 +125,7 @@ namespace SmolEngine
 
 			VkResult result = (vkWaitForFences(m_Device.GetLogicalDevice(),
 				1, &m_Semaphore.GetVkFences()[m_Swapchain.GetCurrentBufferIndex()], VK_TRUE, UINT64_MAX));
-#ifdef  DIA_DEBUG
+#ifdef  SMOLENGINE_DEBUG
 			if (VK_ERROR_DEVICE_LOST == result)
 			{
 				/* Device lost notification is asynchronous to the NVIDIA display
@@ -233,7 +233,7 @@ namespace SmolEngine
 
 	void Gfx_Context::CreateAPIContext()
 	{
-		GFX_ASSERT_PURE(glfwVulkanSupported() == GLFW_TRUE)
+		GFX_ASSERT(glfwVulkanSupported() == GLFW_TRUE)
 
 		m_Instance.Init();
 
@@ -251,7 +251,7 @@ namespace SmolEngine
 
 		bool initialized = m_Swapchain.Init(&m_Instance, &m_Device, GetWindow()->GetNativeWindow(), !winDesc.myTargetsSwapchain);
 
-		GFX_ASSERT(initialized, "Couldn't create swapchain!")
+		GFX_ASSERT_MSG(initialized, "Couldn't create swapchain!")
 
 		uint32_t* width = &m_Window->GetData()->myWidth;
 		uint32_t* height = &m_Window->GetData()->myHeight;

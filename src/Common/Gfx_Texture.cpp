@@ -20,7 +20,7 @@ namespace SmolEngine
 		}
 
 		std::ofstream myfile(filePath);
-		GFX_ASSERT(myfile.is_open(), "Could not open the file")
+		GFX_ASSERT_MSG(myfile.is_open(), "Could not open the file")
 
 		if (myfile.is_open())
 		{
@@ -34,7 +34,7 @@ namespace SmolEngine
 		std::stringstream storage;
 		std::ifstream file(filePath);
 
-		GFX_ASSERT(file, "Could not open the file")
+		GFX_ASSERT_MSG(file, "Could not open the file")
 
 		storage << file.rdbuf();
 		{
@@ -65,7 +65,7 @@ namespace SmolEngine
 			stbi_uc* data = nullptr;
 			{
 				data = stbi_load(info->myFilePath.c_str(), &width, &height, &channels, 4);
-				GFX_ASSERT(data, "VulkanTexture:: Texture not found!")
+				GFX_ASSERT_MSG(data, "VulkanTexture:: Texture not found!")
 
 				info->myWidth = width;
 				info->myWidth = height;

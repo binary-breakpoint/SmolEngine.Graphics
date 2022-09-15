@@ -35,10 +35,10 @@ namespace SmolEngine
 	void LoadSkeleton(const char* _filename, ozz::animation::Skeleton* _skeleton) 
 	{
 		ozz::io::File file(_filename, "rb");
-		GFX_ASSERT(file.opened(), "Failed to open skeleton file")
+		GFX_ASSERT_MSG(file.opened(), "Failed to open skeleton file")
 
 		ozz::io::IArchive archive(&file);
-		GFX_ASSERT(archive.TestTag<ozz::animation::Skeleton>(), "Failed to load skeleton instance from file: " + std::string(_filename))
+		GFX_ASSERT_MSG(archive.TestTag<ozz::animation::Skeleton>(), "Failed to load skeleton instance from file: " + std::string(_filename))
 
 		archive >> *_skeleton;
 	}
@@ -46,10 +46,10 @@ namespace SmolEngine
 	void LoadAnimation(const char* _filename, ozz::animation::Animation* _animation)
 	{
 		ozz::io::File file(_filename, "rb");
-		GFX_ASSERT(file.opened(), "Failed to open skeleton file")
+		GFX_ASSERT_MSG(file.opened(), "Failed to open skeleton file")
 
 		ozz::io::IArchive archive(&file);
-		GFX_ASSERT(archive.TestTag<ozz::animation::Animation>(), "Failed to load animation instance from file: " + std::string(_filename))
+		GFX_ASSERT_MSG(archive.TestTag<ozz::animation::Animation>(), "Failed to load animation instance from file: " + std::string(_filename))
 
 		archive >> *_animation;
 	}
@@ -178,7 +178,7 @@ namespace SmolEngine
 		std::stringstream storage;
 		std::ifstream file(filePath);
 
-		GFX_ASSERT(file, "Could not open the file: " + filePath)
+		GFX_ASSERT_MSG(file, "Could not open the file: " + filePath)
 
 		storage << file.rdbuf();
 		{

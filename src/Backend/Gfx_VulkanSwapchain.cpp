@@ -76,7 +76,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanSwapchain::Create(uint32_t* width, uint32_t* height, bool vSync)
 	{
-		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
+		GFX_ASSERT_MSG((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 		
 		VkSwapchainKHR oldSwapchain = m_Swapchain;
 
@@ -271,7 +271,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanSwapchain::CleanUp()
 	{
-		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
+		GFX_ASSERT_MSG((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		if (m_Swapchain != VK_NULL_HANDLE)
 		{
@@ -305,7 +305,7 @@ namespace SmolEngine
 
 	VkResult Gfx_VulkanSwapchain::AcquireNextImage(VkSemaphore presentCompleteSemaphore)
 	{
-		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
+		GFX_ASSERT_MSG((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		// By setting timeout to UINT64_MAX we will always wait until the next image has been acquired or an actual error is thrown
 		// With that we don't have to handle VK_NOT_READY
@@ -314,7 +314,7 @@ namespace SmolEngine
 
 	VkResult Gfx_VulkanSwapchain::QueuePresent(VkQueue queue, VkSemaphore waitSemaphore)
 	{
-		GFX_ASSERT((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
+		GFX_ASSERT_MSG((m_Device || m_Instance), "VulkanDevice or VulkanInstance is nullptr")
 
 		VkPresentInfoKHR presentInfo = {};
 		{
@@ -538,7 +538,7 @@ namespace SmolEngine
 			ivAttachment[0] = m_Buffers[i].View;
 			result = (vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCI, nullptr, &m_Framebuffers[i]));
 
-			GFX_ASSERT(result == VK_SUCCESS, "VulkanFramebuffer::Create: Failed to create framebuffer object!")
+			GFX_ASSERT_MSG(result == VK_SUCCESS, "VulkanFramebuffer::Create: Failed to create framebuffer object!")
 		}
 
 		m_ClearAttachments[0].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -620,7 +620,7 @@ namespace SmolEngine
 			}
 		}
 
-		GFX_ASSERT(formatFound, "Depth Stencil Format not found!")
+		GFX_ASSERT_MSG(formatFound, "Depth Stencil Format not found!")
 	}
 
 	void Gfx_VulkanSwapchain::FreeResources()

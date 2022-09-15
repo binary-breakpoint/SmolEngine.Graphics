@@ -75,7 +75,7 @@ namespace SmolEngine
 		std::vector<const char*> instanceLayers = {};
 		m_Extensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,  "VK_KHR_win32_surface" };
 
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		instanceLayers.push_back("VK_LAYER_KHRONOS_validation");
 		m_Extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
@@ -92,7 +92,7 @@ namespace SmolEngine
 
 		VkResult result = vkCreateInstance(&instanceInfo, nullptr, &m_Instance);
 
-#ifdef DIA_DEBUG
+#ifdef SMOLENGINE_DEBUG
 		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -100,12 +100,10 @@ namespace SmolEngine
 		createInfo.pfnUserCallback = VulkanInstance_DebugCallback;
 		createInfo.pUserData = nullptr;
 
-		if (VulkanInstance_CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_Messenger) != VK_SUCCESS) {
-			RUNTIME_ERROR("failed to set up debug messenger!");
-		}
+		GFX_ASSERT_MSG(VulkanInstance_CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_Messenger) == VK_SUCCESS, "failed to set up debug messenger!");
 #endif
 
-		assert(result == VK_SUCCESS);
+		GFX_ASSERT(result == VK_SUCCESS);
 
 		return result == VK_SUCCESS;
 	}

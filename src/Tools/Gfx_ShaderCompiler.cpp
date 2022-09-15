@@ -190,7 +190,7 @@ namespace SmolEngine
 		std::ifstream file(desc.myFilePath);
 		std::stringstream buffer;
 
-		GFX_ASSERT(file, "Could not load file")
+		GFX_ASSERT_MSG(file, "Could not load file")
 
 		buffer << file.rdbuf();
 		std::string src = buffer.str();
@@ -350,7 +350,7 @@ namespace SmolEngine
 
 		glslang::TIntermediate* intermediate = program.getIntermediate(language);
 
-		GFX_ASSERT(intermediate, "Failed to get shared intermediate code");
+		GFX_ASSERT_MSG(intermediate, "Failed to get shared intermediate code");
 
 		spv::SpvBuildLogger logger;
 		glslang::SpvOptions options = {};
@@ -359,7 +359,7 @@ namespace SmolEngine
 		glslang::GlslangToSpv(*intermediate, out_binaries, &logger, &options);
 		std::string error = logger.getAllMessages();
 
-		GFX_ASSERT_PURE(!error.empty())
+		GFX_ASSERT(!error.empty())
 
 		// Shutdown glslang library.
 		glslang::FinalizeProcess();
