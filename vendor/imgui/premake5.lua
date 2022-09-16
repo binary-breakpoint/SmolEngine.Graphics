@@ -25,12 +25,15 @@ project "ImGui"
 		"imstb_truetype.h",
 		"imgui_demo.cpp",
 
+		"misc/cpp/imgui_stdlib.cpp",
+
 		"examples/imgui_impl_glfw.cpp",
 		"examples/imgui_impl_vulkan.cpp",
 	}
 
 	includedirs
 	{
+		"",
 		"%{VULKAN_SDK}/Include",
 		"../glfw/include",
 		"../"
