@@ -7,11 +7,6 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-namespace cereal
-{
-	class access;
-}
-
 namespace SmolEngine
 {
 	struct AnimClipDesc
@@ -28,19 +23,6 @@ namespace SmolEngine
 		std::string myAnimationPath = "";
 		std::string myModelPath = "";
 		std::string myName = "";
-
-		bool Load(const std::string& filePath);
-		bool Save(const std::string& filePath);
-
-	private:
-		friend class cereal::access;
-
-		template<typename Archive>
-		void serialize(Archive& archive)
-		{
-			archive(myClipDesc.myLoop, myClipDesc.myPlay, myClipDesc.mySpeed,
-				mySkeletonPath, myAnimationPath, myModelPath, myName);
-		}
 	};
 
 	struct AnimationClipStorage;

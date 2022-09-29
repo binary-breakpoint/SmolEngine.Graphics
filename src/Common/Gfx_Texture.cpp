@@ -5,44 +5,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
 #include <imgui/examples/imgui_impl_vulkan.h>
 
 namespace SmolEngine
 {
-	void TextureCreateDesc::Save(const std::string& filePath)
-	{
-		std::stringstream storage;
-		{
-			cereal::JSONOutputArchive output{ storage };
-			serialize(output);
-		}
-
-		std::ofstream myfile(filePath);
-		GFX_ASSERT_MSG(myfile.is_open(), "Could not open the file")
-
-		if (myfile.is_open())
-		{
-			myfile << storage.str();
-			myfile.close();
-		}
-	}
-
-	void TextureCreateDesc::Load(const std::string& filePath)
-	{
-		std::stringstream storage;
-		std::ifstream file(filePath);
-
-		GFX_ASSERT_MSG(file, "Could not open the file")
-
-		storage << file.rdbuf();
-		{
-			cereal::JSONInputArchive input{ storage };
-			input(myWidth, myHeight, myMipLevels, myArrayLayers, myFormat, myFilePath, myImGUIHandleEnable, myUsage);
-		}
-	}
-
 	Gfx_Texture::Gfx_Texture()
 		:
 		m_ImguiHandle{nullptr} {}

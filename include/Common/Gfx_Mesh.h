@@ -31,19 +31,11 @@ namespace SmolEngine
 
 		struct Element
 		{
-			std::string     m_PBRMatPath = "";
+			std::string m_PBRMatPath = "";
 			Ref<Material3D> m_Material = nullptr;
-			Ref<PBRHandle>  m_PBRHandle = nullptr;
-
-			template<typename Archive>
-			void serialize(Archive& archive)
-			{
-				archive(m_PBRMatPath);
-			}
+			Ref<PBRHandle> m_PBRHandle = nullptr;
 		};
 
-		bool Serialize(const std::string& path);
-		bool Deserialize(const std::string& path);
 		bool TryLoadMaterials();
 		void SetAnimationController(const Ref<AnimationController>& contoller);
 		void SetMask(uint32_t mask);
@@ -67,14 +59,6 @@ namespace SmolEngine
 
 		friend class Gfx_Mesh;
 		friend class Gfx_AccelStructure;
-		friend struct DrawList;
-		friend class cereal::access;
-
-		template<typename Archive>
-		void serialize(Archive& archive)
-		{
-			archive(m_Elements);
-		}
 
 	};
 

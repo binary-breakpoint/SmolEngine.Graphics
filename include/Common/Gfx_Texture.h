@@ -22,18 +22,6 @@ namespace SmolEngine
 		TextureUsage myUsage = TextureUsage::TEXTURE_2D;
 		std::string myFilePath = "";
 		bool myImGUIHandleEnable = false;
-
-		void Save(const std::string& filePath);
-		void Load(const std::string& filePath);
-
-	private:
-		friend class cereal::access;
-
-		template<typename Archive>
-		void serialize(Archive& archive)
-		{
-			archive(myWidth, myHeight, myMipLevels, myArrayLayers, myFormat, myFilePath, myImGUIHandleEnable, myUsage);
-		}
 	};
 
 	class Gfx_Texture final: public Gfx_Asset

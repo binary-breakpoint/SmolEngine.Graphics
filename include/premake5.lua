@@ -50,7 +50,6 @@ project "SmolEngine.Graphics"
 
 		"../vendor/nvidia_aftermath/include",
 		"../vendor/ozz-animation/include",
-		"../vendor/cereal/include",
 		"../vendor/glfw/include",
 		"../vendor/tinygltf",
 		"../vendor/gli",

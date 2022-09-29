@@ -6,10 +6,6 @@
 
 #include "Tools//Gfx_MeshImporter.h"
 
-#include <cereal/cereal.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/archives/json.hpp>
-
 namespace SmolEngine
 {
 	Gfx_Mesh::Gfx_Mesh()
@@ -213,41 +209,6 @@ namespace SmolEngine
     Gfx_MeshView::Gfx_MeshView(const TransformDesc& desc)
     {
         SetTransform(desc);
-    }
-
-    bool Gfx_MeshView::Serialize(const std::string& path)
-    {
-        std::stringstream storage;
-        {
-            cereal::JSONOutputArchive output{ storage };
-            serialize(output);
-        }
-
-        std::ofstream myfile(path);
-        if (myfile.is_open())
-        {
-            myfile << storage.str();
-            myfile.close();
-            return true;
-        }
-
-        return false;
-    }
-
-    bool Gfx_MeshView::Deserialize(const std::string& path)
-    {
-        std::stringstream storage;
-        std::ifstream file(path);
-
-        GFX_ASSERT_MSG(file, "Could not open the file " + path)
-
-        storage << file.rdbuf();
-        {
-            cereal::JSONInputArchive input{ storage };
-            input(m_Elements);
-        }
-
-        return true;
     }
 
     bool Gfx_MeshView::TryLoadMaterials()
