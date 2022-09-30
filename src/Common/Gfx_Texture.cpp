@@ -34,7 +34,7 @@ namespace SmolEngine
 				GFX_ASSERT_MSG(data, "VulkanTexture:: Texture not found!")
 
 				info->myWidth = width;
-				info->myWidth = height;
+				info->myHeight = height;
 
 				LoadEX(info, data);
 			}
@@ -131,6 +131,10 @@ namespace SmolEngine
 
 	void Gfx_Texture::LoadEX(TextureCreateDesc* info, void* data)
 	{
+		GFX_ASSERT(info);
+		GFX_ASSERT(info->myHeight > 0);
+		GFX_ASSERT(info->myWidth > 0);
+
 		PixelStorageCreateDesc pixelDesc{};
 		pixelDesc.myLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		pixelDesc.myArrayLayers = info->myArrayLayers;
