@@ -45,6 +45,8 @@ Generated\ Files/
 
 include/bin/
 include/bin-int/
+scripts/bin/
+scripts/bin-int/
 
 vendor/glfw/lib/
 vendor/glfw/bin-int/
