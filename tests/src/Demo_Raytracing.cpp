@@ -42,7 +42,7 @@ struct RtStorage
 
 		transformsBuffer->Create(bufferDesc);
 
-		BLAS->BuildAsBottomLevel(sizeof(PBRVertex), transformsBuffer.get(), mesh);
+		BLAS->BuildAsBottomLevel(sizeof(Gfx_MeshImporter::Vertex), transformsBuffer.get(), mesh);
 
 		{
 			VkAccelerationStructureInstanceKHR acceleration_structure_instance{};
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 	{
 		TextureCreateDesc desc{};
 		desc.myFormat = Format::B8G8R8A8_UNORM;
-		desc.mySampler = Gfx_World::GetSampler();
+		desc.mySampler = Gfx_Context::GetSampler();
 		desc.myUsage = TextureUsage::IMAGE_2D;
 		desc.myWidth = 720;
 		desc.myHeight = 480;
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 
 		DescriptorDesc textureDesc{};
 		textureDesc.myBinding = 1;
-		textureDesc.mySampler = Gfx_World::GetSampler();
+		textureDesc.mySampler = Gfx_Context::GetSampler();
 		textureDesc.myPixelStorage = storageImage.GetPixelStorage();
 		textureDesc.myType = DescriptorType::IMAGE_2D;
 		textureDesc.myStages = ShaderStage::RayGen;

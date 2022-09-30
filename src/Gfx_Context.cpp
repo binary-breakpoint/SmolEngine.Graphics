@@ -3,6 +3,7 @@
 #include "Common/Gfx_Input.h"
 #include "Common/Gfx_Framebuffer.h"
 #include "Common/Gfx_Sampler.h"
+#include "Common/Gfx_Texture.h"
 
 #include "Tools/Gfx_ShaderIncluder.h"
 
@@ -45,12 +46,25 @@ namespace SmolEngine
 		m_ShaderIncluder->AddIncludeDir(m_Root + "Shaders/");
 		m_ShaderIncluder->AddIncludeDir(m_Root + "../tests/shaders");
 
-		m_World = std::make_shared<Gfx_World>();
+		SamplerCreateDesc samplerDesc{};
+		m_Sampler.Create(&samplerDesc);
+
+		TextureCreateDesc textureDesc{};
+		textureDesc.mySampler = &m_Sampler;
+		textureDesc.myHeight = 4;
+		textureDesc.myWidth = 4;
+		uint32_t data = 0xffffffff;
+		textureDesc.myUserData = &data;
+
+		m_Texture.Create(&textureDesc);
+
+		textureDesc.myUsage = TextureUsage::IMAGE_2D;
+		m_StorageTexture.Create(&textureDesc);
 
 		// Creates default framebuffer
 		{
 			FramebufferCreateDesc fbDesc = {};
-			fbDesc.mySampler = Gfx_World::GetSampler();
+			fbDesc.mySampler = &m_Sampler;
 			fbDesc.myWidth = winDesc->myWidth;
 			fbDesc.myHeight = winDesc->myHeight;
 			fbDesc.myIsTargetsSwapchain = winDesc->myTargetsSwapchain;
@@ -301,19 +315,29 @@ namespace SmolEngine
 		return m_Framebuffer;
 	}
 
-	Ref<Gfx_World> Gfx_Context::GetWorld()
-	{
-		return Gfx_Context::GetSingleton()->m_World;
-	}
-
 	Gfx_VulkanSemaphore& Gfx_Context::GetSemaphore()
 	{
-		return Gfx_Context::GetSingleton()->m_Semaphore;
+		return Gfx_Context::s_Instance->m_Semaphore;
 	}
 
 	Gfx_CmdBuffer* Gfx_Context::GetCommandBuffer()
 	{
-		return &Gfx_Context::GetSingleton()->m_CmdBuffer;
+		return &Gfx_Context::s_Instance->m_CmdBuffer;
+	}
+
+	Gfx_Sampler* Gfx_Context::GetSampler()
+	{
+		return &s_Instance->m_Sampler;
+	}
+
+	Gfx_Texture* Gfx_Context::GetTexture()
+	{
+		return &s_Instance->m_Texture;
+	}
+
+	Gfx_Texture* Gfx_Context::GetStorageTexture()
+	{
+		return &s_Instance->m_StorageTexture;
 	}
 
 	Gfx_VulkanSwapchain& Gfx_Context::GetSwapchain()

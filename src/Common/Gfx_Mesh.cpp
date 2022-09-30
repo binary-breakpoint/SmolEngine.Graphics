@@ -43,20 +43,20 @@ namespace SmolEngine
 
     bool Gfx_Mesh::LoadFromFile(const std::string& path, const TransformDesc& desc)
     {
-        ImportedDataGlTF data{};
+        Gfx_MeshImporter::ImportedData data{};
         const bool is_succeed = Gfx_MeshImporter::Import(path, &data);
         if (is_succeed)
         {
-            uint32_t meshCount = static_cast<uint32_t>(data.Primitives.size());
+            const uint32_t meshCount = static_cast<uint32_t>(data.myPrimitives.size());
 
             // Root
             {
                 std::hash<std::string_view> hasher{};
-                Primitive* primitve = &data.Primitives[0];
+                Gfx_MeshImporter::Primitive* primitve = &data.myPrimitives[0];
 
                 m_Index = 0;
-                m_AABB = primitve->AABB;
-                m_Name = primitve->MeshName;
+                m_AABB = primitve->myAABB;
+                m_Name = primitve->myName;
                 m_ID = hasher(path);
 
                 Build(m_Root, nullptr, primitve);
@@ -73,9 +73,10 @@ namespace SmolEngine
             for (uint32_t i = 0; i < childCount; ++i)
             {
                 Ref<Gfx_Mesh> mesh = std::make_shared<Gfx_Mesh>();
-                Primitive* primitve = &data.Primitives[i + 1];
-                mesh->m_AABB = primitve->AABB;
-                mesh->m_Name = primitve->MeshName;
+                Gfx_MeshImporter::Primitive* primitve = &data.myPrimitives[i + 1];
+
+                mesh->m_AABB = primitve->myAABB;
+                mesh->m_Name = primitve->myName;
                 mesh->m_Index = i + 1;
 
                 Build(mesh.get(), m_Root, primitve);
@@ -190,7 +191,7 @@ namespace SmolEngine
         return m_Root == nullptr;
     }
 
-    bool Gfx_Mesh::Build(Gfx_Mesh* mesh, Gfx_Mesh* parent, Primitive* primitive)
+    bool Gfx_Mesh::Build(Gfx_Mesh* mesh, Gfx_Mesh* parent, Gfx_MeshImporter::Primitive* primitive)
     {
         const bool is_static = true;
 
@@ -198,10 +199,10 @@ namespace SmolEngine
             mesh->m_Root = parent;
 
         mesh->m_VertexBuffer = std::make_shared<Gfx_VertexBuffer>();
-        mesh->m_VertexBuffer->Create(primitive->VertexBuffer.data(), primitive->VertexBuffer.size() * sizeof(PBRVertex), is_static);
+        mesh->m_VertexBuffer->Create(primitive->myVertices.data(), primitive->myVertices.size() * sizeof(Gfx_MeshImporter::Vertex), is_static);
 
         mesh->m_IndexBuffer = std::make_shared<Gfx_IndexBuffer>();
-        mesh->m_IndexBuffer->Create(primitive->IndexBuffer.data(), primitive->IndexBuffer.size(), is_static);
+        mesh->m_IndexBuffer->Create(primitive->myIndices.data(), primitive->myIndices.size(), is_static);
 
         return true;
     }
@@ -214,25 +215,20 @@ namespace SmolEngine
     bool Gfx_MeshView::TryLoadMaterials()
     {
         bool any_loaded = false;
-        for (auto& element : m_Elements)
-        {
-            if (!element.m_PBRMatPath.empty())
-            {
-                //PBRCreateInfo matCI{};
-                //if (matCI.Load(element.m_PBRMatPath))
-                //{
-                //    element.m_PBRHandle = PBRFactory::AddMaterial(&matCI, element.m_PBRMatPath);
-                //    any_loaded = true;
-                //}
-            }
-        }
+        //for (auto& element : m_Elements)
+        //{
+        //    if (!element.m_PBRMatPath.empty())
+        //    {
+        //        //PBRCreateInfo matCI{};
+        //        //if (matCI.Load(element.m_PBRMatPath))
+        //        //{
+        //        //    element.m_PBRHandle = PBRFactory::AddMaterial(&matCI, element.m_PBRMatPath);
+        //        //    any_loaded = true;
+        //        //}
+        //    }
+        //}
 
         return any_loaded;
-    }
-
-    void Gfx_MeshView::SetAnimationController(const Ref<AnimationController>& contoller)
-    {
-        m_AnimationController = contoller;
     }
 
     void Gfx_MeshView::SetMask(uint32_t mask)
@@ -240,25 +236,6 @@ namespace SmolEngine
         m_Mask = mask;
     }
 
-    void Gfx_MeshView::SetPBRHandle(const Ref<PBRHandle>& handle, uint32_t nodeIndex)
-    {
-       // auto& element = m_Elements[nodeIndex];
-       // element.m_PBRHandle = handle;
-       //
-       // if (handle)
-       //     element.m_PBRMatPath = handle->m_Path;
-       // else
-       //     element.m_PBRMatPath = "";
-       //
-       // m_bNeedUpdate = true;
-    }
-
-    void Gfx_MeshView::SetMaterial(const Ref<Material3D>& material, uint32_t nodeIndex)
-    {
-        m_Elements[nodeIndex].m_Material = material;
-
-        m_bNeedUpdate = true;
-    }
 
     void Gfx_MeshView::SetTransform(const TransformDesc& desc)
     {
@@ -284,20 +261,5 @@ namespace SmolEngine
     uint32_t Gfx_MeshView::GetMask() const
     {
         return m_Mask;
-    }
-
-    Ref<AnimationController> Gfx_MeshView::GetAnimationController() const
-    {
-        return m_AnimationController;
-    }
-
-    Ref<PBRHandle> Gfx_MeshView::GetPBRHandle(uint32_t nodeIndex) const
-    {
-        return m_Elements[nodeIndex].m_PBRHandle;
-    }
-
-    Ref<Material3D> Gfx_MeshView::GetMaterial(uint32_t nodeIndex) const
-    {
-        return m_Elements[nodeIndex].m_Material;
     }
 }

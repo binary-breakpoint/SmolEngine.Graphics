@@ -1,6 +1,5 @@
 #pragma once
 #include "Memory.h"
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_PixelStorage.h"
 #include "Common/Gfx_Flags.h"
 
@@ -38,7 +37,7 @@ namespace SmolEngine
 		std::vector<FramebufferAttachment> myAttachments;
 	};
 
-	class Gfx_Framebuffer final: public Gfx_Asset
+	class Gfx_Framebuffer
 	{
 	public:
 		struct Attachment
@@ -55,7 +54,7 @@ namespace SmolEngine
 
 		void Create(FramebufferCreateDesc* desc);
 		void OnResize(uint32_t width, uint32_t height);
-		void Free() override;
+		void Free();
 
 		void CmdClear(Gfx_CmdBuffer* cmd, const glm::vec4& color, uint32_t index = 0);
 

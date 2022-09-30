@@ -1,5 +1,4 @@
 #pragma once
-#include "Common/Gfx_Asset.h"
 #include "Backend/Gfx_VulkanCore.h"
 #include "Backend/Gfx_VulkanAllocator.h"
 
@@ -25,19 +24,20 @@ namespace SmolEngine
 		CreateFlags myFlags;
 	};
 
-	class Gfx_Buffer final: public Gfx_Asset
+	class Gfx_Buffer
 	{
 	public:
 		Gfx_Buffer();
 		~Gfx_Buffer();
 
+		void Free();
 		void Create(const BufferCreateDesc& desc);
-		void Free() override;
-		bool IsGood() const override;
 		void SetData(const void* data, size_t size, uint32_t offset = 0);
+		void ResetBufferUint(VkCommandBuffer cmd, uint32_t value);
 		void* MapMemory();
 		void UnMapMemory();
-		void ResetBufferUint(VkCommandBuffer cmd, uint32_t value);
+
+		bool IsGood() const;
 		size_t GetSize() const;
 		VkBuffer GetRawBuffer() const;
 		size_t GetOffset() const;

@@ -17,7 +17,7 @@ flags
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "include/"
+include "scripts/"
 
 group "Executables"
 include "tests"

@@ -1,8 +1,7 @@
 #pragma once
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Memory.h"
-#include "Common/Gfx_Vertex.h"
 #include "Common/Gfx_Flags.h"
+#include "Common/Gfx_BufferLayout.h"
 
 namespace SmolEngine
 {
@@ -40,7 +39,7 @@ namespace SmolEngine
 		std::vector<Gfx_BufferLayout> myVertexInput;
 	};
 
-	class Gfx_Pipeline final: public Gfx_Asset
+	class Gfx_Pipeline
 	{
 	public:
 		Gfx_Pipeline();
@@ -57,10 +56,10 @@ namespace SmolEngine
 		void CmdDrawMesh(Gfx_CmdBuffer* cmd, Gfx_Mesh* mesh, uint32_t instances = 1);    
 
 		void Reload();
-		void Free() override;
+		void Free();
 		void Create(PipelineCreateDesc* desc);
 		void SetDrawMode(DrawMode mode);
-		bool IsGood() const override;
+		bool IsGood() const;
 		Gfx_Shader* GetShader() const { return m_Desc.myShader; }
 		Gfx_Descriptor* GetDescriptor() const { return m_Desc.myDescriptor; }
 		Gfx_Framebuffer* GetFramebuffer() const { return m_Desc.myFramebuffer; }

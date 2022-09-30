@@ -14,7 +14,7 @@ using namespace tinygltf;
 
 namespace SmolEngine
 {
-	void LoadNode(const tinygltf::Node& inputNode, const tinygltf::Model& input, uint32_t nodeIndex, ImportedDataGlTF* out_data)
+	void LoadNode(const tinygltf::Node& inputNode, const tinygltf::Model& input, uint32_t nodeIndex, Gfx_MeshImporter::ImportedData* out_data)
 	{
 		// Load node's children
 		if (inputNode.children.size() > 0)
@@ -55,24 +55,14 @@ namespace SmolEngine
 			{
 				const tinygltf::Primitive& glTFPrimitive = mesh.primitives[i];
 
-				int materialIndex = glTFPrimitive.material;
-				const auto& it = std::find_if(out_data->Primitives.begin(), out_data->Primitives.end(),
-					[materialIndex](const Primitive& another) {return another.MaterialIndex == materialIndex; });
+				Gfx_MeshImporter::Primitive primitive{};
 
-				Primitive dummy{};
-				Primitive*                 primitive =nullptr;
-
-				if (it != std::end(out_data->Primitives))
-					primitive = &*it;
-				else
-					primitive = &dummy;
-
-				uint32_t                   firstIndex = static_cast<uint32_t>(primitive->IndexBuffer.size());;
-				uint32_t                   vertexStart = static_cast<uint32_t>(primitive->VertexBuffer.size());
-				uint32_t                   indexCount = 0;
-				bool                       hasSkin = false;
-				glm::vec3                  posMin{};
-				glm::vec3                  posMax{};
+				uint32_t firstIndex = static_cast<uint32_t>(primitive.myIndices.size());;
+				uint32_t vertexStart = static_cast<uint32_t>(primitive.myVertices.size());
+				uint32_t indexCount = 0;
+				glm::vec3 posMin{};
+				glm::vec3 posMax{};
+				bool hasSkin = false;
 
 				// Vertices
 				{
@@ -140,16 +130,16 @@ namespace SmolEngine
 					// Append data to model's vertex buffer
 					for (size_t v = 0; v < vertexCount; v++)
 					{
-						PBRVertex vert = {};
+						Gfx_MeshImporter::Vertex vert;
 
-						vert.Pos = model * glm::vec4(glm::make_vec3(&positionBuffer[v * 3]), 1.0f);
-						vert.Normals = glm::normalize(glm::vec3(normalsBuffer ? glm::make_vec3(&normalsBuffer[v * 3]) : glm::vec3(0.0f)));
-						vert.Tangent = glm::vec4(tangentsBuffer ? glm::make_vec4(&tangentsBuffer[v * 4]) : glm::vec3(1.0f), 1.0f);
-						vert.UVs = texCoordsBuffer ? glm::make_vec2(&texCoordsBuffer[v * 2]) : glm::vec3(0.0f);
-						vert.jointIndices = hasSkin ? glm::vec4(glm::make_vec4(&jointIndicesBuffer[v * 4])) : glm::vec4(0.0f);
-						vert.jointWeight = hasSkin ? glm::make_vec4(&jointWeightsBuffer[v * 4]) : glm::vec4(0.0f);
+						vert.myPositions = model * glm::vec4(glm::make_vec3(&positionBuffer[v * 3]), 1.0f);
+						vert.myNormals = glm::normalize(glm::vec3(normalsBuffer ? glm::make_vec3(&normalsBuffer[v * 3]) : glm::vec3(0.0f)));
+						vert.myTangents = glm::vec4(tangentsBuffer ? glm::make_vec4(&tangentsBuffer[v * 4]) : glm::vec3(1.0f), 1.0f);
+						vert.myUV = texCoordsBuffer ? glm::make_vec2(&texCoordsBuffer[v * 2]) : glm::vec3(0.0f);
+						vert.myJointIndices = hasSkin ? glm::vec4(glm::make_vec4(&jointIndicesBuffer[v * 4])) : glm::vec4(0.0f);
+						vert.myJointWeight = hasSkin ? glm::make_vec4(&jointWeightsBuffer[v * 4]) : glm::vec4(0.0f);
 
-						primitive->VertexBuffer.emplace_back(vert);
+						primitive.myVertices.emplace_back(std::move(vert));
 					}
 				}
 				// Indices
@@ -168,7 +158,7 @@ namespace SmolEngine
 						memcpy(buf, &buffer.data[accessor.byteOffset + bufferView.byteOffset], accessor.count * sizeof(uint32_t));
 						for (size_t index = 0; index < accessor.count; index++)
 						{
-							primitive->IndexBuffer.push_back(buf[index] + vertexStart);
+							primitive.myIndices.push_back(buf[index] + vertexStart);
 						}
 						break;
 					}
@@ -177,7 +167,7 @@ namespace SmolEngine
 						memcpy(buf, &buffer.data[accessor.byteOffset + bufferView.byteOffset], accessor.count * sizeof(uint16_t));
 						for (size_t index = 0; index < accessor.count; index++)
 						{
-							primitive->IndexBuffer.push_back(buf[index] + vertexStart);
+							primitive.myIndices.push_back(buf[index] + vertexStart);
 						}
 						break;
 					}
@@ -186,7 +176,7 @@ namespace SmolEngine
 						memcpy(buf, &buffer.data[accessor.byteOffset + bufferView.byteOffset], accessor.count * sizeof(uint8_t));
 						for (size_t index = 0; index < accessor.count; index++)
 						{
-							primitive->IndexBuffer.push_back(buf[index] + vertexStart);
+							primitive.myIndices.push_back(buf[index] + vertexStart);
 						}
 						break;
 					}
@@ -196,19 +186,17 @@ namespace SmolEngine
 					}
 				}
 
-				primitive->AABB.MinPoint(posMin);
-				primitive->AABB.MaxPoint(posMax);
-				primitive->AABB.Transform(model);
-				primitive->MaterialIndex = materialIndex;
-				primitive->MeshName = inputNode.name;
+				primitive.myAABB.MinPoint(posMin);
+				primitive.myAABB.MaxPoint(posMax);
+				primitive.myAABB.Transform(model);
+				primitive.myName = inputNode.name;
 
-				if (it == std::end(out_data->Primitives))
-					out_data->Primitives.push_back(std::move(*primitive));
+				out_data->myPrimitives.emplace_back(std::move(primitive));
 			}
 		}
 	}
 
-	bool Gfx_MeshImporter::Import(const std::string& filePath, ImportedDataGlTF* out_data)
+	bool Gfx_MeshImporter::Import(const std::string& filePath, ImportedData* out_data)
 	{
 		tinygltf::Model    glTFInput;
 		tinygltf::TinyGLTF gltfContext;
@@ -364,7 +352,7 @@ namespace SmolEngine
 		return false;
 	}
 
-	void Gfx_MeshImporter::Import(tinygltf::Model* model, ImportedDataGlTF* out_data)
+	void Gfx_MeshImporter::Import(tinygltf::Model* model, ImportedData* out_data)
 	{
 		const tinygltf::Scene& scene = model->scenes[0];
 		for (size_t i = 0; i < scene.nodes.size(); i++)

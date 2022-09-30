@@ -1,5 +1,4 @@
 #pragma once
-#include "Gfx_Asset.h"
 
 #include "Backend/Gfx_VulkanCore.h"
 
@@ -18,7 +17,7 @@ namespace SmolEngine
 		Type myType = Type::Graphics;
 	};
 
-	class Gfx_CmdBuffer final : public Gfx_Asset
+	class Gfx_CmdBuffer
 	{
 		friend class Gfx_VulkanHelpers;
 		friend class Gfx_Context;
@@ -34,8 +33,8 @@ namespace SmolEngine
 		Gfx_CmdBuffer();
 		~Gfx_CmdBuffer();
 
-		void Free() override;
-		bool IsGood() const override;
+		void Free();
+		bool IsGood() const;
 		void Create(CmdBufferCreateDesc* desc);
 		void Reset();
 		void CmdBeginRecord();

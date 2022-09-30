@@ -2,7 +2,6 @@
 #include "Common/Gfx_Memory.h"
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_PixelStorage.h"
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Flags.h"
 
 #include <string>
@@ -24,7 +23,7 @@ namespace SmolEngine
 		bool myImGUIHandleEnable = false;
 	};
 
-	class Gfx_Texture final: public Gfx_Asset
+	class Gfx_Texture
 	{
 		friend class Gfx_VulkanHelpers;
 	public:
@@ -32,7 +31,7 @@ namespace SmolEngine
 		~Gfx_Texture();
 
 		void Create(TextureCreateDesc* info);
-		void Free() override;
+		void Free();
 
 		const VkDescriptorImageInfo& GetDescriptorImageInfo() const;
 		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;
@@ -40,8 +39,8 @@ namespace SmolEngine
 		Gfx_PixelStorage* GetPixelStorage();
 		TextureUsage GetUsageFlags() const;
 		void* GetImGuiTexture() const;
-		bool IsGood() const override;
 		uint32_t GetMips() const;
+		bool IsGood() const;
 
 	private:
 		void LoadEX(TextureCreateDesc* info, void* data);

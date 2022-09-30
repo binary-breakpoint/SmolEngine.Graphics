@@ -1,10 +1,11 @@
 #pragma once
-#include "Gfx_World.h"
 
 #include "Common/Gfx_Window.h"
 #include "Common/Gfx_Flags.h"
 #include "Common/Gfx_Events.h"
 #include "Common/Gfx_CmdBuffer.h"
+#include "Common/Gfx_Texture.h"
+#include "Common/Gfx_Window.h"
 
 #include "Backend/Gfx_VulkanAllocator.h"
 #include "Backend/Gfx_VulkanInstance.h"
@@ -18,7 +19,6 @@
 
 namespace SmolEngine
 {
-	class Gfx_Sampler;
 	class Gfx_Framebuffer;
 	class Gfx_ShaderIncluder;
 
@@ -51,7 +51,9 @@ namespace SmolEngine
 		static Gfx_VulkanDevice& GetDevice();
 		static Gfx_Context* GetSingleton();
 		static Gfx_CmdBuffer* GetCommandBuffer();
-		static Ref<Gfx_World> GetWorld();
+		static Gfx_Sampler* GetSampler();
+		static Gfx_Texture* GetTexture();
+		static Gfx_Texture* GetStorageTexture();
 		Ref<Gfx_Framebuffer> GetFramebuffer();
 		Gfx_Window* GetWindow() const;
 		glm::vec2 GetWindowSize() const;
@@ -60,6 +62,7 @@ namespace SmolEngine
 		const std::string& GetAssetsPath() const;
 		bool IsWindowMinimized() const;
 		bool IsOpen() const;
+
 									      
 	private:
 		void CreateAPIContext();
@@ -74,7 +77,6 @@ namespace SmolEngine
 		Ref<Gfx_VulkanImGui> m_ImGuiContext;
 		Gfx_VulkanAllocator* m_Allocator;
 		Ref<Gfx_Window> m_Window;
-		Ref<Gfx_World> m_World;
 
 		GfxContextCreateDesc m_Desc;
 		Gfx_CmdBuffer m_CmdBuffer;
@@ -83,6 +85,10 @@ namespace SmolEngine
 		Gfx_VulkanInstance m_Instance;
 		Gfx_VulkanDevice m_Device;
 		Gfx_EventSender m_EventHandler;
+
+		Gfx_Sampler m_Sampler;
+		Gfx_Texture m_Texture;
+		Gfx_Texture m_StorageTexture;
 
 #ifdef AFTERMATH
 		GpuCrashTracker m_CrachTracker{};

@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	{
 		TextureCreateDesc desc{};
 		desc.myFormat = Format::B8G8R8A8_UNORM;
-		desc.mySampler = Gfx_World::GetSampler();
+		desc.mySampler = Gfx_Context::GetSampler();
 		desc.myUsage = TextureUsage::IMAGE_2D;
 		desc.myWidth = 720;
 		desc.myHeight = 480;
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 	{
 		DescriptorDesc textureDesc{};
 		textureDesc.myBinding = 0;
-		textureDesc.mySampler = Gfx_World::GetSampler();
+		textureDesc.mySampler = Gfx_Context::GetSampler();
 		textureDesc.myPixelStorage = storageImage.GetPixelStorage();
 		textureDesc.myType = DescriptorType::IMAGE_2D;
 		textureDesc.myStages = ShaderStage::Compute;

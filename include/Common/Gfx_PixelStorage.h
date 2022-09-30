@@ -1,7 +1,6 @@
 #pragma once
 #include "Backend/Gfx_VulkanAllocator.h"
 #include "Common/Gfx_Flags.h"
-#include "Common/Gfx_Asset.h"
 
 namespace cereal
 {
@@ -31,17 +30,17 @@ namespace SmolEngine
 		}
 	};
 
-	class Gfx_PixelStorage final: public Gfx_Asset
+	class Gfx_PixelStorage
 	{
 		friend class Gfx_VulkanHelpers;
 	public:
 		Gfx_PixelStorage();
 		~Gfx_PixelStorage();
 
-		void Free() override;
+		void Free();
 		void Create(const PixelStorageCreateDesc* desc);
 		void SetImageLayout(VkImageLayout layout);
-		bool IsGood() const override;
+		bool IsGood() const;
 
 		const PixelStorageCreateDesc& GetDesc() const { return m_Desc; }
 		VkImage GetImage() const { return m_Image; }

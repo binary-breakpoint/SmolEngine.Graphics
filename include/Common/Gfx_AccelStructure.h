@@ -1,6 +1,5 @@
 #pragma once
 #include "Common/Gfx_Memory.h"
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Buffer.h"
 
 namespace SmolEngine
@@ -8,14 +7,14 @@ namespace SmolEngine
 	class Gfx_Mesh;
 	class Gfx_Buffer;
 
-	class Gfx_AccelStructure final: Gfx_Asset
+	class Gfx_AccelStructure
 	{
 	public:
 		Gfx_AccelStructure();
 		~Gfx_AccelStructure();
 
-		void Free() override;
-		bool IsGood() const override;
+		void Free();
+		bool IsGood() const;
 		void BuildAsBottomLevel(uint32_t vertexStride, Gfx_Buffer* transform, Gfx_Mesh* mesh);
 		void BuildAsTopLevel(Gfx_Buffer* instances, uint32_t primitiveCount, bool& out_update_descriptor);
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "Common/Gfx_Memory.h"
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Buffer.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
@@ -18,7 +17,7 @@ namespace SmolEngine
 		std::map<std::string, bool> myDefines;
 	};
 
-	class Gfx_Shader final: public Gfx_Asset
+	class Gfx_Shader
 	{
 		friend class Gfx_Pipeline;
 		friend class Gfx_RtPipeline;
@@ -27,9 +26,9 @@ namespace SmolEngine
 		~Gfx_Shader();
 
 		void Create(ShaderCreateDesc* desc);
-		void Free() override;
+		void Free();
 		void Realod();
-		bool IsGood() const override;
+		bool IsGood() const;
 
 		ShaderCreateDesc& GetDesc();
 		std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStages();

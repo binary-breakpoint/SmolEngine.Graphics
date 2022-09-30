@@ -2,7 +2,6 @@
 #include "Backend/Gfx_VulkanCore.h"
 
 #include "Common/Gfx_Flags.h"
-#include "Common/Gfx_Asset.h"
 
 namespace cereal
 {
@@ -36,16 +35,16 @@ namespace SmolEngine
 		}
 	};
 
-	class Gfx_Sampler final : public Gfx_Asset
+	class Gfx_Sampler
 	{
 	public:
 		Gfx_Sampler();
 		~Gfx_Sampler();
 
 		void Create(SamplerCreateDesc* desc);
-		void Free() override;
+		void Free();
 
-		bool IsGood() const override { return m_Sampler != nullptr; }
+		bool IsGood() const { return m_Sampler != nullptr; }
 		VkSampler GetSampler() const { return m_Sampler; }
 
 	private:

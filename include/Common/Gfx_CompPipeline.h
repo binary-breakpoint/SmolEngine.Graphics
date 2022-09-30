@@ -1,5 +1,4 @@
 #pragma once
-#include "Common/Gfx_Asset.h"
 
 namespace SmolEngine
 {
@@ -13,7 +12,7 @@ namespace SmolEngine
 		Gfx_Descriptor* myDescriptor = nullptr;
 	};
 
-	class Gfx_CompPipeline final: public Gfx_Asset
+	class Gfx_CompPipeline
 	{
 	public:
 		Gfx_CompPipeline();
@@ -25,8 +24,8 @@ namespace SmolEngine
 		void CmdBindPipeline(Gfx_CmdBuffer* cmd);
 
 		void Create(CompPipelineCreateDesc* desc);
-		void Free() override;
-		bool IsGood() const override;
+		void Free();
+		bool IsGood() const;
 		Gfx_Shader* GetShader() const { return m_Desc.myShader; }
 		Gfx_Descriptor* GetDescriptor() const { return m_Desc.myDescriptor; }
 

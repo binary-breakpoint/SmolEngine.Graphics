@@ -1,6 +1,5 @@
 #pragma once
 #include "Common/Gfx_Memory.h"
-#include "Common/Gfx_Asset.h"
 #include "Common/Gfx_Buffer.h"
 #include "Common/Gfx_AccelStructure.h"
 #include "Backend/Gfx_VulkanHelpers.h"
@@ -53,7 +52,7 @@ namespace SmolEngine
 		uint32_t myNumSets = 1;
 	};
 
-	class Gfx_Descriptor final : public Gfx_Asset
+	class Gfx_Descriptor
 	{
 		friend class Gfx_Pipeline;
 		friend class Gfx_RtPipeline;
@@ -61,9 +60,9 @@ namespace SmolEngine
 	public:
 		Gfx_Descriptor();
 
+		void Free();
 		void Create(DescriptorCreateDesc* desc);
-		void Free() override;
-		bool IsGood() const override;
+		bool IsGood() const;
 
 		void CmdUpdateBuffer(uint32_t binding, Gfx_Buffer* buffer, DescriptorType type);
 		void CmdUpdatePixelStorage(uint32_t binding, Gfx_PixelStorage* storage, DescriptorType type);

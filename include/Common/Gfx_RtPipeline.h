@@ -1,5 +1,4 @@
 #pragma once
-#include "Common/Gfx_Asset.h"
 
 namespace SmolEngine
 {
@@ -16,7 +15,7 @@ namespace SmolEngine
 		uint32_t myMaxRayRecursionDepth = 1;
 	};
 
-	class Gfx_RtPipeline final: public Gfx_Asset
+	class Gfx_RtPipeline
 	{
 	public:
 		struct DispatchDesc
@@ -38,8 +37,8 @@ namespace SmolEngine
 		void CmdBindPipeline(Gfx_CmdBuffer* cmd);
 
 		void Create(RtPipelineCreateDesc* desc);
-		void Free() override;
-		bool IsGood() const override;
+		void Free();
+		bool IsGood() const;
 		Gfx_Shader* GetShader() const { return m_Desc.myShader; }
 		Gfx_Descriptor* GetDescriptor() const { return m_Desc.myDescriptor; }
 

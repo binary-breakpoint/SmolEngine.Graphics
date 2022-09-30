@@ -1,8 +1,9 @@
 #pragma once
 #include "Common/Gfx_Memory.h"
-#include "Common/Gfx_BoundingBox.h"
 #include "Common/Gfx_IndexBuffer.h"
 #include "Common/Gfx_VertexBuffer.h"
+
+#include "Tools/Gfx_MeshImporter.h"
 
 namespace cereal
 {
@@ -11,12 +12,7 @@ namespace cereal
 
 namespace SmolEngine
 {
-	struct Primitive;
-	struct PBRHandle;
-
 	class Gfx_Mesh;
-	class Material3D;
-	class AnimationController;
 
 	struct TransformDesc
 	{
@@ -31,27 +27,20 @@ namespace SmolEngine
 
 		struct Element
 		{
-			std::string m_PBRMatPath = "";
-			Ref<Material3D> m_Material = nullptr;
-			Ref<PBRHandle> m_PBRHandle = nullptr;
+			//std::string m_PBRMatPath = "";
+			//Ref<Material3D> m_Material = nullptr;
+			//Ref<PBRHandle> m_PBRHandle = nullptr;
 		};
 
 		bool TryLoadMaterials();
-		void SetAnimationController(const Ref<AnimationController>& contoller);
 		void SetMask(uint32_t mask);
-		void SetPBRHandle(const Ref<PBRHandle>& handle, uint32_t nodeIndex = 0);
-		void SetMaterial(const Ref<Material3D>& material, uint32_t nodeIndex = 0);
 		void SetTransform(const TransformDesc& desc);
 		const glm::mat4& GetTransform() const;
 		uint32_t GetMask() const;
-		Ref<AnimationController> GetAnimationController() const;
-		Ref<PBRHandle> GetPBRHandle(uint32_t nodeIndex = 0) const;
-		Ref<Material3D> GetMaterial(uint32_t nodeIndex = 0) const;
 
 	private:
 		glm::mat4 m_ModelMatrix;
 		glm::mat4 m_PrevModelMatrix;
-		Ref<AnimationController> m_AnimationController;
 		uint32_t m_Mask;
 		std::vector<Element> m_Elements;
 		bool m_bInitTransform;
@@ -62,13 +51,13 @@ namespace SmolEngine
 
 	};
 
-	class Gfx_Mesh final : public Gfx_Asset
+	class Gfx_Mesh
 	{
 	public:	
 		Gfx_Mesh();
 
-		void Free() override;
-		bool IsGood() const override;
+		void Free();
+		bool IsGood() const;
 		bool LoadFromFile(const std::string& path, const TransformDesc& desc = TransformDesc());
 								 
 		std::vector<Ref<Gfx_Mesh>>& GetScene();
@@ -86,7 +75,7 @@ namespace SmolEngine
 		bool IsRootNode() const;
 							     
 	private:				     
-		bool Build(Gfx_Mesh* mesh, Gfx_Mesh* parent, Primitive* primitive);
+		bool Build(Gfx_Mesh* mesh, Gfx_Mesh* parent, Gfx_MeshImporter::Primitive* primitive);
 
 	private:
 		Gfx_Mesh* m_Root;

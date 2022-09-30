@@ -44,8 +44,8 @@ int main(int argc, char** argv)
 		DescriptorDesc textureDesc{};
 
 		textureDesc.myBinding = 0;
-		textureDesc.myPixelStorage = Gfx_World::GetTexture()->GetPixelStorage();
-		textureDesc.mySampler = Gfx_World::GetSampler();
+		textureDesc.myPixelStorage = Gfx_Context::GetTexture()->GetPixelStorage();
+		textureDesc.mySampler = Gfx_Context::GetSampler();
 		textureDesc.myStages = ShaderStage::Fragment;
 		textureDesc.myType = DescriptorType::TEXTURE_2D;
 

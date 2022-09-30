@@ -2,7 +2,6 @@ group "Dependencies"
 include "../vendor/glfw"
 include "../vendor/imgizmo"
 include "../vendor/imgui"
-include "../vendor/ozz-animation"
 group ""
 
 group "Engine"
@@ -26,7 +25,7 @@ project "SmolEngine.Graphics"
 		"../src/**.cpp",
 		"../src/**.h",
 
-		"**.h",
+		"../include/**.h",
 
 		"../vendor/stb_image/**.h",
 		"../vendor/vulkan_memory_allocator/vk_mem_alloc.h",
@@ -63,7 +62,6 @@ project "SmolEngine.Graphics"
 		"GLFW",
 		"ImGizmo",
 		"ImGui",
-		"Ozz-Animation",
 
 		"%{VULKAN_SDK}/Lib/vulkan-1.lib",
 	}
@@ -87,6 +85,7 @@ project "SmolEngine.Graphics"
 
 	filter "configurations:Debug"
 		symbols "on"
+		defines "SMOLENGINE_DEBUG"
 
 		links 
 		{ 
@@ -112,13 +111,9 @@ project "SmolEngine.Graphics"
 			"../vendor/nvidia_aftermath/lib/GFSDK_Aftermath_Lib_UWP.x64.lib",
 		}
 
-		defines
-		{
-			"DIA_DEBUG"
-		}
-
 	filter "configurations:Release"
 	optimize "full"
+	defines "SMOLENGINE_DEBUG"
 
 		links 
 		{ 
@@ -141,7 +136,7 @@ project "SmolEngine.Graphics"
 
 		filter "configurations:Dist"
 		optimize "full"
-		defines "DIA_DIST"
+		defines "SMOLENGINE_DIST"
 
 		links 
 		{ 
