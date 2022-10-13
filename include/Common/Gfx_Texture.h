@@ -18,9 +18,10 @@ namespace SmolEngine
 		uint32_t myMipLevels = 1;
 		uint32_t myArrayLayers = 1;
 		Format myFormat = Format::R8_UNORM;
-		TextureUsage myUsage = TextureUsage::TEXTURE_2D;
-		std::string myFilePath = "";
+		TextureUsage myUsage = TextureUsage::DEFAULT;
+		std::string myFilePath;
 		bool myImGUIHandleEnable = false;
+		bool myIsShaderWritable = false;
 	};
 
 	class Gfx_Texture

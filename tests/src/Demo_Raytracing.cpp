@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 		TextureCreateDesc desc{};
 		desc.myFormat = Format::B8G8R8A8_UNORM;
 		desc.mySampler = Gfx_Context::GetSampler();
-		desc.myUsage = TextureUsage::IMAGE_2D;
+		desc.myIsShaderWritable = true;
 		desc.myWidth = 720;
 		desc.myHeight = 480;
 

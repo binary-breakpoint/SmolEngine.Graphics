@@ -58,7 +58,7 @@ namespace SmolEngine
 
 		m_Texture.Create(&textureDesc);
 
-		textureDesc.myUsage = TextureUsage::IMAGE_2D;
+		textureDesc.myIsShaderWritable = true;;
 		m_StorageTexture.Create(&textureDesc);
 
 		// Creates default framebuffer

@@ -54,13 +54,9 @@ namespace SmolEngine
 
 	enum class TextureUsage : int
 	{
-		TEXTURE_2D,
-		TEXTURE_2D_ARRAY,
-
-		IMAGE_2D,
-		IMAGE_2D_ARRAY,
-
-		CUBE_MAP,
+		DEFAULT,
+		ARRAY,
+		CUBEMAP
 	};
 
 	enum class AddressMode : int
@@ -115,7 +111,6 @@ namespace SmolEngine
 		COMBINED_IMAGE_SAMPLER_2D,
 		TEXTURE_2D,
 		IMAGE_2D,
-		CUBE_MAP,
 		UNIFORM_BUFFER,
 		STORAGE_BUFFER,
 		ACCEL_STRUCTURE,

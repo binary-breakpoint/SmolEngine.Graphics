@@ -15,8 +15,6 @@ namespace SmolEngine
 			return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		case DescriptorType::IMAGE_2D:
 			return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-		case DescriptorType::CUBE_MAP:
-			return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		case DescriptorType::UNIFORM_BUFFER:
 			return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		case DescriptorType::STORAGE_BUFFER:
@@ -141,7 +139,7 @@ namespace SmolEngine
 		for (const DescriptorDesc& resource : desc->myBindings)
 		{
 			if (resource.myType == DescriptorType::SEPARATE_SAMPLER || resource.myType == DescriptorType::IMAGE_2D
-				|| resource.myType == DescriptorType::TEXTURE_2D || resource.myType == DescriptorType::COMBINED_IMAGE_SAMPLER_2D || resource.myType == DescriptorType::CUBE_MAP)
+				|| resource.myType == DescriptorType::TEXTURE_2D || resource.myType == DescriptorType::COMBINED_IMAGE_SAMPLER_2D)
 			{
 				GFX_ASSERT_MSG((resource.myPixelStorage || resource.mySampler), "myPixelStorage == nullptr || mySampler == nullptr")
 
