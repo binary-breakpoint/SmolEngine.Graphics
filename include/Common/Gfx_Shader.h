@@ -22,6 +22,7 @@ namespace SmolEngine
 		friend class Gfx_Pipeline;
 		friend class Gfx_RtPipeline;
 		friend class Gfx_CompPipeline;
+		friend struct DescriptorCreateDesc;
 	public:
 		~Gfx_Shader();
 

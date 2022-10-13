@@ -4,6 +4,8 @@
 #include "Common/Gfx_AccelStructure.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
+#include "Tools/Gfx_ShaderCompiler.h"
+
 #include <vector>
 #include <string>
 #include <optional>
@@ -38,18 +40,27 @@ namespace SmolEngine
 
 	struct DescriptorCreateDesc
 	{
+		struct ReflectionDesc
+		{
+			std::string myIncludeDir;
+			std::map<std::string, bool> myDefines;
+		};
+
 		void Add(const DescriptorDesc& desc);
 		void Clear();
 
 		void SetPushConstants(PushConstantsDesc* ps);
-		void Reflect(Gfx_Shader* shader);
+		void Reflect(ShaderStage stage, const std::string& shaderPath, ReflectionDesc* reflectionDesc = nullptr);
 
 		DescriptorDesc* GetByIndex(uint32_t index);
 		DescriptorDesc* GetByName(const char* name);
 
-		PushConstantsDesc* myPushConstant = nullptr;
-		std::vector<DescriptorDesc> myBindings;
+		PushConstantsDesc myPushConstant;
 		uint32_t myNumSets = 1;
+
+		std::vector<Ref<DescriptorDesc>> myBindings;
+		std::map<std::string, Ref<DescriptorDesc>> myBindingNames;
+		std::map<uint32_t, Ref<DescriptorDesc>> myBindingIndices;
 	};
 
 	class Gfx_Descriptor

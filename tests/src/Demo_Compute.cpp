@@ -47,20 +47,12 @@ int main(int argc, char** argv)
 
 	Gfx_Descriptor compDescriptor;
 	{
-		DescriptorDesc textureDesc{};
-		textureDesc.myBinding = 0;
-		textureDesc.mySampler = Gfx_Context::GetSampler();
-		textureDesc.myPixelStorage = storageImage.GetPixelStorage();
-		textureDesc.myType = DescriptorType::IMAGE_2D;
-		textureDesc.myStages = ShaderStage::Compute;
-
-		PushConstantsDesc psDesc{};
-		psDesc.mySize = sizeof(PushConstant);
-		psDesc.myStages = ShaderStage::Compute;
-
 		DescriptorCreateDesc descriptorDesc{};
-		descriptorDesc.SetPushConstants(&psDesc);
-		descriptorDesc.Add(textureDesc);
+		descriptorDesc.Reflect(ShaderStage::Compute, "shaders/raymarching.comp");
+
+		DescriptorDesc* descriptor = descriptorDesc.GetByName("o_Image");
+		descriptor->myPixelStorage = storageImage.GetPixelStorage();
+		descriptor->mySampler = Gfx_Context::GetSampler();
 
 		compDescriptor.Create(&descriptorDesc);
 	}
