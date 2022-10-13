@@ -141,7 +141,7 @@ namespace SmolEngine
 		for (const DescriptorDesc& resource : desc->myBindings)
 		{
 			if (resource.myType == DescriptorType::SEPARATE_SAMPLER || resource.myType == DescriptorType::IMAGE_2D
-				|| resource.myType == DescriptorType::TEXTURE_2D || resource.myType == DescriptorType::COMBINED_IMAGE_SAMPLER_2D)
+				|| resource.myType == DescriptorType::TEXTURE_2D || resource.myType == DescriptorType::COMBINED_IMAGE_SAMPLER_2D || resource.myType == DescriptorType::CUBE_MAP)
 			{
 				GFX_ASSERT_MSG((resource.myPixelStorage || resource.mySampler), "myPixelStorage == nullptr || mySampler == nullptr")
 

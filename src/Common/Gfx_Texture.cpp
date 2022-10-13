@@ -136,6 +136,20 @@ namespace SmolEngine
 		GFX_ASSERT(info->myWidth > 0);
 
 		PixelStorageCreateDesc pixelDesc{};
+
+		if (info->myUsage == TextureUsage::CUBE_MAP)
+		{
+			info->myArrayLayers = 6;
+			pixelDesc.myCreateFlags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+
+		}
+
+		if (info->myUsage == TextureUsage::IMAGE_2D || info->myUsage == TextureUsage::IMAGE_2D_ARRAY)
+		{
+			pixelDesc.myLayout = VK_IMAGE_LAYOUT_GENERAL;
+			pixelDesc.myUsageFlags |= VK_IMAGE_USAGE_STORAGE_BIT;
+		}
+
 		pixelDesc.myLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		pixelDesc.myArrayLayers = info->myArrayLayers;
 		pixelDesc.myFormat = info->myFormat;
@@ -143,12 +157,6 @@ namespace SmolEngine
 		pixelDesc.myHeight = info->myHeight;
 		pixelDesc.myMipLevels = info->myMipLevels;
 		pixelDesc.myUsageFlags = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-
-		if (info->myUsage == TextureUsage::IMAGE_2D || info->myUsage == TextureUsage::IMAGE_2D_ARRAY)
-		{
-			pixelDesc.myLayout = VK_IMAGE_LAYOUT_GENERAL;
-			pixelDesc.myUsageFlags |= VK_IMAGE_USAGE_STORAGE_BIT;
-		}
 
 		m_PixelStorage.Create(&pixelDesc);
 

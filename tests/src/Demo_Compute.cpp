@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 #endif 
 {
 #ifndef SMOLENGINE_DIST
-	Gfx_Log::SetCallback([](const std::string&& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
+	Gfx_Log::SetCallback([](const std::string& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
 #endif 
 
 	Gfx_Context* context = new Gfx_Context();

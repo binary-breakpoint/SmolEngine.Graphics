@@ -359,7 +359,7 @@ namespace SmolEngine
 		glslang::GlslangToSpv(*intermediate, out_binaries, &logger, &options);
 		std::string error = logger.getAllMessages();
 
-		GFX_ASSERT(!error.empty())
+		GFX_ASSERT_MSG(error.empty(), error)
 
 		// Shutdown glslang library.
 		glslang::FinalizeProcess();
