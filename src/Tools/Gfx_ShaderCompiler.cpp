@@ -229,6 +229,7 @@ namespace SmolEngine
 		Gfx_ShaderIncluder* includer = Gfx_ShaderIncluder::GetSingleton();
 
 		TBuiltInResource Resources{};
+
 		Resources.maxLights = 32;
 		Resources.maxClipPlanes = 6;
 		Resources.maxTextureUnits = 32;
@@ -363,17 +364,15 @@ namespace SmolEngine
 
 		// Shutdown glslang library.
 		glslang::FinalizeProcess();
-
-		Gfx_ShaderIncluder::Clear();
 	}
 
 	void Gfx_ShaderCompiler::HlslToSpirv(const ShaderCompileDesc& desc, std::vector<uint32_t>& out_binaries)
 	{
+		Gfx_ShaderIncluder* includer = Gfx_ShaderIncluder::GetSingleton();
 		const auto sdk_path = std::getenv("VULKAN_SDK");
 		const std::string& base_path = Gfx_Context::GetSingleton()->GetAssetsPath();
 		const std::string  compiler_path = std::string(sdk_path) + "/Bin/dxc.exe" + " ";
-		const std::string  include_path = desc.myIncludeDir.empty() ? "-I " 
-			+ std::filesystem::absolute(base_path + "Shaders/").string() + " " : desc.myIncludeDir + " ";
+		const std::string  include_path = "";
 		const std::string  shader_path = std::filesystem::absolute(desc.myFilePath).string();
 		const std::string  shader_path_temp = shader_path + ".temp";
 		const std::string  opt_str = desc.myOptimize ? "" : "-Od ";

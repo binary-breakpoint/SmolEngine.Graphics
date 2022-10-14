@@ -38,11 +38,12 @@ namespace SmolEngine
 		static void Clear();
 
 		static Gfx_ShaderIncluder* GetSingleton() { return s_Instance; }
+		static std::vector<std::string>& GetIncludeDirs() { return s_Instance->m_IncludeDirs; }
 
 	private:
 		inline static Gfx_ShaderIncluder* s_Instance = nullptr;
 		std::map<std::string, IncResult*>  m_Includes;
 		std::map<std::string, std::string> m_Sources;
-		std::vector<std::string>  m_IncludeDirs;
+		std::vector<std::string> m_IncludeDirs;
 	};
 }

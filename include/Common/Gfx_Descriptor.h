@@ -40,17 +40,11 @@ namespace SmolEngine
 
 	struct DescriptorCreateDesc
 	{
-		struct ReflectionDesc
-		{
-			std::string myIncludeDir;
-			std::map<std::string, bool> myDefines;
-		};
-
 		void Add(const DescriptorDesc& desc);
 		void Clear();
 
 		void SetPushConstants(PushConstantsDesc* ps);
-		void Reflect(ShaderStage stage, const std::string& shaderPath, ReflectionDesc* reflectionDesc = nullptr);
+		void Reflect(ShaderStage stage, const std::string& shaderPath, std::map<std::string, bool>* defines = nullptr);
 
 		DescriptorDesc* GetByIndex(uint32_t index);
 		DescriptorDesc* GetByName(const char* name);

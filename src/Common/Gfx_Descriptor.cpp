@@ -75,7 +75,7 @@ namespace SmolEngine
 		return desc;
 	}
 
-	void DescriptorCreateDesc::Reflect(ShaderStage stage, const std::string& shaderPath, ReflectionDesc* reflectionDesc)
+	void DescriptorCreateDesc::Reflect(ShaderStage stage, const std::string& shaderPath, std::map<std::string, bool>* defines)
 	{
 		const auto locAddElementFn = [this](ShaderStage stage, DescriptorType descriptorType, const spirv_cross::Compiler& compiler, const spirv_cross::Resource& res)
 		{
@@ -118,10 +118,9 @@ namespace SmolEngine
 				ShaderCompileDesc compileDesc{};
 				compileDesc.myStage = stage;
 				compileDesc.myFilePath = shaderPath;
-				if (reflectionDesc)
+				if (defines)
 				{
-					compileDesc.myDefines = reflectionDesc->myDefines;
-					compileDesc.myIncludeDir = reflectionDesc->myIncludeDir;
+					compileDesc.myDefines = *defines;
 				}
 
 				Gfx_ShaderCompiler::CompileSPIRV(compileDesc, binaries);

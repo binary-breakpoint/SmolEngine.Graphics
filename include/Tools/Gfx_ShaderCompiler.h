@@ -7,7 +7,6 @@ namespace SmolEngine
 	{
 		std::string myFilePath = "";
 		std::string myFilePathOut = "";
-		std::string myIncludeDir = "";
 		ShaderStage myStage = ShaderStage::Fragment;
 		std::map<std::string, bool> myDefines;
 		bool myOptimize = true;
