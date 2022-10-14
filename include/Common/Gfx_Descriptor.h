@@ -44,7 +44,7 @@ namespace SmolEngine
 		void Clear();
 
 		void SetPushConstants(PushConstantsDesc* ps);
-		void Reflect(ShaderStage stage, const std::string& shaderPath, std::map<std::string, bool>* defines = nullptr);
+		void Reflect(Gfx_Shader* shader);
 
 		DescriptorDesc* GetByIndex(uint32_t index);
 		DescriptorDesc* GetByName(const char* name);

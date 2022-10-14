@@ -75,7 +75,7 @@ namespace SmolEngine
 		return desc;
 	}
 
-	void DescriptorCreateDesc::Reflect(ShaderStage stage, const std::string& shaderPath, std::map<std::string, bool>* defines)
+	void DescriptorCreateDesc::Reflect(Gfx_Shader* shader)
 	{
 		const auto locAddElementFn = [this](ShaderStage stage, DescriptorType descriptorType, const spirv_cross::Compiler& compiler, const spirv_cross::Resource& res)
 		{
@@ -106,75 +106,57 @@ namespace SmolEngine
 			}
 		};
 
-		std::vector<uint32_t> binaries;
+		for (auto& [stage, binaries] : shader->m_Binary)
 		{
-			std::string cachedPath = Gfx_Helpers::GetCachedPath(shaderPath, CachedPathType::Shader);
-			if (Gfx_Helpers::IsPathValid(cachedPath))
+			spirv_cross::Compiler compiler(binaries);
+			spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+			for (const auto& res : resources.push_constant_buffers)
 			{
-				Gfx_ShaderCompiler::LoadSPIRV(cachedPath, binaries);
+				auto& type = compiler.get_type(res.base_type_id);
+
+				PushConstantsDesc pcDesc;
+				pcDesc.myOffset = 0;
+				pcDesc.mySize = static_cast<uint32_t>(compiler.get_declared_struct_size(type));
+				pcDesc.myStages = stage;
+
+				SetPushConstants(&pcDesc);
 			}
-			else
+
+			for (const auto& res : resources.uniform_buffers)
 			{
-				ShaderCompileDesc compileDesc{};
-				compileDesc.myStage = stage;
-				compileDesc.myFilePath = shaderPath;
-				if (defines)
-				{
-					compileDesc.myDefines = *defines;
-				}
-
-				Gfx_ShaderCompiler::CompileSPIRV(compileDesc, binaries);
+				locAddElementFn(stage, DescriptorType::UNIFORM_BUFFER, compiler, res);
 			}
-		}
 
-		spirv_cross::Compiler compiler(binaries);
-		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+			for (const auto& res : resources.storage_buffers)
+			{
+				locAddElementFn(stage, DescriptorType::STORAGE_BUFFER, compiler, res);
+			}
 
-		for (const auto& res : resources.push_constant_buffers)
-		{
-			auto& type = compiler.get_type(res.base_type_id);
+			for (const auto& res : resources.acceleration_structures)
+			{
+				locAddElementFn(stage, DescriptorType::ACCEL_STRUCTURE, compiler, res);
+			}
 
-			PushConstantsDesc pcDesc;
-			pcDesc.myOffset = 0;
-			pcDesc.mySize = static_cast<uint32_t>(compiler.get_declared_struct_size(type));
-			pcDesc.myStages = stage;
+			for (const auto& res : resources.sampled_images)
+			{
+				locAddElementFn(stage, DescriptorType::COMBINED_IMAGE_SAMPLER_2D, compiler, res);
+			}
 
-			SetPushConstants(&pcDesc);
-		}
+			for (const auto& res : resources.storage_images)
+			{
+				locAddElementFn(stage, DescriptorType::IMAGE_2D, compiler, res);
+			}
 
-		for (const auto& res : resources.uniform_buffers)
-		{
-			locAddElementFn(stage, DescriptorType::UNIFORM_BUFFER, compiler, res);
-		}
+			for (const auto& res : resources.separate_images)
+			{
+				locAddElementFn(stage, DescriptorType::TEXTURE_2D, compiler, res);
+			}
 
-		for (const auto& res : resources.storage_buffers)
-		{
-			locAddElementFn(stage, DescriptorType::STORAGE_BUFFER, compiler, res);
-		}
-
-		for (const auto& res : resources.acceleration_structures)
-		{
-			locAddElementFn(stage, DescriptorType::ACCEL_STRUCTURE, compiler, res);
-		}
-
-		for (const auto& res : resources.sampled_images)
-		{
-			locAddElementFn(stage, DescriptorType::COMBINED_IMAGE_SAMPLER_2D, compiler, res);
-		}
-
-		for (const auto& res : resources.storage_images)
-		{
-			locAddElementFn(stage, DescriptorType::IMAGE_2D, compiler, res);
-		}
-
-		for (const auto& res : resources.separate_images)
-		{
-			locAddElementFn(stage, DescriptorType::TEXTURE_2D, compiler, res);
-		}
-
-		for (const auto& res : resources.separate_samplers)
-		{
-			locAddElementFn(stage, DescriptorType::SEPARATE_SAMPLER, compiler, res);
+			for (const auto& res : resources.separate_samplers)
+			{
+				locAddElementFn(stage, DescriptorType::SEPARATE_SAMPLER, compiler, res);
+			}
 		}
 	}
 

@@ -29,6 +29,7 @@ namespace SmolEngine
 		void Create(ShaderCreateDesc* desc);
 		void Free();
 		void Realod();
+		void CleanUp();
 		bool IsGood() const;
 
 		ShaderCreateDesc& GetDesc();

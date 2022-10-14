@@ -45,23 +45,23 @@ int main(int argc, char** argv)
 		storageImage.Create(&desc);
 	}
 
+	Gfx_Shader compShader;
+	{
+		ShaderCreateDesc shaderDesc;
+		shaderDesc.myStages = { {ShaderStage::Compute, "shaders/raymarching.comp"} };
+		compShader.Create(&shaderDesc);
+	}
+
 	Gfx_Descriptor compDescriptor;
 	{
 		DescriptorCreateDesc descriptorDesc{};
-		descriptorDesc.Reflect(ShaderStage::Compute, "shaders/raymarching.comp");
+		descriptorDesc.Reflect(&compShader);
 
 		DescriptorDesc* descriptor = descriptorDesc.GetByName("o_Image");
 		descriptor->myPixelStorage = storageImage.GetPixelStorage();
 		descriptor->mySampler = Gfx_Context::GetSampler();
 
 		compDescriptor.Create(&descriptorDesc);
-	}
-
-	Gfx_Shader compShader;
-	{
-		ShaderCreateDesc shaderDesc;
-		shaderDesc.myStages = { {ShaderStage::Compute, "shaders/raymarching.comp"} };
-		compShader.Create(&shaderDesc);
 	}
 
 	Gfx_CompPipeline compPipeline;

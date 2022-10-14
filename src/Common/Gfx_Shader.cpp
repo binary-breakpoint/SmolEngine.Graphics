@@ -297,10 +297,14 @@ namespace SmolEngine
 		Create(&m_CreateInfo);
 	}
 
-	void Gfx_Shader::Free()
+	void Gfx_Shader::CleanUp()
 	{
 		m_Binary.clear();
+	}
 
+	void Gfx_Shader::Free()
+	{
+		CleanUp();
 		DestroyModules();
 	}
 
