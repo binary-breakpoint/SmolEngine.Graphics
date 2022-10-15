@@ -51,7 +51,7 @@ namespace SmolEngine
 		void CmdBindDescriptor(Gfx_CmdBuffer* cmd, Gfx_Descriptor* another = nullptr);
 		void CmdPushConstant(Gfx_CmdBuffer* cmd, ShaderStage stage, uint32_t size, const void* data);
 		void CmdDrawIndexed(Gfx_CmdBuffer* cmd, Gfx_VertexBuffer* vb, Gfx_IndexBuffer* ib);
-		void CmdDraw(Gfx_CmdBuffer* cmd, Gfx_VertexBuffer* vb, uint32_t vertextCount);
+		void CmdDraw(Gfx_CmdBuffer* cmd, uint32_t vertextCount, Gfx_VertexBuffer* vb = nullptr);
 		void CmdDrawMeshIndexed(Gfx_CmdBuffer* cmd, Gfx_Mesh* mesh, uint32_t instances = 1);
 		void CmdDrawMesh(Gfx_CmdBuffer* cmd, Gfx_Mesh* mesh, uint32_t instances = 1);    
 

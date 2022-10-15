@@ -92,13 +92,16 @@ namespace SmolEngine
 		vkCmdDrawIndexed(cmd, ib->GetCount(), 1, 0, 0, 1);
 	}
 
-	void Gfx_Pipeline::CmdDraw(Gfx_CmdBuffer* cmdBuffer, Gfx_VertexBuffer* vb, uint32_t vertextCount)
+	void Gfx_Pipeline::CmdDraw(Gfx_CmdBuffer* cmdBuffer, uint32_t vertextCount, Gfx_VertexBuffer* vb)
 	{
-		VkDeviceSize offsets[1] = { 0 };
-		VkBuffer vk_vb = vb->GetBuffer().GetRawBuffer();
 		VkCommandBuffer cmd = cmdBuffer->GetBuffer();
+		if (vb != nullptr)
+		{
+			VkDeviceSize offsets[1] = { 0 };
+			VkBuffer buffer = vb->GetBuffer().GetRawBuffer();
+			vkCmdBindVertexBuffers(cmd, 0, 1, &buffer, offsets);
+		}
 
-		vkCmdBindVertexBuffers(cmd, 0, 1, &vk_vb, offsets);
 		vkCmdDraw(cmd, vertextCount, 1, 0, 0);
 	}
 
