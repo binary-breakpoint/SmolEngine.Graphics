@@ -292,6 +292,7 @@ namespace SmolEngine
 		{
 		case CachedPathType::Shader:
 
+			std::filesystem::create_directory(resourcesPath + "/spirv");
 			return resourcesPath + "/spirv/" + fileName + ".spirv";
 
 		case CachedPathType::Pipeline:
