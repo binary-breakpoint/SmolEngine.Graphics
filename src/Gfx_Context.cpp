@@ -249,23 +249,21 @@ namespace SmolEngine
 	{
 		GFX_ASSERT(glfwVulkanSupported() == GLFW_TRUE)
 
-		m_Instance.Init();
+		m_Instance.Create();
 
 #ifdef AFTERMATH
 		// Enable Nsight Aftermath GPU crash dump creation.
 		// This needs to be done before the Vulkan device is created.
 		m_CrachTracker.Initialize();
 #endif
-		m_Device.Init(&m_Instance);
+		m_Device.Create(&m_Instance);
 
 		m_Allocator = new Gfx_VulkanAllocator();
 		m_Allocator->Init(&m_Device, &m_Instance);
 
 		const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
 
-		bool initialized = m_Swapchain.Init(&m_Instance, &m_Device, GetWindow()->GetNativeWindow(), !winDesc.myTargetsSwapchain);
-
-		GFX_ASSERT_MSG(initialized, "Couldn't create swapchain!")
+		m_Swapchain.Init(&m_Instance, &m_Device, GetWindow()->GetNativeWindow(), !winDesc.myTargetsSwapchain);
 
 		uint32_t* width = &m_Window->GetData()->myWidth;
 		uint32_t* height = &m_Window->GetData()->myHeight;

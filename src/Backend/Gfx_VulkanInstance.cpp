@@ -49,12 +49,7 @@ namespace SmolEngine
 		VulkanInstance_DestroyDebugUtilsMessengerEXT(m_Instance, m_Messenger, nullptr);
 	}
 
-	void Gfx_VulkanInstance::Init()
-	{
-		CreateAppInfo();
-	}
-
-	bool Gfx_VulkanInstance::CreateAppInfo()
+	void Gfx_VulkanInstance::Create()
 	{
 		VkApplicationInfo appInfo = {};
 		{
@@ -67,13 +62,9 @@ namespace SmolEngine
 			appInfo.apiVersion = VK_API_VERSION_1_3;
 		}
 
-		return CreateInstance(appInfo);
-	}
-
-	bool Gfx_VulkanInstance::CreateInstance(const VkApplicationInfo& appInfo)
-	{
 		std::vector<const char*> instanceLayers = {};
-		m_Extensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,  "VK_KHR_win32_surface" };
+		m_Extensions = { VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+			"VK_KHR_win32_surface" };
 
 #ifdef SMOLENGINE_DEBUG
 		instanceLayers.push_back("VK_LAYER_KHRONOS_validation");
@@ -83,14 +74,14 @@ namespace SmolEngine
 		VkInstanceCreateInfo instanceInfo = {};
 		{
 			instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-			instanceInfo.pApplicationInfo= &appInfo;
+			instanceInfo.pApplicationInfo = &appInfo;
 			instanceInfo.enabledExtensionCount = static_cast<uint32_t>(m_Extensions.size());
 			instanceInfo.ppEnabledExtensionNames = m_Extensions.data();
 			instanceInfo.enabledLayerCount = static_cast<uint32_t>(instanceLayers.size());
 			instanceInfo.ppEnabledLayerNames = instanceLayers.data();
 		}
 
-		VkResult result = vkCreateInstance(&instanceInfo, nullptr, &m_Instance);
+		GFX_ASSERT(vkCreateInstance(&instanceInfo, nullptr, &m_Instance) == VK_SUCCESS);
 
 #ifdef SMOLENGINE_DEBUG
 		VkDebugUtilsMessengerCreateInfoEXT createInfo{};
@@ -102,10 +93,6 @@ namespace SmolEngine
 
 		GFX_ASSERT_MSG(VulkanInstance_CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_Messenger) == VK_SUCCESS, "failed to set up debug messenger!");
 #endif
-
-		GFX_ASSERT(result == VK_SUCCESS);
-
-		return result == VK_SUCCESS;
 	}
 
 	const VkInstance Gfx_VulkanInstance::GetInstance() const

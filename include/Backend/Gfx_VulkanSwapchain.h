@@ -34,8 +34,8 @@ namespace SmolEngine
 
 		Gfx_VulkanSwapchain();
 
-		bool Init(Gfx_VulkanInstance* instance, Gfx_VulkanDevice* device, GLFWwindow* window, bool clearOP);
-		bool Prepare(uint32_t width, uint32_t height);
+		void Init(Gfx_VulkanInstance* instance, Gfx_VulkanDevice* device, GLFWwindow* window, bool clearOP);
+		void Prepare(uint32_t width, uint32_t height);
 		void Create(uint32_t* width, uint32_t* height, bool vSync = false);
 		void ClearColors(VkCommandBuffer cmdBuffer, const glm::vec4& color);
 		void CleanUp();
@@ -58,10 +58,10 @@ namespace SmolEngine
 		uint32_t GetWidth() const;
 
 	private:
-		VkResult CreateFramebuffers(uint32_t width, uint32_t height);
-		VkResult InitSurface(GLFWwindow* window);
-		VkResult CreateRenderPass(bool clearOP);
-		VkResult CreateDepthStencil();
+		void CreateFramebuffers(uint32_t width, uint32_t height);
+		void InitSurface(GLFWwindow* window);
+		void CreateRenderPass(bool clearOP);
+		void CreateDepthStencil();
 		void GetPtrs();
 		void FindColorSpaceFormat();
 		void FindDepthStencilFormat();

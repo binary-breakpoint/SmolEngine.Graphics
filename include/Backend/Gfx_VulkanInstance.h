@@ -9,19 +9,12 @@ namespace SmolEngine
 		Gfx_VulkanInstance();
 		~Gfx_VulkanInstance();
 
-		void                     Init();
-		const VkInstance         GetInstance() const;
+		void Create();
+		const VkInstance GetInstance() const;
 
 	private:
-		bool                     CreateAppInfo();
-		bool                     CreateInstance(const VkApplicationInfo& info);
-
-	private:
-		VkInstance               m_Instance;
+		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_Messenger;
 		std::vector<const char*> m_Extensions;
-
-		friend class VulkanRendererAPI;
-		friend class DenoisePass;
 	};
 }

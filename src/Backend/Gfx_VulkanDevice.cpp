@@ -18,27 +18,13 @@ namespace SmolEngine
 
 	}
 
-	bool Gfx_VulkanDevice::Init(const Gfx_VulkanInstance* instance)
+	void Gfx_VulkanDevice::Create(const Gfx_VulkanInstance* instance)
 	{
-		if (SetupPhysicalDevice(instance))
-		{
-			std::stringstream ss;
-			ss << "Vulkan Info:\n\n";
-			ss << "           Vulkan API Version: " << std::to_string(m_DeviceProperties.apiVersion) << "\n";
-			ss << "           Selected Device: " << std::string(m_DeviceProperties.deviceName) << "\n";
-			ss << "           Driver Version: " << std::to_string(m_DeviceProperties.driverVersion) << "\n";
-			ss << "           Raytracing Enabled: " << std::to_string(m_RayTracingEnabled) << "\n";
-			ss << "           Max push_constant size: " << std::to_string(m_DeviceProperties.limits.maxPushConstantsSize) << "\n\n";
-
-			GFX_LOG(ss.str(), Gfx_Log::Level::Info)
-
-			return SetupLogicalDevice();
-		}
-
-		return false;
+		SetupPhysicalDevice(instance);
+		SetupLogicalDevice();
 	}
 
-	bool Gfx_VulkanDevice::SetupPhysicalDevice(const Gfx_VulkanInstance* _instance)
+	void Gfx_VulkanDevice::SetupPhysicalDevice(const Gfx_VulkanInstance* _instance)
 	{
 		const VkInstance& instance = _instance->GetInstance();
 	 
@@ -90,10 +76,10 @@ namespace SmolEngine
 				SelectDevice(current_device);
 		}
 
-		return m_PhysicalDevice != VK_NULL_HANDLE;
+		GFX_ASSERT(m_PhysicalDevice != VK_NULL_HANDLE)
 	}
 
-	bool Gfx_VulkanDevice::SetupLogicalDevice()
+	void Gfx_VulkanDevice::SetupLogicalDevice()
 	{
 		const float priority = 0.0f;
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -194,15 +180,15 @@ namespace SmolEngine
 #endif
 		}
 
-		VkResult result = vkCreateDevice(m_PhysicalDevice, &deviceInfo, nullptr, &m_LogicalDevice);
+		GFX_ASSERT(vkCreateDevice(m_PhysicalDevice, &deviceInfo, nullptr, &m_LogicalDevice) == VK_SUCCESS)
 
 		vkGetDeviceQueue(m_LogicalDevice, m_QueueFamilyIndices.Graphics, 0, &m_GraphicsQueue);
 		vkGetDeviceQueue(m_LogicalDevice, m_QueueFamilyIndices.Compute, 0, &m_ComputeQueue);
 
 		GetFuncPtrs();
 
-		assert(result == VK_SUCCESS);
-		return result == VK_SUCCESS;
+		GFX_LOG("Vulkan Info : \n\nVulkan API Version : {}\nSelected Device : {}\nDriver Version : {}\nRaytracing Enabled : {}\nMax push_constant size : {}\n", Gfx_Log::Level::Warning,
+			m_DeviceProperties.apiVersion, m_DeviceProperties.deviceName, m_DeviceProperties.driverVersion, m_RayTracingEnabled, m_DeviceProperties.limits.maxPushConstantsSize)
 	}
 
 	bool Gfx_VulkanDevice::HasRequiredExtensions(const VkPhysicalDevice& device, const std::vector<const char*>& extensionsList)
@@ -268,17 +254,14 @@ namespace SmolEngine
 		VkPhysicalDeviceMemoryProperties memoryProperties = {};
 		vkGetPhysicalDeviceMemoryProperties(device, &memoryProperties);
 
-		if (deviceProperties2.properties.deviceType == VkPhysicalDeviceType::VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-		{
-			int requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
+		int requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
 
-			m_QueueFamilyIndices = GetQueueFamilyIndices(requestedQueueTypes);
-			m_DeviceProperties = deviceProperties2.properties;
-			m_DeviceFeatures = deviceFeatures2.features;
-			m_MemoryProperties = memoryProperties;
-			m_DeviceFeatures.shaderSampledImageArrayDynamicIndexing = VK_TRUE;
-			m_PhysicalDevice = device;
-		}
+		m_QueueFamilyIndices = GetQueueFamilyIndices(requestedQueueTypes);
+		m_DeviceProperties = deviceProperties2.properties;
+		m_DeviceFeatures = deviceFeatures2.features;
+		m_MemoryProperties = memoryProperties;
+		m_DeviceFeatures.shaderSampledImageArrayDynamicIndexing = VK_TRUE;
+		m_PhysicalDevice = device;
 	}
 
 	void Gfx_VulkanDevice::GetFuncPtrs()

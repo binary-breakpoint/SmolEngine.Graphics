@@ -45,7 +45,7 @@ namespace SmolEngine
 
     }
 
-    bool Gfx_VulkanSwapchain::Init(Gfx_VulkanInstance* instance, Gfx_VulkanDevice* device, GLFWwindow* window, bool clearOP)
+    void Gfx_VulkanSwapchain::Init(Gfx_VulkanInstance* instance, Gfx_VulkanDevice* device, GLFWwindow* window, bool clearOP)
     {
         m_Instance = instance;
 		m_Device = device;
@@ -53,27 +53,15 @@ namespace SmolEngine
 
 		GetPtrs();
 		FindDepthStencilFormat();
-		if (InitSurface(window) == VK_SUCCESS)
-		{
-			return CreateRenderPass(clearOP) == VK_SUCCESS;
-		}
-
-		return false;
+		InitSurface(window);
+		CreateRenderPass(clearOP);
     }
 
-	bool Gfx_VulkanSwapchain::Prepare(uint32_t width, uint32_t height)
+	void Gfx_VulkanSwapchain::Prepare(uint32_t width, uint32_t height)
 	{
 		FreeResources();
-
-		if (CreateDepthStencil() == VK_SUCCESS)
-		{
-			if (CreateFramebuffers(width, height) == VK_SUCCESS)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		CreateDepthStencil();
+		CreateFramebuffers(width, height);
 	}
 
 	void Gfx_VulkanSwapchain::Create(uint32_t* width, uint32_t* height, bool vSync)
@@ -337,10 +325,9 @@ namespace SmolEngine
 		}
 	}
 
-    VkResult Gfx_VulkanSwapchain::InitSurface(GLFWwindow* window)
+    void Gfx_VulkanSwapchain::InitSurface(GLFWwindow* window)
     {
-		VkResult result = glfwCreateWindowSurface(m_Instance->GetInstance(), window, nullptr, &m_Surface);
-		VK_CHECK_RESULT(result);
+		VK_CHECK_RESULT(glfwCreateWindowSurface(m_Instance->GetInstance(), window, nullptr, &m_Surface));
 
 		VkBool32 supported;
 		vkGetPhysicalDeviceSurfaceSupportKHR(m_Device->GetPhysicalDevice(), 
@@ -348,11 +335,9 @@ namespace SmolEngine
 		assert(supported == 1);
 
 		FindColorSpaceFormat();
-
-		return result;
     }
 
-	VkResult Gfx_VulkanSwapchain::CreateRenderPass(bool clearOP)
+	void Gfx_VulkanSwapchain::CreateRenderPass(bool clearOP)
 	{
 		VkResult result = VK_ERROR_UNKNOWN;
 		std::array<VkAttachmentDescription, 2> attachments = {};
@@ -418,24 +403,18 @@ namespace SmolEngine
 			renderPassCI.pDependencies = &subpassDependency;
 		}
 
-		result = vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassCI, nullptr, &m_RenderPass);
-		VK_CHECK_RESULT(result);
+		VK_CHECK_RESULT(vkCreateRenderPass(m_Device->GetLogicalDevice(), &renderPassCI, nullptr, &m_RenderPass));
 
 		VkPipelineCacheCreateInfo pipelineCacheCI = {};
 		{
 			pipelineCacheCI.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 		}
 
-		result = vkCreatePipelineCache(m_Device->GetLogicalDevice(), &pipelineCacheCI, nullptr, &m_PipelineCash);
-		VK_CHECK_RESULT(result);
-
-		return result;
+		VK_CHECK_RESULT(vkCreatePipelineCache(m_Device->GetLogicalDevice(), &pipelineCacheCI, nullptr, &m_PipelineCash));
 	}
 
-	VkResult Gfx_VulkanSwapchain::CreateDepthStencil()
+	void Gfx_VulkanSwapchain::CreateDepthStencil()
 	{
-		VkResult result = VK_ERROR_UNKNOWN;
-
 		VkImageCreateInfo imageCI = {};
 		imageCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageCI.imageType = VK_IMAGE_TYPE_2D;
@@ -469,11 +448,8 @@ namespace SmolEngine
 			depthStencilViewCI.components.b = VK_COMPONENT_SWIZZLE_B;
 			depthStencilViewCI.components.a = VK_COMPONENT_SWIZZLE_A;
 
-			result = vkCreateImageView(m_Device->GetLogicalDevice(), &depthStencilViewCI, nullptr, &m_DepthStencil->ImageView);
-			VK_CHECK_RESULT(result);
+			VK_CHECK_RESULT(vkCreateImageView(m_Device->GetLogicalDevice(), &depthStencilViewCI, nullptr, &m_DepthStencil->ImageView));
 		}
-
-		return result;
 	}
 
 	void Gfx_VulkanSwapchain::GetPtrs()
@@ -515,9 +491,8 @@ namespace SmolEngine
 			"vkQueuePresentKHR"));
 	}
 
-	VkResult Gfx_VulkanSwapchain::CreateFramebuffers(uint32_t width, uint32_t height)
+	void Gfx_VulkanSwapchain::CreateFramebuffers(uint32_t width, uint32_t height)
 	{
-		VkResult result = VK_ERROR_UNKNOWN;
 		VkImageView ivAttachment[2];
 		// Depth attachment is the same for all framebuffers
 		ivAttachment[1] = m_DepthStencil->ImageView;
@@ -539,9 +514,7 @@ namespace SmolEngine
 		for (uint32_t i = 0; i < m_Framebuffers.size(); ++i)
 		{
 			ivAttachment[0] = m_Buffers[i].View;
-			result = (vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCI, nullptr, &m_Framebuffers[i]));
-
-			GFX_ASSERT_MSG(result == VK_SUCCESS, "VulkanFramebuffer::Create: Failed to create framebuffer object!")
+			VK_CHECK_RESULT(vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCI, nullptr, &m_Framebuffers[i]));
 		}
 
 		m_ClearAttachments[0].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -550,8 +523,6 @@ namespace SmolEngine
 
 		m_ClearAttachments[1].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 		m_ClearAttachments[1].clearValue.depthStencil = { 1.0f, 0 };
-
-		return result;
 	}
 
 	void Gfx_VulkanSwapchain::FindColorSpaceFormat()

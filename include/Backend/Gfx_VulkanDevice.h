@@ -29,7 +29,7 @@ namespace SmolEngine
 
 		Gfx_VulkanDevice();
 
-		bool Init(const Gfx_VulkanInstance* instance);			
+		void Create(const Gfx_VulkanInstance* instance);			
 
 		uint32_t GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags memFlags) const;
 		const VkPhysicalDeviceMemoryProperties* GetMemoryProperties() const;
@@ -56,11 +56,11 @@ namespace SmolEngine
 		VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures{};
 
 	private:											 
-		bool SetupPhysicalDevice(const Gfx_VulkanInstance* instance);
 		bool HasRequiredExtensions(const VkPhysicalDevice& device, const std::vector<const char*>& extensionsList);
 		QueueFamilyIndices GetQueueFamilyIndices(int flags);
-		bool SetupLogicalDevice();
 
+		void SetupLogicalDevice();
+		void SetupPhysicalDevice(const Gfx_VulkanInstance* instance);
 		void SelectDevice(VkPhysicalDevice device);
 		void GetFuncPtrs();
 
