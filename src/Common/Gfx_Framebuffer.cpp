@@ -4,7 +4,7 @@
 #include "Common/Gfx_CmdBuffer.h"
 #include "Backend/Gfx_VulkanHelpers.h"
 
-#include <imgui/examples/imgui_impl_vulkan.h>
+#include <imgui/backends/imgui_impl_vulkan.h>
 
 namespace SmolEngine
 {
@@ -94,12 +94,14 @@ namespace SmolEngine
 
 			attachment.myPixelStorage.Create(&pixelStorageDesc);
 
-			attachment.myImageInfo.imageLayout = attachment.myPixelStorage.GetImageLayout();
-			attachment.myImageInfo.imageView = attachment.myPixelStorage.GetImageView();
-			attachment.myImageInfo.sampler = info->mySampler->GetSampler();
+			VkDescriptorImageInfo& descriptorInfo = attachment.myImageInfo;
+			descriptorInfo.imageLayout = attachment.myPixelStorage.GetImageLayout();
+			descriptorInfo.imageView = attachment.myPixelStorage.GetImageView();
+			descriptorInfo.sampler = info->mySampler->GetSampler();
 
 			if (info->myIsUsedByImGui && !info->myIsTargetsSwapchain && !isDepthAttachement)
-				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(attachment.myImageInfo);
+				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(descriptorInfo.sampler, descriptorInfo.imageView,
+					descriptorInfo.imageLayout);
 
 			imageViews[i] = attachment.myPixelStorage.GetImageView();
 

@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
-#include <imgui/examples/imgui_impl_vulkan.h>
+#include <imgui/backends/imgui_impl_vulkan.h>
 
 namespace SmolEngine
 {
@@ -176,7 +176,8 @@ namespace SmolEngine
 		m_DescriptorImageInfo.sampler = info->mySampler->GetSampler();
 
 		if(info->myImGUIHandleEnable)
-			m_ImguiHandle = ImGui_ImplVulkan_AddTexture(m_DescriptorImageInfo);
+			m_ImguiHandle = ImGui_ImplVulkan_AddTexture(m_DescriptorImageInfo.sampler,
+				m_DescriptorImageInfo.imageView, m_DescriptorImageInfo.imageLayout);
 
 		m_Desc = *info;
 	}

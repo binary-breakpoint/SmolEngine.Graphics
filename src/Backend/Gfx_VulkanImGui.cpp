@@ -5,13 +5,13 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
-#include <imgui/examples/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 
 #include <GLFW/glfw3.h>
 
 #define GLFW_INCLUDE_VULKAN
 #define IMGUI_VULKAN_DEBUG_REPORT
-#include <imgui/examples/imgui_impl_vulkan.h>
+#include <imgui/backends/imgui_impl_vulkan.h>
 
 #include <implot/implot.h>
 #include <imgizmo/src/ImGuizmo.h>

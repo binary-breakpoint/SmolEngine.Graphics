@@ -116,16 +116,16 @@ vec3 toneMapACES(vec3 color)
 void main()
 {
     PointLight light;
-    light.position = vec4(0, 2.2, 0, 0);
-    light.color = vec4(0.9, 0.9, 0.9, 1.0);
-    light.intensity = 10.0;
+    light.position = vec4(1, 1.2, 2, 1);
+    light.color = vec4(1, 0, 0.1, 1.0);
+    light.intensity = 7.0;
     light.raduis = 1000.0;
     light.bias = 0.01;
 
     vec4 normal = vec4(v_TBN[2], 1.0);
     vec3 albedo = pow(vec3(0.2), vec3(2.2));
 
-    float metalness = 0.7f;
+    float metalness = 1.0f;
     float roughness = 0.3f;
 
     vec3 V = normalize(v_CamPos.xyz - v_FragPos.xyz);
@@ -135,5 +135,13 @@ void main()
 
     vec3 Lo = CalcPointLight(light, V, normal.xyz, F0, albedo, metalness, roughness, v_FragPos.xyz);
 
-    out_color = vec4(toneMapACES(Lo), 1);
+    light.color = vec4(0, 0, 1, 1.0);
+    light.position = vec4(-1, 1.2, -2, 1);
+    Lo += CalcPointLight(light, V, normal.xyz, F0, albedo, metalness, roughness, v_FragPos.xyz);
+
+    light.color = vec4(0, 1, 0, 1.0);
+    light.position = vec4(1, -1.2, 1, 1);
+    Lo += CalcPointLight(light, V, normal.xyz, F0, albedo, metalness, roughness, v_FragPos.xyz);
+
+    out_color = vec4(toneMapACES(Lo), 1) + 0.2;
 }

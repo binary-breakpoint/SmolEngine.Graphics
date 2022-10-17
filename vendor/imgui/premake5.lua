@@ -27,8 +27,8 @@ project "ImGui"
 
 		"misc/cpp/imgui_stdlib.cpp",
 
-		"examples/imgui_impl_glfw.cpp",
-		"examples/imgui_impl_vulkan.cpp",
+		"backends/imgui_impl_glfw.cpp",
+		"backends/imgui_impl_vulkan.cpp",
 	}
 
 	includedirs
