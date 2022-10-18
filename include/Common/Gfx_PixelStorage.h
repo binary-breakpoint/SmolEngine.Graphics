@@ -19,7 +19,7 @@ namespace SmolEngine
 		VkImageAspectFlags myAspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		VkImageUsageFlags myUsageFlags;
 		VkImageCreateFlags myCreateFlags;
-		VkImageLayout myLayout;
+		VkImageLayout myLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	private:
 		friend class cereal::access;
 

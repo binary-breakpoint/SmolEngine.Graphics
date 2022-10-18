@@ -138,7 +138,7 @@ namespace SmolEngine
 
 		PixelStorageCreateDesc pixelDesc{};
 
-		pixelDesc.myLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		pixelDesc.myLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		pixelDesc.myArrayLayers = info->myArrayLayers;
 		pixelDesc.myFormat = info->myFormat;
 		pixelDesc.myWidth = info->myWidth;
@@ -159,16 +159,17 @@ namespace SmolEngine
 
 		if (info->myIsShaderWritable)
 		{
-			pixelDesc.myLayout = VK_IMAGE_LAYOUT_GENERAL;
 			pixelDesc.myUsageFlags |= VK_IMAGE_USAGE_STORAGE_BIT;
 		}
 
 		m_PixelStorage.Create(&pixelDesc);
 
+		VkImageLayout finalLayout = info->myIsShaderWritable ? VK_IMAGE_LAYOUT_GENERAL : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
 		if (data != nullptr)
-			Gfx_VulkanHelpers::CopyDataToImage(&m_PixelStorage, data);
+			Gfx_VulkanHelpers::CopyDataToImage(&m_PixelStorage, data, finalLayout);
 		else
-			Gfx_VulkanHelpers::InitializeImageResource(&m_PixelStorage, m_PixelStorage.GetImageLayout());
+			Gfx_VulkanHelpers::InitializeImageResource(&m_PixelStorage, finalLayout);
 
 		m_DescriptorImageInfo = {};
 		m_DescriptorImageInfo.imageLayout = m_PixelStorage.GetImageLayout();

@@ -494,7 +494,7 @@ namespace SmolEngine
 		vkCmdClearColorImage(cmdbuffer, storage->m_Image, layout, &val, pRange == nullptr ? 0 : 1, pRange);
 	}
 
-	void Gfx_VulkanHelpers::CopyDataToImage(Gfx_PixelStorage* storage, void* data)
+	void Gfx_VulkanHelpers::CopyDataToImage(Gfx_PixelStorage* storage, void* data, VkImageLayout layout)
 	{
 		BufferCreateDesc bufferDesc{};
 		bufferDesc.myData = data;
@@ -517,10 +517,9 @@ namespace SmolEngine
 
 		InsertImageMemoryBarrier(
 			cmdBuffer.GetBuffer(),
-			storage->m_Image,
+			storage,
 			0,
 			VK_ACCESS_TRANSFER_WRITE_BIT,
-			VK_IMAGE_LAYOUT_UNDEFINED,
 			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			VK_PIPELINE_STAGE_TRANSFER_BIT,
 			VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -538,22 +537,10 @@ namespace SmolEngine
 		vkCmdCopyBufferToImage(cmdBuffer.GetBuffer(), stagingBuffer.GetRawBuffer(), storage->m_Image,
 			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &bufferCopyRegion);
 
-		InsertImageMemoryBarrier(
-			cmdBuffer.GetBuffer(),
-			storage->m_Image,
-			VK_ACCESS_TRANSFER_WRITE_BIT,
-			VK_ACCESS_TRANSFER_READ_BIT,
-			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-			VK_PIPELINE_STAGE_TRANSFER_BIT,
-			VK_PIPELINE_STAGE_TRANSFER_BIT,
-			subresourceRange);
+		GenerateMipMaps(cmdBuffer.GetBuffer(), storage, subresourceRange);
 
-		if (storage->m_Desc.myMipLevels > 1)
-		{
-			GenerateMipMaps(storage->m_Image, cmdBuffer.GetBuffer(), storage->m_Desc.myWidth,
-				storage->m_Desc.myHeight, storage->m_Desc.myMipLevels, subresourceRange);
-		}
+		InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), storage, 0, 0, layout,
+			VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, subresourceRange);
 
 		cmdBuffer.CmdEndRecord();
 
@@ -574,25 +561,10 @@ namespace SmolEngine
 		subresourceRange.levelCount = storage->m_Desc.myMipLevels;
 		subresourceRange.layerCount = storage->m_Desc.myArrayLayers;
 
-		InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), storage->m_Image, 0, 0,
-			VK_IMAGE_LAYOUT_UNDEFINED, layout,
-			VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-			subresourceRange);
+		GenerateMipMaps(cmdBuffer.GetBuffer(), storage, subresourceRange);
 
-		ImageLayoutTransitionDesc layoutDesc{};
-		layoutDesc.CmdBuffer = cmdBuffer.GetBuffer();
-		layoutDesc.Image = storage->m_Image;
-		layoutDesc.OldImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		layoutDesc.NewImageLayout = layout;
-		layoutDesc.SubresourceRange = subresourceRange;
-
-		SetImageLayout(layoutDesc);
-
-		if (storage->m_Desc.myMipLevels > 1)
-		{
-			GenerateMipMaps(storage->m_Image, cmdBuffer.GetBuffer(), storage->m_Desc.myWidth,
-				storage->m_Desc.myHeight, storage->m_Desc.myMipLevels, subresourceRange);
-		}
+		InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), storage, 0, 0, layout,
+			VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, subresourceRange);
 
 		cmdBuffer.CmdEndRecord();
 
@@ -613,8 +585,8 @@ namespace SmolEngine
 		return false;
 	}
 
-	void Gfx_VulkanHelpers::InsertImageMemoryBarrier(VkCommandBuffer cmdbuffer, VkImage image, VkAccessFlags srcAccessMask,
-		VkAccessFlags dstAccessMask, VkImageLayout oldImageLayout, VkImageLayout newImageLayout, VkPipelineStageFlags srcStageMask,
+	void Gfx_VulkanHelpers::InsertImageMemoryBarrier(VkCommandBuffer cmdbuffer, class Gfx_PixelStorage* storage, VkAccessFlags srcAccessMask,
+		VkAccessFlags dstAccessMask, VkImageLayout newImageLayout, VkPipelineStageFlags srcStageMask,
 		VkPipelineStageFlags dstStageMask, VkImageSubresourceRange subresourceRange)
 	{
 		VkImageMemoryBarrier imageMemoryBarrier = {};
@@ -623,9 +595,9 @@ namespace SmolEngine
 		imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		imageMemoryBarrier.srcAccessMask = srcAccessMask;
 		imageMemoryBarrier.dstAccessMask = dstAccessMask;
-		imageMemoryBarrier.oldLayout = oldImageLayout;
+		imageMemoryBarrier.oldLayout = storage->GetImageLayout();
 		imageMemoryBarrier.newLayout = newImageLayout;
-		imageMemoryBarrier.image = image;
+		imageMemoryBarrier.image = storage->GetImage();
 		imageMemoryBarrier.subresourceRange = subresourceRange;
 
 		vkCmdPipelineBarrier(
@@ -636,27 +608,31 @@ namespace SmolEngine
 			0, nullptr,
 			0, nullptr,
 			1, &imageMemoryBarrier);
+
+		storage->SetImageLayout(newImageLayout);
 	}
 
 
-	void Gfx_VulkanHelpers::GenerateMipMaps(VkImage image, VkCommandBuffer cmd, int32_t width, int32_t height, int32_t mipLevel, VkImageSubresourceRange& range)
+	void Gfx_VulkanHelpers::GenerateMipMaps(VkCommandBuffer cmd, Gfx_PixelStorage* storage, VkImageSubresourceRange& range)
 	{
-		for (int32_t i = 1; i < mipLevel; i++)
+		const PixelStorageCreateDesc& desc = storage->GetDesc();
+
+		for (int32_t i = 1; i < desc.myMipLevels; i++)
 		{
 			VkImageBlit imageBlit{};
 
 			imageBlit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			imageBlit.srcSubresource.layerCount = 1;
 			imageBlit.srcSubresource.mipLevel = i - 1;
-			imageBlit.srcOffsets[1].x = int32_t(width >> (i - 1));
-			imageBlit.srcOffsets[1].y = int32_t(height >> (i - 1));
+			imageBlit.srcOffsets[1].x = int32_t(desc.myWidth >> (i - 1));
+			imageBlit.srcOffsets[1].y = int32_t(desc.myHeight >> (i - 1));
 			imageBlit.srcOffsets[1].z = 1;
 
 			imageBlit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			imageBlit.dstSubresource.layerCount = 1;
 			imageBlit.dstSubresource.mipLevel = i;
-			imageBlit.dstOffsets[1].x = int32_t(width >> i);
-			imageBlit.dstOffsets[1].y = int32_t(height >> i);
+			imageBlit.dstOffsets[1].x = int32_t(desc.myWidth >> i);
+			imageBlit.dstOffsets[1].y = int32_t(desc.myHeight >> i);
 			imageBlit.dstOffsets[1].z = 1;
 
 			VkImageSubresourceRange mipSubRange = {};
@@ -667,10 +643,9 @@ namespace SmolEngine
 
 			InsertImageMemoryBarrier(
 				cmd,
-				image,
+				storage,
 				0,
 				VK_ACCESS_TRANSFER_WRITE_BIT,
-				VK_IMAGE_LAYOUT_UNDEFINED,
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -678,9 +653,9 @@ namespace SmolEngine
 
 			vkCmdBlitImage(
 				cmd,
-				image,
-				VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-				image,
+				storage->GetImage(),
+				storage->GetImageLayout(),
+				storage->GetImage(),
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
 				&imageBlit,
@@ -688,27 +663,14 @@ namespace SmolEngine
 
 			InsertImageMemoryBarrier(
 				cmd,
-				image,
+				storage,
 				VK_ACCESS_TRANSFER_WRITE_BIT,
 				VK_ACCESS_TRANSFER_READ_BIT,
-				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				mipSubRange);
 		}
-
-		range.levelCount = mipLevel;
-		InsertImageMemoryBarrier(
-			cmd,
-			image,
-			VK_ACCESS_TRANSFER_READ_BIT,
-			VK_ACCESS_SHADER_READ_BIT,
-			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			VK_PIPELINE_STAGE_TRANSFER_BIT,
-			VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-			range);
 	}
 
 

@@ -44,17 +44,16 @@ namespace SmolEngine
 		static void ClearImage(class Gfx_PixelStorage* storage, const glm::vec4& color, VkImageLayout layout, 
 			VkCommandBuffer cmdbuffer,  VkImageSubresourceRange* pRange = nullptr);
 
-		static void CopyDataToImage(class Gfx_PixelStorage* storage, void* data);
+		static void CopyDataToImage(class Gfx_PixelStorage* storage, void* data, VkImageLayout layout);
 		static void InitializeImageResource(class Gfx_PixelStorage* storage, VkImageLayout layout);
 		static void CopyPixelStorageToSwapchain(uint32_t width, uint32_t height, Gfx_CmdBuffer* cmd, Gfx_PixelStorage* storage);
 		static bool IsFormatIsFilterable(VkFormat format, VkImageTiling tiling);
 
-		static void InsertImageMemoryBarrier(VkCommandBuffer cmdbuffer, VkImage image, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask,
-			VkImageLayout oldImageLayout, VkImageLayout newImageLayout, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, 
+		static void InsertImageMemoryBarrier(VkCommandBuffer cmdbuffer, class Gfx_PixelStorage* storage, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask,
+			VkImageLayout newImageLayout, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, 
 			VkImageSubresourceRange subresourceRange);
 
-		static void GenerateMipMaps(VkImage image, VkCommandBuffer cmd, int32_t width, int32_t height, int32_t mipLevel, 
-			VkImageSubresourceRange& range);
+		static void GenerateMipMaps(VkCommandBuffer cmd, class Gfx_PixelStorage* storage, VkImageSubresourceRange& range);
 
 		static void CreateVkRenderPass(FramebufferCreateDesc* fbDesc, VkRenderPass& outVkPass);
 

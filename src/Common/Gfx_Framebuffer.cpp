@@ -72,17 +72,6 @@ namespace SmolEngine
 			}
 
 			PixelStorageCreateDesc pixelStorageDesc{};
-			pixelStorageDesc.myLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-			if (isDepthAttachement)
-			{
-				pixelStorageDesc.myLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
-			}
-
-			if (info->myIsTargetsSwapchain && !isDepthAttachement)
-			{
-				pixelStorageDesc.myLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			}
 
 			pixelStorageDesc.myUsageFlags = usageFlags;
 			pixelStorageDesc.myAspectMask = aspectFlags;
@@ -117,11 +106,21 @@ namespace SmolEngine
 
 			m_ClearValues.emplace_back(attachment.myClearValue);
 
+			VkImageLayout finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			if (isDepthAttachement)
+			{
+				finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
+			}
+			else if (info->myIsTargetsSwapchain && !isDepthAttachement)
+			{
+				finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+			}
+
 			ImageLayoutTransitionDesc layoutTransitionDesc{};
 			layoutTransitionDesc.CmdBuffer = cmdBuffer.GetBuffer();
 			layoutTransitionDesc.Image = attachment.myPixelStorage.GetImage();
-			layoutTransitionDesc.OldImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			layoutTransitionDesc.NewImageLayout = pixelStorageDesc.myLayout;
+			layoutTransitionDesc.OldImageLayout = attachment.myPixelStorage.GetImageLayout();
+			layoutTransitionDesc.NewImageLayout = finalLayout;
 			layoutTransitionDesc.SubresourceRange = { aspectFlags, 0, 1, 0, 1 };
 
 			Gfx_VulkanHelpers::SetImageLayout(layoutTransitionDesc);

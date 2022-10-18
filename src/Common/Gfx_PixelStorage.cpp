@@ -34,7 +34,7 @@ namespace SmolEngine
 		imageCI.arrayLayers = m_Desc.myArrayLayers;
 		imageCI.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageCI.tiling = VK_IMAGE_TILING_OPTIMAL;
-		imageCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageCI.initialLayout = desc->myLayout;
 		imageCI.extent = { m_Desc.myWidth, m_Desc.myHeight, 1 };
 		imageCI.usage = m_Desc.myUsageFlags;
 		imageCI.flags = m_Desc.myCreateFlags;
