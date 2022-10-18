@@ -50,7 +50,7 @@ namespace SmolEngine
 			Gfx_Framebuffer::Attachment& attachment = m_Attachments[i];
 
 			const bool isDepthAttachement = Gfx_VulkanHelpers::IsDepthFormat(attachmentDesc.myFormat);
-			
+
 			VkImageUsageFlags usageFlags = isDepthAttachement ? VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT :
 				VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 			VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -88,10 +88,6 @@ namespace SmolEngine
 			descriptorInfo.imageView = attachment.myPixelStorage.GetImageView();
 			descriptorInfo.sampler = info->mySampler->GetSampler();
 
-			if (info->myIsUsedByImGui && !info->myIsTargetsSwapchain && !isDepthAttachement)
-				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(descriptorInfo.sampler, descriptorInfo.imageView,
-					descriptorInfo.imageLayout);
-
 			imageViews[i] = attachment.myPixelStorage.GetImageView();
 
 			if (!attachmentDesc.myName.empty())
@@ -126,7 +122,14 @@ namespace SmolEngine
 			Gfx_VulkanHelpers::SetImageLayout(layoutTransitionDesc);
 
 			if (isDepthAttachement)
+			{
 				m_DepthAttachment = &attachment;
+			}
+			else if(info->myIsUsedByImGui && !info->myIsTargetsSwapchain)
+			{
+				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(descriptorInfo.sampler, descriptorInfo.imageView,
+					descriptorInfo.imageLayout);
+			}
 		}
 
 		cmdBuffer.CmdEndRecord();
