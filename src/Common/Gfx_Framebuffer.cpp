@@ -83,11 +83,6 @@ namespace SmolEngine
 
 			attachment.myPixelStorage.Create(&pixelStorageDesc);
 
-			VkDescriptorImageInfo& descriptorInfo = attachment.myImageInfo;
-			descriptorInfo.imageLayout = attachment.myPixelStorage.GetImageLayout();
-			descriptorInfo.imageView = attachment.myPixelStorage.GetImageView();
-			descriptorInfo.sampler = info->mySampler->GetSampler();
-
 			imageViews[i] = attachment.myPixelStorage.GetImageView();
 
 			if (!attachmentDesc.myName.empty())
@@ -112,14 +107,13 @@ namespace SmolEngine
 				finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 			}
 
-			ImageLayoutTransitionDesc layoutTransitionDesc{};
-			layoutTransitionDesc.CmdBuffer = cmdBuffer.GetBuffer();
-			layoutTransitionDesc.Image = attachment.myPixelStorage.GetImage();
-			layoutTransitionDesc.OldImageLayout = attachment.myPixelStorage.GetImageLayout();
-			layoutTransitionDesc.NewImageLayout = finalLayout;
-			layoutTransitionDesc.SubresourceRange = { aspectFlags, 0, 1, 0, 1 };
+			Gfx_VulkanHelpers::InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), &attachment.myPixelStorage, 0, 0, finalLayout,
+				VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, { aspectFlags, 0, 1, 0, 1 });
 
-			Gfx_VulkanHelpers::SetImageLayout(layoutTransitionDesc);
+			VkDescriptorImageInfo& desc = attachment.myImageInfo;
+			desc.imageLayout = attachment.myPixelStorage.GetImageLayout();
+			desc.imageView = attachment.myPixelStorage.GetImageView();
+			desc.sampler = info->mySampler->GetSampler();
 
 			if (isDepthAttachement)
 			{
@@ -127,8 +121,7 @@ namespace SmolEngine
 			}
 			else if(info->myIsUsedByImGui && !info->myIsTargetsSwapchain)
 			{
-				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(descriptorInfo.sampler, descriptorInfo.imageView,
-					descriptorInfo.imageLayout);
+				attachment.myImGuiID = ImGui_ImplVulkan_AddTexture(desc.sampler, desc.imageView, desc.imageLayout);
 			}
 		}
 
