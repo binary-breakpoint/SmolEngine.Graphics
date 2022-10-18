@@ -72,7 +72,9 @@ namespace SmolEngine
 			fbDesc.myIsAutoSync = false;
 			fbDesc.myIsUsedByImGui = true;
 
-			FramebufferAttachment colorAttachment = FramebufferAttachment(Format::B8G8R8A8_UNORM, glm::vec4(0), "COLOR_0");
+			Format colorFormat = winDesc->myTargetsSwapchain ? Format::B8G8R8A8_UNORM : Format::R8G8B8A8_UNORM;
+
+			FramebufferAttachment colorAttachment = FramebufferAttachment(colorFormat, glm::vec4(0), "COLOR_0");
 			FramebufferAttachment depthAttachment = FramebufferAttachment(Format::D32_SFLOAT_S8_UINT, glm::vec4(1), "Depth_0");
 
 			fbDesc.myAttachments = { colorAttachment, depthAttachment};
