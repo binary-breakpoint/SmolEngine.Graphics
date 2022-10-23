@@ -1,6 +1,7 @@
 #include "Gfx_Precompiled.h"
 #include "Common/Gfx_Texture.h"
 #include "Backend/Gfx_VulkanHelpers.h"
+#include "Gfx_RenderContext.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
@@ -33,8 +34,8 @@ namespace SmolEngine
 				data = stbi_load(info->myFilePath.c_str(), &width, &height, &channels, 4);
 				GFX_ASSERT_MSG(data, "VulkanTexture:: Texture not found!")
 
-				info->myWidth = width;
-				info->myHeight = height;
+				info->mySize.x = width;
+				info->mySize.y = height;
 
 				LoadEX(info, data);
 			}
@@ -48,7 +49,7 @@ namespace SmolEngine
 
 	void Gfx_Texture::Free()
 	{
-		m_PixelStorage.Free();
+		m_PixelStorage->Free();
 
 		for (auto& [key, view] : m_ImageViewMap)
 		{
@@ -63,8 +64,8 @@ namespace SmolEngine
 
 	std::pair<uint32_t, uint32_t> Gfx_Texture::GetMipSize(uint32_t mip) const
 	{
-		uint32_t width = m_Desc.myWidth;
-		uint32_t height = m_Desc.myHeight;
+		uint32_t width = m_Desc.mySize.x;
+		uint32_t height = m_Desc.mySize.y;
 		while (mip != 0)
 		{
 			width /= 2;
@@ -90,10 +91,10 @@ namespace SmolEngine
 			imageViewCreateInfo.subresourceRange.levelCount = 1;
 			imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
 			imageViewCreateInfo.subresourceRange.layerCount = 1;
-			imageViewCreateInfo.image = m_PixelStorage.GetImage();
+			imageViewCreateInfo.image = m_PixelStorage->GetImage();
 
 			VkImageView pView = nullptr;
-			VK_CHECK_RESULT(vkCreateImageView(Gfx_Context::GetDevice().GetLogicalDevice(), &imageViewCreateInfo, nullptr, &pView));
+			VK_CHECK_RESULT(vkCreateImageView(Gfx_App::GetDevice().GetLogicalDevice(), &imageViewCreateInfo, nullptr, &pView));
 			m_ImageViewMap[mip] = pView;
 		}
 
@@ -104,9 +105,9 @@ namespace SmolEngine
 		return imageinfo;
 	}
 
-	Gfx_PixelStorage* Gfx_Texture::GetPixelStorage()
+	Ref<Gfx_PixelStorage> Gfx_Texture::GetPixelStorage()
 	{
-		return &m_PixelStorage;
+		return m_PixelStorage;
 	}
 
 	TextureUsage Gfx_Texture::GetUsageFlags() const
@@ -121,7 +122,7 @@ namespace SmolEngine
 
 	bool Gfx_Texture::IsGood() const
 	{
-		return m_Desc.myWidth > 0;
+		return m_Desc.mySize.x > 0 && m_Desc.mySize.y > 0;
 	}
 
 	uint32_t Gfx_Texture::GetMips() const
@@ -132,17 +133,19 @@ namespace SmolEngine
 	void Gfx_Texture::LoadEX(TextureCreateDesc* info, void* data)
 	{
 		GFX_ASSERT(info);
-		GFX_ASSERT(info->myHeight > 0);
-		GFX_ASSERT(info->myWidth > 0);
-		GFX_ASSERT(info->mySampler)
+		GFX_ASSERT(info->mySize.x > 0 && info->mySize.y > 0)
+
+		if (info->mySampler == nullptr)
+			info->mySampler = Gfx_RenderContext::GetDefaultSampler();
+
+		m_Desc = *info;
 
 		PixelStorageCreateDesc pixelDesc{};
 
 		pixelDesc.myLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		pixelDesc.myArrayLayers = info->myArrayLayers;
 		pixelDesc.myFormat = info->myFormat;
-		pixelDesc.myWidth = info->myWidth;
-		pixelDesc.myHeight = info->myHeight;
+		pixelDesc.mySize = info->mySize;
 		pixelDesc.myMipLevels = info->myMipLevels;
 		pixelDesc.myUsageFlags = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
@@ -162,25 +165,23 @@ namespace SmolEngine
 			pixelDesc.myUsageFlags |= VK_IMAGE_USAGE_STORAGE_BIT;
 		}
 
-		m_PixelStorage.Create(&pixelDesc);
+		m_PixelStorage = Gfx_RenderContext::CreatePixelStorage(pixelDesc);
 
 		VkImageLayout finalLayout = info->myIsShaderWritable ? VK_IMAGE_LAYOUT_GENERAL : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 		if (data != nullptr)
-			Gfx_VulkanHelpers::CopyDataToImage(&m_PixelStorage, data, finalLayout);
+			Gfx_VulkanHelpers::CopyDataToImage(m_PixelStorage.get(), data, finalLayout);
 		else
-			Gfx_VulkanHelpers::InitializeImageResource(&m_PixelStorage, finalLayout);
+			Gfx_VulkanHelpers::InitializeImageResource(m_PixelStorage.get(), finalLayout);
 
 		m_DescriptorImageInfo = {};
-		m_DescriptorImageInfo.imageLayout = m_PixelStorage.GetImageLayout();
-		m_DescriptorImageInfo.imageView = m_PixelStorage.GetImageView();
+		m_DescriptorImageInfo.imageLayout = m_PixelStorage->GetImageLayout();
+		m_DescriptorImageInfo.imageView = m_PixelStorage->GetImageView();
 		m_DescriptorImageInfo.sampler = info->mySampler->GetSampler();
 
 		if(info->myImGUIHandleEnable)
 			m_ImguiHandle = ImGui_ImplVulkan_AddTexture(m_DescriptorImageInfo.sampler,
 				m_DescriptorImageInfo.imageView, m_DescriptorImageInfo.imageLayout);
-
-		m_Desc = *info;
 	}
 
 }

@@ -24,7 +24,7 @@ namespace SmolEngine
 
 	void Gfx_Buffer::Create(const BufferCreateDesc& desc)
 	{
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		switch (desc.myFlags)
 		{

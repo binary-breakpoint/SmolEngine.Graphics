@@ -20,7 +20,7 @@ namespace SmolEngine
 	class Gfx_CmdBuffer
 	{
 		friend class Gfx_VulkanHelpers;
-		friend class Gfx_Context;
+		friend class Gfx_App;
 
 		enum class State
 		{

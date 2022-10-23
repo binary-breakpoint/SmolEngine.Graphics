@@ -370,7 +370,7 @@ namespace SmolEngine
 	{
 		Gfx_ShaderIncluder* includer = Gfx_ShaderIncluder::GetSingleton();
 		const auto sdk_path = std::getenv("VULKAN_SDK");
-		const std::string& base_path = Gfx_Context::GetSingleton()->GetAssetsPath();
+		const std::string& base_path = Gfx_App::GetSingleton()->GetAssetsPath();
 		const std::string  compiler_path = std::string(sdk_path) + "/Bin/dxc.exe" + " ";
 		const std::string  include_path = "";
 		const std::string  shader_path = std::filesystem::absolute(desc.myFilePath).string();

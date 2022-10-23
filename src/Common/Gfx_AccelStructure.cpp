@@ -22,7 +22,7 @@ namespace SmolEngine
 
 	void Gfx_AccelStructure::Free()
 	{
-		const Gfx_VulkanDevice& device = Gfx_Context::GetDevice();
+		const Gfx_VulkanDevice& device = Gfx_App::GetDevice();
 
 		VK_DESTROY_DEVICE_HANDLE(m_Handle, device.vkDestroyAccelerationStructureKHR);
 		VK_DESTROY_DEVICE_HANDLE(m_DstHandle, device.vkDestroyAccelerationStructureKHR);
@@ -41,7 +41,7 @@ namespace SmolEngine
 	{
 		const Ref<Gfx_VertexBuffer>& vb = mesh->GetVertexBuffer();
 		const Ref<Gfx_IndexBuffer>& ib = mesh->GetIndexBuffer();
-		const Gfx_VulkanDevice& device = Gfx_Context::GetDevice();
+		const Gfx_VulkanDevice& device = Gfx_App::GetDevice();
 
 		VkDeviceOrHostAddressConstKHR vertexBufferDeviceAddress{};
 		vertexBufferDeviceAddress.deviceAddress = Gfx_VulkanHelpers::GetBufferDeviceAddress(vb->GetBuffer().GetRawBuffer());
@@ -160,7 +160,7 @@ namespace SmolEngine
 
 	void Gfx_AccelStructure::BuildAsTopLevel(Gfx_Buffer* instances, uint32_t primitiveCount, bool& out_update_descriptor)
 	{
-		const Gfx_VulkanDevice& device = Gfx_Context::GetDevice();
+		const Gfx_VulkanDevice& device = Gfx_App::GetDevice();
 
 		VkAccelerationStructureGeometryInstancesDataKHR instancesVk{ VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR };
 		{

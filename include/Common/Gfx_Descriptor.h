@@ -19,10 +19,10 @@ namespace SmolEngine
 
 	struct DescriptorDesc
 	{
-		Gfx_AccelStructure* myAccelStructure;
-		Gfx_PixelStorage* myPixelStorage;
-		Gfx_Sampler* mySampler;
-		Gfx_Buffer* myBuffer;
+		Ref<Gfx_AccelStructure> myAccelStructure;
+		Ref<Gfx_PixelStorage> myPixelStorage;
+		Ref<Gfx_Sampler> mySampler;
+		Ref<Gfx_Buffer> myBuffer;
 
 		uint32_t myElements = 1;
 		uint32_t myBinding;
@@ -59,9 +59,9 @@ namespace SmolEngine
 
 	class Gfx_Descriptor
 	{
-		friend class Gfx_Pipeline;
-		friend class Gfx_RtPipeline;
-		friend class Gfx_CompPipeline;
+		friend class Gfx_GraphicsPipeline;
+		friend class Gfx_RaytracingPipeline;
+		friend class Gfx_ComputePipeline;
 	public:
 		Gfx_Descriptor();
 
@@ -85,7 +85,7 @@ namespace SmolEngine
 		struct BufferObject
 		{
 			VkDescriptorBufferInfo DesriptorInfo;
-			Gfx_Buffer* Buffer;
+			Ref<Gfx_Buffer> Buffer;
 		};
 
 		VkDescriptorPool m_Pool;

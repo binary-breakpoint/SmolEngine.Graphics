@@ -5,23 +5,50 @@
 
 namespace SmolEngine
 {
-	class Gfx_Mesh;
 	class Gfx_Shader;
 	class Gfx_Texture;
-	class Gfx_Context;
 	class Gfx_Framebuffer;
-	class Gfx_VertexBuffer;
-	class Gfx_IndexBuffer;
 	class Gfx_Descriptor;
 	class Gfx_CmdBuffer;
 
-	struct PipelineCreateDesc
+	class Gfx_Pipeline
 	{
-		Gfx_Shader* myShader = nullptr;
-		Gfx_Framebuffer* myFramebuffer = nullptr;
-		Gfx_Descriptor* myDescriptor = nullptr;
+	public:
+
+		enum class Type
+		{
+			Graphics,
+			Compute,
+			Raytrcing
+		};
+
+		Gfx_Pipeline(Type type);
+		virtual ~Gfx_Pipeline();
+
+		virtual void Free();
+		virtual void Reload() = 0;
+		virtual bool IsGood() const = 0;
+
+		Type GetType() const;
+		bool IsType(Type type) const;
+		VkPipelineLayout GetLayout() const;
+		VkPipeline GetPipeline() const;
+
+	protected:
+		VkPipelineLayout m_Layout;
+		VkPipeline m_Pipeline;
+		Type m_Type;
+	};
+
+	struct GraphicsPipelineCreateDesc
+	{
+		Ref<Gfx_Shader> myShader = nullptr;
+		Ref<Gfx_Framebuffer> myFramebuffer = nullptr;
+		Ref<Gfx_Descriptor> myDescriptor = nullptr;
+
 		float myMinDepth = 0.0f;
 		float myMaxDepth = 1.0f;
+
 		std::string myName = "";
 		BlendFactor mySrcColorBlendFactor = BlendFactor::NONE;
 		BlendFactor myDstColorBlendFactor = BlendFactor::NONE;
@@ -30,44 +57,72 @@ namespace SmolEngine
 		BlendOp myColorBlendOp = BlendOp::ADD;
 		BlendOp myAlphaBlendOp = BlendOp::ADD;
 		CullMode myCullMode = CullMode::Back;
-		PolygonMode myPolygonMode = PolygonMode::Fill;					  
+		PolygonMode myPolygonMode = PolygonMode::Fill;
+		DrawMode  myDrawMode = DrawMode::Triangle;
+
 		bool myDepthTestEnabled = true;
 		bool myDepthWriteEnabled = true;
 		bool myDepthBiasEnabled = false;
 		bool myPrimitiveRestartEnable = false;
-		std::vector<DrawMode> myDrawModes = { DrawMode::Triangle };
+
 		std::vector<Gfx_BufferLayout> myVertexInput;
 	};
 
-	class Gfx_Pipeline
+	class Gfx_GraphicsPipeline final: public Gfx_Pipeline
 	{
 	public:
-		Gfx_Pipeline();
-		~Gfx_Pipeline();
+		Gfx_GraphicsPipeline()
+			:Gfx_Pipeline(Gfx_Pipeline::Type::Graphics) {}
 
-		void CmdBeginRenderPass(Gfx_CmdBuffer* cmd);
-		void CmdEndRenderPass(Gfx_CmdBuffer* cmd);
-		void CmdBindPipeline(Gfx_CmdBuffer* cmd);
-		void CmdBindDescriptor(Gfx_CmdBuffer* cmd, Gfx_Descriptor* another = nullptr);
-		void CmdPushConstant(Gfx_CmdBuffer* cmd, ShaderStage stage, uint32_t size, const void* data);
-		void CmdDrawIndexed(Gfx_CmdBuffer* cmd, Gfx_VertexBuffer* vb, Gfx_IndexBuffer* ib);
-		void CmdDraw(Gfx_CmdBuffer* cmd, uint32_t vertextCount, Gfx_VertexBuffer* vb = nullptr);
-		void CmdDrawMeshIndexed(Gfx_CmdBuffer* cmd, Gfx_Mesh* mesh, uint32_t instances = 1);
-		void CmdDrawMesh(Gfx_CmdBuffer* cmd, Gfx_Mesh* mesh, uint32_t instances = 1);    
+		void Create(GraphicsPipelineCreateDesc* desc);
 
-		void Reload();
-		void Free();
-		void Create(PipelineCreateDesc* desc);
-		void SetDrawMode(DrawMode mode);
-		bool IsGood() const;
-		Gfx_Shader* GetShader() const { return m_Desc.myShader; }
-		Gfx_Descriptor* GetDescriptor() const { return m_Desc.myDescriptor; }
-		Gfx_Framebuffer* GetFramebuffer() const { return m_Desc.myFramebuffer; }
+		virtual void Reload() override;
+		virtual bool IsGood() const override;
 
 	private:
-		PipelineCreateDesc m_Desc;
-		VkPipelineLayout m_Layout;
-		std::unordered_map<DrawMode, VkPipeline> m_Pipelines;
-		DrawMode m_DrawMode;
+		GraphicsPipelineCreateDesc m_Desc;
+	};
+
+	struct ComputePipelineCreateDesc
+	{
+		Gfx_Shader* myShader = nullptr;
+		Gfx_Descriptor* myDescriptor = nullptr;
+	};
+
+	class Gfx_ComputePipeline final : public Gfx_Pipeline
+	{
+	public:
+		Gfx_ComputePipeline()
+			:Gfx_Pipeline(Gfx_Pipeline::Type::Compute) {}
+
+		void Create(ComputePipelineCreateDesc* desc);
+
+		virtual void Reload() override;
+		virtual bool IsGood() const override;
+
+	private:
+		ComputePipelineCreateDesc m_Desc;
+	};
+
+	struct RaytracingPipelineCreateDesc
+	{
+		Gfx_Shader* myShader = nullptr;
+		Gfx_Descriptor* myDescriptor = nullptr;
+		uint32_t myMaxRayRecursionDepth = 1;
+	};
+
+	class Gfx_RaytracingPipeline final : public Gfx_Pipeline
+	{
+	public:
+		Gfx_RaytracingPipeline()
+			:Gfx_Pipeline(Gfx_Pipeline::Type::Raytrcing) {}
+
+		void Create(RaytracingPipelineCreateDesc* desc);
+
+		virtual void Reload() override;
+		virtual bool IsGood() const override;
+
+	private:
+		RaytracingPipelineCreateDesc m_Desc;
 	};
 }

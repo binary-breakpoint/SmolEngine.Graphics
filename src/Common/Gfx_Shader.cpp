@@ -42,7 +42,7 @@ namespace SmolEngine
 		for (auto& [stage, path] : m_CreateInfo.myStages)
 			loadOrCompile(desc, stage, path);
 
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		bool raytracingShaders = false;
 
@@ -257,7 +257,7 @@ namespace SmolEngine
 		addIndexIfExist(m_ShaderIDs, ShaderStage::Callable_2, callable_index);
 		addIndexIfExist(m_ShaderIDs, ShaderStage::Callable_3, callable_index);
 
-		Gfx_VulkanDevice& device = Gfx_Context::GetDevice();
+		Gfx_VulkanDevice& device = Gfx_App::GetDevice();
 
 		const uint32_t handle_size = device.rayTracingPipelineProperties.shaderGroupHandleSize;
 		const uint32_t handle_alignment = device.rayTracingPipelineProperties.shaderGroupHandleAlignment;

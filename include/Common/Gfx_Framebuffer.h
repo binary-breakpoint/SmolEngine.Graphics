@@ -26,15 +26,13 @@ namespace SmolEngine
 
 	struct FramebufferCreateDesc
 	{
-		Gfx_Sampler* mySampler = nullptr;
-		int32_t myWidth = 0;
-		int32_t myHeight = 0;
+		Ref<Gfx_Sampler> mySampler = nullptr;
+		glm::uvec2 mySize = {0, 0};
+
+		std::vector<FramebufferAttachment> myAttachments;
+
 		bool myIsTargetsSwapchain = false;
 		bool myIsUsedByImGui = false;
-		bool myIsResizable = true;
-		bool myIsDepthSampler = false;
-		bool myIsAutoSync = true;
-		std::vector<FramebufferAttachment> myAttachments;
 	};
 
 	class Gfx_Framebuffer
@@ -43,7 +41,7 @@ namespace SmolEngine
 		struct Attachment
 		{
 			void* myImGuiID = nullptr;
-			Gfx_PixelStorage myPixelStorage;
+			Ref<Gfx_PixelStorage> myPixelStorage;
 			VkClearAttachment myClearAttachment;
 			VkClearValue myClearValue;
 			VkDescriptorImageInfo myImageInfo;
@@ -53,15 +51,19 @@ namespace SmolEngine
 		~Gfx_Framebuffer();
 
 		void Create(FramebufferCreateDesc* desc);
-		void OnResize(uint32_t width, uint32_t height);
+		void OnResize(const glm::ivec2& size);
 		void Free();
 
-		void CmdClear(Gfx_CmdBuffer* cmd, const glm::vec4& color, uint32_t index = 0);
+		Ref<Gfx_PixelStorage> GetPixelStorage(const std::string& name);
+		Ref<Gfx_PixelStorage> GetPixelStorage(uint32_t index);
+
+		const glm::ivec2& GetSize() const;
 
 		void* GetImGuiTextureID(uint32_t index = 0);
 		Attachment* GetAttachment(const std::string& name);
 		Attachment* GetAttachment(uint32_t index);
 		Attachment* GetDepthAttachment();
+
 		VkRenderPass GetRenderPass() const { return m_RenderPass; }
 		VkFramebuffer GetRawBuffer() const;
 		const std::vector<VkFramebuffer>& GetRawBuffers() const { return m_FrameBuffers; }

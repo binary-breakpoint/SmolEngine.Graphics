@@ -4,6 +4,8 @@
 #include "Common/Gfx_PixelStorage.h"
 #include "Common/Gfx_Helpers.h"
 
+#include "Gfx_RenderContext.h"
+
 #include "Tools/Gfx_ShaderCompiler.h"
 
 #include <spirv_cross/spirv_cross.hpp>
@@ -11,7 +13,6 @@
 
 namespace SmolEngine
 {
-
 	static VkDescriptorType locGetDescriptorType(DescriptorType type)
 	{
 		switch (type)
@@ -58,10 +59,13 @@ namespace SmolEngine
 
 	DescriptorDesc* DescriptorCreateDesc::GetByIndex(uint32_t index)
 	{
-		if (myBindings.size() < index)
-			return myBindings[index].get();
+		DescriptorDesc* desc = nullptr;
+		const auto& it = myBindingIndices.find(index);
+		if (it != myBindingIndices.end())
+			desc = it->second.get();
 
-		return nullptr;
+		GFX_ASSERT(desc)
+			return desc;
 	}
 
 	DescriptorDesc* DescriptorCreateDesc::GetByName(const char* name)
@@ -178,7 +182,7 @@ namespace SmolEngine
 			m_PushConstantRange.emplace(range);
 		}
 
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 		std::vector<VkDescriptorSetLayoutBinding> layouts;
 		std::map<DescriptorType, uint32_t> poolMap;
 
@@ -243,7 +247,9 @@ namespace SmolEngine
 				GFX_ASSERT_MSG((resource->myPixelStorage || resource->mySampler), "myPixelStorage == nullptr || mySampler == nullptr")
 
 				VkDescriptorImageInfo imageInfo{};
-				imageInfo.sampler = resource->mySampler->GetSampler();
+				imageInfo.sampler = resource->mySampler == nullptr ? Gfx_RenderContext::GetDefaultSampler()->GetSampler() :
+					resource->mySampler->GetSampler();
+
 				imageInfo.imageView = resource->myPixelStorage->GetImageView();
 				imageInfo.imageLayout = resource->myPixelStorage->GetImageLayout();
 
@@ -318,7 +324,7 @@ namespace SmolEngine
 
 		if (m_DescriptorSet != nullptr)
 		{
-			VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+			VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 			vkFreeDescriptorSets(device, m_Pool, 1, &m_DescriptorSet);
 			m_DescriptorSet = nullptr;
 		}

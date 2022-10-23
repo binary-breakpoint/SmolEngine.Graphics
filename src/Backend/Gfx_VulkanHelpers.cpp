@@ -36,7 +36,7 @@ namespace SmolEngine
 
 	uint64_t Gfx_VulkanHelpers::GetBufferDeviceAddress(VkBuffer buffer)
 	{
-		auto& device = Gfx_Context::GetDevice();
+		auto& device = Gfx_App::GetDevice();
 
 		VkBufferDeviceAddressInfoKHR bufferDeviceAI{};
 		bufferDeviceAI.sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO;
@@ -574,7 +574,7 @@ namespace SmolEngine
 	bool Gfx_VulkanHelpers::IsFormatIsFilterable(VkFormat format, VkImageTiling tiling)
 	{
 		VkFormatProperties formatProps;
-		vkGetPhysicalDeviceFormatProperties(Gfx_Context::GetDevice().GetPhysicalDevice(), format, &formatProps);
+		vkGetPhysicalDeviceFormatProperties(Gfx_App::GetDevice().GetPhysicalDevice(), format, &formatProps);
 
 		if (tiling == VK_IMAGE_TILING_OPTIMAL)
 			return formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
@@ -752,7 +752,7 @@ namespace SmolEngine
 			renderPassCI.pDependencies = dependencies.data();
 		}
 
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 		VK_CHECK_RESULT(vkCreateRenderPass(device, &renderPassCI, nullptr, &outVkPass));
 	}
 
@@ -875,7 +875,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanHelpers::CopyPixelStorageToSwapchain(uint32_t width, uint32_t height, Gfx_CmdBuffer* _cmd, Gfx_PixelStorage* storage)
 	{
-		const auto& swapbuffer = Gfx_Context::GetSwapchain().GetCurrentBuffer();
+		const auto& swapbuffer = Gfx_App::GetSwapchain().GetCurrentBuffer();
 		VkImageSubresourceRange subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
 		VkImageLayout oldLayout = storage->GetImageLayout();
 		VkCommandBuffer cmd = _cmd->GetBuffer();
@@ -933,7 +933,7 @@ namespace SmolEngine
 		submitInfo.pCommandBuffers = &buffer;
 
 		VkFence fence = nullptr;
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		{
 			VkFenceCreateInfo fenceCI = {};
@@ -944,7 +944,7 @@ namespace SmolEngine
 
 			{
 				std::lock_guard<std::mutex> lock(*s_locVulkanHelpersMutex);
-				VkQueue queue = Gfx_Context::GetDevice().GetQueue(Gfx_VulkanDevice::QueueFamilyFlags::Graphics);
+				VkQueue queue = Gfx_App::GetDevice().GetQueue(Gfx_VulkanDevice::QueueFamilyFlags::Graphics);
 				VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, fence));
 			}
 

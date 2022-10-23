@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	Gfx_Log::SetCallback([](const std::string& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
 #endif 
 
-	Gfx_Context* context = new Gfx_Context();
+	Gfx_App* context = new Gfx_App();
 	{
 		WindowCreateDesc winDesc{};
 		winDesc.myTitle = "Demo Compute";
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	{
 		TextureCreateDesc desc{};
 		desc.myFormat = Format::B8G8R8A8_UNORM;
-		desc.mySampler = Gfx_Context::GetSampler();
+		desc.mySampler = Gfx_App::GetSampler();
 		desc.myIsShaderWritable = true;
 		desc.myWidth = 720;
 		desc.myHeight = 480;
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 
 		DescriptorDesc* descriptor = descriptorDesc.GetByName("o_Image");
 		descriptor->myPixelStorage = storageImage.GetPixelStorage();
-		descriptor->mySampler = Gfx_Context::GetSampler();
+		descriptor->mySampler = Gfx_App::GetSampler();
 
 		compDescriptor.Create(&descriptorDesc);
 	}

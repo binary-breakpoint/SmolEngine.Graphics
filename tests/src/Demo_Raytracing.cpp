@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 	Gfx_Log::SetCallback([](const std::string& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
 #endif 
 
-	Gfx_Context* context = new Gfx_Context();
+	Gfx_App* context = new Gfx_App();
 	{
 		WindowCreateDesc winDesc{};
 		winDesc.myTitle = "Demo Raytracing";
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 	{
 		TextureCreateDesc desc{};
 		desc.myFormat = Format::B8G8R8A8_UNORM;
-		desc.mySampler = Gfx_Context::GetSampler();
+		desc.mySampler = Gfx_App::GetSampler();
 		desc.myIsShaderWritable = true;
 		desc.myWidth = 720;
 		desc.myHeight = 480;
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 
 		DescriptorDesc textureDesc{};
 		textureDesc.myBinding = 1;
-		textureDesc.mySampler = Gfx_Context::GetSampler();
+		textureDesc.mySampler = Gfx_App::GetSampler();
 		textureDesc.myPixelStorage = storageImage.GetPixelStorage();
 		textureDesc.myType = DescriptorType::IMAGE_2D;
 		textureDesc.myStages = ShaderStage::RayGen;

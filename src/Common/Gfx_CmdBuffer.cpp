@@ -18,11 +18,11 @@ namespace SmolEngine
 
 	void Gfx_CmdBuffer::Create(CmdBufferCreateDesc* desc)
 	{
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		if (desc->myPool == nullptr)
 		{
-			auto& queueFamilyIndices = Gfx_Context::GetDevice().GetQueueFamilyIndices();
+			auto& queueFamilyIndices = Gfx_App::GetDevice().GetQueueFamilyIndices();
 
 			VkCommandPoolCreateInfo poolInfo = {};
 
@@ -48,7 +48,7 @@ namespace SmolEngine
 	{
 		if (!m_ExternalPool && m_Pool)
 		{
-			VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+			VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 			vkResetCommandPool(device, m_Pool, 0);
 		}
 	}
@@ -74,7 +74,7 @@ namespace SmolEngine
 
 	void Gfx_CmdBuffer::Free()
 	{
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		if (m_State == State::NeedExecute)
 		{

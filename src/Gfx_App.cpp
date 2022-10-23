@@ -1,9 +1,10 @@
 #include "Gfx_Precompiled.h"
-#include "Gfx_Context.h"
+#include "Gfx_App.h"
 #include "Common/Gfx_Input.h"
 #include "Common/Gfx_Framebuffer.h"
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_Texture.h"
+#include "Gfx_RenderContext.h"
 
 #include "Tools/Gfx_ShaderIncluder.h"
 
@@ -11,28 +12,28 @@
 
 namespace SmolEngine
 {
-	Gfx_Context* Gfx_Context::s_Instance = nullptr;
+	Gfx_App* Gfx_App::s_Instance = nullptr;
 
-	Gfx_Context::Gfx_Context()
+	Gfx_App::Gfx_App()
 	{
 		s_Instance = this;
 	}
 
-	Gfx_Context::~Gfx_Context()
+	Gfx_App::~Gfx_App()
 	{
 		s_Instance = nullptr;
 
 		Shutdown();
 	}
 
-	void Gfx_Context::Create(GfxContextCreateDesc* desc)
+	void Gfx_App::Create(GfxContextCreateDesc* desc)
 	{
 		assert(desc != nullptr);
 		assert(desc->myWindowDesc != nullptr);
 
 		m_Desc = *desc;
 		m_Root = desc->myAssetPath;
-		m_EventHandler.OnEventFn = std::bind(&Gfx_Context::OnEvent, this, std::placeholders::_1);
+		m_EventHandler.OnEventFn = std::bind(&Gfx_App::OnEvent, this, std::placeholders::_1);
 
 		WindowCreateDesc* winDesc = desc->myWindowDesc;
 
@@ -42,35 +43,16 @@ namespace SmolEngine
 
 		CreateAPIContext();
 
+		m_RenderContext = std::make_shared<Gfx_RenderContext>();
 		m_ShaderIncluder = std::make_shared<Gfx_ShaderIncluder>();
-		m_ShaderIncluder->AddIncludeDir(m_Root + "Shaders/");
-		m_ShaderIncluder->AddIncludeDir(m_Root + "../tests/shaders");
-
-		SamplerCreateDesc samplerDesc{};
-		m_Sampler.Create(&samplerDesc);
-
-		TextureCreateDesc textureDesc{};
-		textureDesc.mySampler = &m_Sampler;
-		textureDesc.myHeight = 4;
-		textureDesc.myWidth = 4;
-		uint32_t data = 0xffffffff;
-		textureDesc.myUserData = &data;
-
-		m_Texture.Create(&textureDesc);
-
-		textureDesc.myIsShaderWritable = true;;
-		m_StorageTexture.Create(&textureDesc);
 
 		// Creates default framebuffer
 		{
 			FramebufferCreateDesc fbDesc = {};
-			fbDesc.mySampler = &m_Sampler;
-			fbDesc.myWidth = winDesc->myWidth;
-			fbDesc.myHeight = winDesc->myHeight;
+			fbDesc.mySampler = m_RenderContext->GetDefaultSampler();
+			fbDesc.mySize = { winDesc->myWidth, winDesc->myHeight };
 			fbDesc.myIsTargetsSwapchain = winDesc->myTargetsSwapchain;
-			fbDesc.myIsResizable = true;
-			fbDesc.myIsAutoSync = false;
-			fbDesc.myIsUsedByImGui = true;
+			fbDesc.myIsUsedByImGui = winDesc->myTargetsSwapchain ? false : true;
 
 			Format colorFormat = winDesc->myTargetsSwapchain ? Format::B8G8R8A8_UNORM : Format::R8G8B8A8_UNORM;
 
@@ -84,7 +66,7 @@ namespace SmolEngine
 		}
 	}
 
-	void Gfx_Context::SwapBuffers()
+	void Gfx_App::SwapBuffers()
 	{
 		// ImGUI pass
 		if ((m_Desc.myFeaturesFlags
@@ -155,12 +137,12 @@ namespace SmolEngine
 		m_CmdBuffer.Free();
 	}
 
-	void Gfx_Context::ProcessEvents()
+	void Gfx_App::ProcessEvents()
 	{
 		m_Window->ProcessEvents();
 	}
 
-	void Gfx_Context::BeginFrame(float time)
+	void Gfx_App::BeginFrame(float time)
 	{
 		m_DeltaTime = time;
 
@@ -174,7 +156,7 @@ namespace SmolEngine
 		m_CmdBuffer.CmdBeginRecord();
 	}
 
-	void Gfx_Context::Shutdown()
+	void Gfx_App::Shutdown()
 	{
 		if ((m_Desc.myFeaturesFlags
 			& FeaturesFlags::ImguiEnable) == FeaturesFlags::ImguiEnable) [[unlikely]] { m_ImGuiContext->ShutDown(); }
@@ -182,7 +164,7 @@ namespace SmolEngine
 		m_Window->ShutDown();
     }
 
-	void Gfx_Context::Resize(uint32_t* width, uint32_t* height)
+	void Gfx_App::Resize(uint32_t* width, uint32_t* height)
 	{
 		const WindowCreateDesc& winDesc = m_Window->GetCreateDesc();
 
@@ -194,17 +176,17 @@ namespace SmolEngine
 		}
 	}
 
-	void Gfx_Context::SetEventCallback(std::function<void(Gfx_Event&)> callback)
+	void Gfx_App::SetEventCallback(std::function<void(Gfx_Event&)> callback)
 	{
 		m_EventCallback = callback;
 	}
 
-	void Gfx_Context::SetFramebufferSize(uint32_t width, uint32_t height)
+	void Gfx_App::SetFramebufferSize(uint32_t width, uint32_t height)
 	{
-		m_Framebuffer->OnResize(width, height);
+		m_Framebuffer->OnResize({width, height});
 	}
 
-	float Gfx_Context::CalculateDeltaTime()
+	float Gfx_App::CalculateDeltaTime()
 	{
 		float time = (float)glfwGetTime();
 		float deltaTime = time - m_LastFrameTime;
@@ -212,42 +194,42 @@ namespace SmolEngine
 		return deltaTime;
 	}
 
-	bool Gfx_Context::IsWindowMinimized() const
+	bool Gfx_App::IsWindowMinimized() const
 	{
 		return m_bWindowMinimized;
 	}
 
-	bool Gfx_Context::IsOpen() const
+	bool Gfx_App::IsOpen() const
 	{
 		return m_bOpen;
 	}
 
-	Gfx_Window* Gfx_Context::GetWindow() const
+	Gfx_Window* Gfx_App::GetWindow() const
 	{
 		return m_Window.get();
 	}
 
-	glm::vec2 Gfx_Context::GetWindowSize() const
+	glm::vec2 Gfx_App::GetWindowSize() const
 	{
 		return glm::vec2(m_Window->GetWidth(), m_Window->GetHeight());
 	}
 
-	float Gfx_Context::GetGltfTime() const
+	float Gfx_App::GetGltfTime() const
 	{
 		return (float)glfwGetTime();
 	}
 
-	float Gfx_Context::GetDeltaTime() const
+	float Gfx_App::GetDeltaTime() const
 	{
 		return m_DeltaTime;
 	}
 
-	const std::string& Gfx_Context::GetAssetsPath() const
+	const std::string& Gfx_App::GetAssetsPath() const
 	{
 		return m_Root;
 	}
 
-	void Gfx_Context::CreateAPIContext()
+	void Gfx_App::CreateAPIContext()
 	{
 		GFX_ASSERT(glfwVulkanSupported() == GLFW_TRUE)
 
@@ -283,7 +265,7 @@ namespace SmolEngine
 		}
 	}
 
-	void Gfx_Context::OnEvent(Gfx_Event& e)
+	void Gfx_App::OnEvent(Gfx_Event& e)
 	{
 		if (e.IsType(Gfx_Event::Type::WINDOW_CLOSE)) { m_bOpen = false; }
 		if (e.IsType(Gfx_Event::Type::WINDOW_RESIZE))
@@ -305,54 +287,39 @@ namespace SmolEngine
 			m_EventCallback(std::forward<Gfx_Event&>(e));
 	}
 
-	Gfx_Context* Gfx_Context::GetSingleton()
+	Gfx_App* Gfx_App::GetSingleton()
 	{
 		return s_Instance;
 	}
 
-	Ref<Gfx_Framebuffer> Gfx_Context::GetFramebuffer()
+	Ref<Gfx_Framebuffer> Gfx_App::GetFramebuffer()
 	{
 		return m_Framebuffer;
 	}
 
-	Gfx_VulkanSemaphore& Gfx_Context::GetSemaphore()
+	Gfx_VulkanSemaphore& Gfx_App::GetSemaphore()
 	{
-		return Gfx_Context::s_Instance->m_Semaphore;
+		return Gfx_App::s_Instance->m_Semaphore;
 	}
 
-	Gfx_CmdBuffer* Gfx_Context::GetCommandBuffer()
+	Gfx_CmdBuffer* Gfx_App::GetCommandBuffer()
 	{
-		return &Gfx_Context::s_Instance->m_CmdBuffer;
+		return &Gfx_App::s_Instance->m_CmdBuffer;
 	}
 
-	Gfx_Sampler* Gfx_Context::GetSampler()
+	Gfx_VulkanSwapchain& Gfx_App::GetSwapchain()
 	{
-		return &s_Instance->m_Sampler;
+		return Gfx_App::GetSingleton()->m_Swapchain;
 	}
 
-	Gfx_Texture* Gfx_Context::GetTexture()
+	Gfx_VulkanInstance& Gfx_App::GetInstance()
 	{
-		return &s_Instance->m_Texture;
+		return Gfx_App::GetSingleton()->m_Instance;
 	}
 
-	Gfx_Texture* Gfx_Context::GetStorageTexture()
+	Gfx_VulkanDevice& Gfx_App::GetDevice()
 	{
-		return &s_Instance->m_StorageTexture;
-	}
-
-	Gfx_VulkanSwapchain& Gfx_Context::GetSwapchain()
-	{
-		return Gfx_Context::GetSingleton()->m_Swapchain;
-	}
-
-	Gfx_VulkanInstance& Gfx_Context::GetInstance()
-	{
-		return Gfx_Context::GetSingleton()->m_Instance;
-	}
-
-	Gfx_VulkanDevice& Gfx_Context::GetDevice()
-	{
-		return Gfx_Context::GetSingleton()->m_Device;
+		return Gfx_App::GetSingleton()->m_Device;
 	}
 
 }

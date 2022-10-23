@@ -23,7 +23,7 @@ namespace SmolEngine
 	{
 		m_Desc = *desc;
 
-		m_Desc.myMipLevels == 0 ? static_cast<uint32_t>(floor(log2(std::max(m_Desc.myWidth, m_Desc.myHeight)))) + 1 : m_Desc.myMipLevels;
+		m_Desc.myMipLevels == 0 ? static_cast<uint32_t>(floor(log2(std::max(m_Desc.mySize.x, m_Desc.mySize.y)))) + 1 : m_Desc.myMipLevels;
 
 		VkImageCreateInfo imageCI = {};
 		imageCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -35,7 +35,7 @@ namespace SmolEngine
 		imageCI.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageCI.tiling = VK_IMAGE_TILING_OPTIMAL;
 		imageCI.initialLayout = desc->myLayout;
-		imageCI.extent = { m_Desc.myWidth, m_Desc.myHeight, 1 };
+		imageCI.extent = { m_Desc.mySize.x, m_Desc.mySize.y, 1 };
 		imageCI.usage = m_Desc.myUsageFlags;
 		imageCI.flags = m_Desc.myCreateFlags;
 
@@ -72,7 +72,7 @@ namespace SmolEngine
 		imageViewCI.subresourceRange.levelCount = m_Desc.myMipLevels;
 		imageViewCI.image = m_Image;
 
-		VK_CHECK_RESULT(vkCreateImageView(Gfx_Context::GetDevice().GetLogicalDevice(), &imageViewCI, nullptr, &m_ImageView));
+		VK_CHECK_RESULT(vkCreateImageView(Gfx_App::GetDevice().GetLogicalDevice(), &imageViewCI, nullptr, &m_ImageView));
 	}
 
 	void Gfx_PixelStorage::SetImageLayout(VkImageLayout layout)
@@ -82,7 +82,7 @@ namespace SmolEngine
 
 	void Gfx_PixelStorage::Free()
 	{
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		if (m_ImageView != nullptr && m_Image != nullptr)
 		{

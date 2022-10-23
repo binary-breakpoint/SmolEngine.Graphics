@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	Gfx_Log::SetCallback([](const std::string& msg, Gfx_Log::Level level) { std::cout << msg << "\n"; });
 #endif 
 
-	Gfx_Context* context = new Gfx_Context(); 
+	Gfx_App* context = new Gfx_App(); 
 	{
 		WindowCreateDesc winDesc{};
 		winDesc.myTitle = "Demo Basic";
@@ -44,8 +44,8 @@ int main(int argc, char** argv)
 		DescriptorDesc textureDesc{};
 
 		textureDesc.myBinding = 0;
-		textureDesc.myPixelStorage = Gfx_Context::GetTexture()->GetPixelStorage();
-		textureDesc.mySampler = Gfx_Context::GetSampler();
+		textureDesc.myPixelStorage = Gfx_App::GetTexture()->GetPixelStorage();
+		textureDesc.mySampler = Gfx_App::GetSampler();
 		textureDesc.myStages = ShaderStage::Fragment;
 		textureDesc.myType = DescriptorType::TEXTURE_2D;
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 		PipelineCreateDesc pipelineDesc;
 		pipelineDesc.myDescriptor = &gfxDescriptor;
 		pipelineDesc.myShader = &gfxShader;
-		pipelineDesc.myFramebuffer = Gfx_Context::GetSingleton()->GetFramebuffer().get();
+		pipelineDesc.myFramebuffer = Gfx_App::GetSingleton()->GetFramebuffer().get();
 		pipelineDesc.myVertexInput =
 		{
 			{

@@ -200,7 +200,7 @@ namespace SmolEngine
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		Gfx_Window* win = Gfx_Context::GetSingleton()->GetWindow();
+		Gfx_Window* win = Gfx_App::GetSingleton()->GetWindow();
 		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)win->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
@@ -231,7 +231,7 @@ namespace SmolEngine
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		Gfx_Window* win = Gfx_Context::GetSingleton()->GetWindow();
+		Gfx_Window* win = Gfx_App::GetSingleton()->GetWindow();
 		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)win->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
@@ -275,7 +275,7 @@ namespace SmolEngine
 
 	glm::vec3 Gfx_Helpers::CastRay(const glm::vec3& startPos, float distance, const glm::mat4& viewProj)
 	{
-		auto data = Gfx_Context::GetSingleton()->GetWindow()->GetData();
+		auto data = Gfx_App::GetSingleton()->GetWindow()->GetData();
 		float w = static_cast<float>(data->myWidth);
 		float h = static_cast<float>(data->myHeight);
 		glm::vec2 mousePos = { Gfx_Input::GetMouseX(), Gfx_Input::GetMouseY() };

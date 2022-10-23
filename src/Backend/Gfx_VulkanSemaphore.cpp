@@ -34,7 +34,7 @@ namespace SmolEngine
             fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
             fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-            m_WaitFences.resize(Gfx_Context::GetSwapchain().m_Buffers.size());
+            m_WaitFences.resize(Gfx_App::GetSwapchain().m_Buffers.size());
 
             for (auto& fence : m_WaitFences)
             {
@@ -56,7 +56,7 @@ namespace SmolEngine
             semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
         }
 
-        VK_CHECK_RESULT(vkCreateSemaphore(Gfx_Context::GetDevice().GetLogicalDevice(),
+        VK_CHECK_RESULT(vkCreateSemaphore(Gfx_App::GetDevice().GetLogicalDevice(),
             &semaphoreCreateInfo, nullptr, &outSemapthore));
     }
 

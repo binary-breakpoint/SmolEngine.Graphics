@@ -7,28 +7,28 @@ namespace SmolEngine
 {
 	bool Gfx_Input::IsKeyPressed(KeyCode key)
 	{
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 		auto state = glfwGetKey(window, static_cast<int32_t>(key));
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
 	bool Gfx_Input::IsKeyReleased(KeyCode key)
 	{
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 		auto state = glfwGetKey(window, static_cast<int32_t>(key));
 		return state == GLFW_RELEASE;
 	}
 
 	bool Gfx_Input::IsMouseButtonPressed(MouseCode button)
 	{
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 		return state == GLFW_PRESS;
 	}
 
 	bool Gfx_Input::IsMouseButtonReleased(MouseCode button)
 	{
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 		return state == GLFW_RELEASE;
 	}
@@ -47,7 +47,7 @@ namespace SmolEngine
 
 	std::pair<float, float> Gfx_Input::GetMousePosition()
 	{
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 

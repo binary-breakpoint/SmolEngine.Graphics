@@ -2,6 +2,8 @@
 #include "Common/Gfx_Framebuffer.h"
 #include "Common/Gfx_Sampler.h"
 #include "Common/Gfx_CmdBuffer.h"
+#include "Gfx_RenderContext.h"
+
 #include "Backend/Gfx_VulkanHelpers.h"
 
 #include <imgui/backends/imgui_impl_vulkan.h>
@@ -26,10 +28,11 @@ namespace SmolEngine
 
 	void Gfx_Framebuffer::Create(FramebufferCreateDesc* info)
 	{
-		if (m_Desc.myAttachments.size() > 1 && m_Desc.myIsTargetsSwapchain || m_Desc.myAttachments.size() == 0)
-		{
-			// TODO: Assert
-		}
+		GFX_ASSERT(m_Desc.myAttachments.size() > 0)
+		GFX_ASSERT(m_Desc.mySize.x > 0 && m_Desc.mySize.y > 0)
+
+		if (info->mySampler == nullptr)
+			info->mySampler = Gfx_RenderContext::GetDefaultSampler();
 
 		m_Desc = *info;
 
@@ -76,14 +79,13 @@ namespace SmolEngine
 			pixelStorageDesc.myUsageFlags = usageFlags;
 			pixelStorageDesc.myAspectMask = aspectFlags;
 			pixelStorageDesc.myArrayLayers = 1;
-			pixelStorageDesc.myHeight = info->myHeight;
-			pixelStorageDesc.myWidth = info->myWidth;
+			pixelStorageDesc.mySize = info->mySize;
 			pixelStorageDesc.myFormat = attachmentDesc.myFormat;
 			pixelStorageDesc.myMipLevels = attachmentDesc.myMips;
 
-			attachment.myPixelStorage.Create(&pixelStorageDesc);
+			attachment.myPixelStorage = Gfx_RenderContext::CreatePixelStorage(pixelStorageDesc);
 
-			imageViews[i] = attachment.myPixelStorage.GetImageView();
+			imageViews[i] = attachment.myPixelStorage->GetImageView();
 
 			if (!attachmentDesc.myName.empty())
 				m_AttachmentsMap[attachmentDesc.myName] = i;
@@ -107,12 +109,12 @@ namespace SmolEngine
 				finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 			}
 
-			Gfx_VulkanHelpers::InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), &attachment.myPixelStorage, 0, 0, finalLayout,
+			Gfx_VulkanHelpers::InsertImageMemoryBarrier(cmdBuffer.GetBuffer(), attachment.myPixelStorage.get(), 0, 0, finalLayout,
 				VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, { aspectFlags, 0, 1, 0, 1 });
 
 			VkDescriptorImageInfo& desc = attachment.myImageInfo;
-			desc.imageLayout = attachment.myPixelStorage.GetImageLayout();
-			desc.imageView = attachment.myPixelStorage.GetImageView();
+			desc.imageLayout = attachment.myPixelStorage->GetImageLayout();
+			desc.imageView = attachment.myPixelStorage->GetImageView();
 			desc.sampler = info->mySampler->GetSampler();
 
 			if (isDepthAttachement)
@@ -137,20 +139,20 @@ namespace SmolEngine
 		frameufferCreateInfo.renderPass = m_RenderPass;
 		frameufferCreateInfo.attachmentCount = static_cast<uint32_t>(imageViews.size());
 		frameufferCreateInfo.pAttachments = imageViews.data();
-		frameufferCreateInfo.width = info->myWidth;
-		frameufferCreateInfo.height = info->myHeight;
+		frameufferCreateInfo.width = info->mySize.x;
+		frameufferCreateInfo.height = info->mySize.y;
 		frameufferCreateInfo.layers = 1;
 
-		VkDevice device = Gfx_Context::GetDevice().GetLogicalDevice();
+		VkDevice device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		if (info->myIsTargetsSwapchain)
 		{
-			uint32_t count = Gfx_Context::GetSwapchain().m_ImageCount;
+			uint32_t count = Gfx_App::GetSwapchain().m_ImageCount;
 			m_FrameBuffers.resize(count);
 
 			for (uint32_t i = 0; i < count; ++i)
 			{
-				imageViews[0] = Gfx_Context::GetSwapchain().m_Buffers[i].View;
+				imageViews[0] = Gfx_App::GetSwapchain().m_Buffers[i].View;
 				VK_CHECK_RESULT(vkCreateFramebuffer(device, &frameufferCreateInfo, nullptr, &m_FrameBuffers[i]));
 			}
 
@@ -161,17 +163,12 @@ namespace SmolEngine
 		VK_CHECK_RESULT(vkCreateFramebuffer(device, &frameufferCreateInfo, nullptr, &m_FrameBuffers[0]));
 	}
 
-	void Gfx_Framebuffer::OnResize(uint32_t width, uint32_t height)
+	void Gfx_Framebuffer::OnResize(const glm::ivec2& size)
 	{
-		if (m_Desc.myIsResizable)
-		{
-			Free();
+		m_Desc.mySize = size;
 
-			m_Desc.myWidth = width;
-			m_Desc.myHeight = height;
-
-			Create(&m_Desc);
-		}
+		Free();
+		Create(&m_Desc);
 	}
 
 	void Gfx_Framebuffer::Free()
@@ -186,22 +183,27 @@ namespace SmolEngine
 		m_AttachmentsMap.clear();
 	}
 
-	void Gfx_Framebuffer::CmdClear(Gfx_CmdBuffer* cmd, const glm::vec4& color, uint32_t index /*= 0*/)
+	Ref<Gfx_PixelStorage> Gfx_Framebuffer::GetPixelStorage(const std::string& name)
 	{
-		if (m_Attachments.size() < index)
-		{
-			auto& attachment = m_Attachments[index];
+		Attachment* attachment = GetAttachment(name);
+		if (attachment)
+			return attachment->myPixelStorage;
 
-			attachment.myClearAttachment.clearValue.color = { { color.r,color.g, color.b, color.a } };
+		return nullptr;
+	}
 
-			VkClearRect clearRect = {};
-			clearRect.layerCount = 1;
-			clearRect.baseArrayLayer = 0;
-			clearRect.rect.offset = { 0, 0 };
-			clearRect.rect.extent = { (uint32_t)m_Desc.myWidth, (uint32_t)m_Desc.myHeight };
+	Ref<Gfx_PixelStorage> Gfx_Framebuffer::GetPixelStorage(uint32_t index)
+	{
+		Attachment* attachment = GetAttachment(index);
+		if (attachment)
+			return attachment->myPixelStorage;
 
-			vkCmdClearAttachments(cmd->GetBuffer(), 1, &attachment.myClearAttachment, 1, &clearRect);
-		}
+		return nullptr;
+	}
+
+	const glm::ivec2& Gfx_Framebuffer::GetSize() const
+	{
+		return m_Desc.mySize;
 	}
 
 	Gfx_Framebuffer::Attachment* Gfx_Framebuffer::GetAttachment(const std::string& name)
@@ -232,7 +234,7 @@ namespace SmolEngine
 	{
 		if (m_Desc.myIsTargetsSwapchain)
 		{
-			return m_FrameBuffers[Gfx_Context::GetSwapchain().GetCurrentBufferIndex()];
+			return m_FrameBuffers[Gfx_App::GetSwapchain().GetCurrentBufferIndex()];
 		}
 
 		return m_FrameBuffers[0];

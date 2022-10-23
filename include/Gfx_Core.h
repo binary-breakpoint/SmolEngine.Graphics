@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Gfx_Context.h"
+#include "Gfx_App.h"
 
 #include "Common/Gfx_Framebuffer.h"
 #include "Common/Gfx_Mesh.h"

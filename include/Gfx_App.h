@@ -21,6 +21,7 @@ namespace SmolEngine
 {
 	class Gfx_Framebuffer;
 	class Gfx_ShaderIncluder;
+	class Gfx_RenderContext;
 
 	struct GfxContextCreateDesc
 	{
@@ -29,11 +30,11 @@ namespace SmolEngine
 		std::string myAssetPath = "";
 	};
 
-	class Gfx_Context
+	class Gfx_App
 	{
 	public:
-		Gfx_Context();
-		~Gfx_Context();
+		Gfx_App();
+		~Gfx_App();
 								 
 		void Create(GfxContextCreateDesc* desc);
 		void ProcessEvents();
@@ -49,11 +50,9 @@ namespace SmolEngine
 		static Gfx_VulkanSwapchain& GetSwapchain();
 		static Gfx_VulkanInstance& GetInstance();
 		static Gfx_VulkanDevice& GetDevice();
-		static Gfx_Context* GetSingleton();
+		static Gfx_App* GetSingleton();
 		static Gfx_CmdBuffer* GetCommandBuffer();
-		static Gfx_Sampler* GetSampler();
-		static Gfx_Texture* GetTexture();
-		static Gfx_Texture* GetStorageTexture();
+
 		Ref<Gfx_Framebuffer> GetFramebuffer();
 		Gfx_Window* GetWindow() const;
 		glm::vec2 GetWindowSize() const;
@@ -69,12 +68,13 @@ namespace SmolEngine
 		void OnEvent(Gfx_Event& event);
 
 	private:
-		static Gfx_Context* s_Instance;
+		static Gfx_App* s_Instance;
 
 		std::function<void(Gfx_Event&)> m_EventCallback;
 		Ref<Gfx_ShaderIncluder> m_ShaderIncluder;
 		Ref<Gfx_Framebuffer> m_Framebuffer;
 		Ref<Gfx_VulkanImGui> m_ImGuiContext;
+		Ref<Gfx_RenderContext> m_RenderContext;
 		Gfx_VulkanAllocator* m_Allocator;
 		Ref<Gfx_Window> m_Window;
 
@@ -85,10 +85,6 @@ namespace SmolEngine
 		Gfx_VulkanInstance m_Instance;
 		Gfx_VulkanDevice m_Device;
 		Gfx_EventSender m_EventHandler;
-
-		Gfx_Sampler m_Sampler;
-		Gfx_Texture m_Texture;
-		Gfx_Texture m_StorageTexture;
 
 #ifdef AFTERMATH
 		GpuCrashTracker m_CrachTracker{};
@@ -101,5 +97,5 @@ namespace SmolEngine
 	};
 
 #define VK_DESTROY_HANDLE(handle, dtor) if (handle) { dtor(handle, nullptr); handle = VK_NULL_HANDLE; }
-#define VK_DESTROY_DEVICE_HANDLE(handle, dtor) if (handle) { dtor(Gfx_Context::GetDevice().GetLogicalDevice(), handle, nullptr); handle = VK_NULL_HANDLE; }
+#define VK_DESTROY_DEVICE_HANDLE(handle, dtor) if (handle) { dtor(Gfx_App::GetDevice().GetLogicalDevice(), handle, nullptr); handle = VK_NULL_HANDLE; }
 }

@@ -90,18 +90,18 @@ namespace SmolEngine
 			style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.36f, 0.36f, 0.36f, 1.00f);
 		}
 
-		GLFWwindow* window = Gfx_Context::GetSingleton()->GetWindow()->GetNativeWindow();
+		GLFWwindow* window = Gfx_App::GetSingleton()->GetWindow()->GetNativeWindow();
 
 		OnSetup();
 		ImGui_ImplGlfw_InitForVulkan(window, true);
 
 		ImGui_ImplVulkan_InitInfo init_info = {};
 		{
-			init_info.Instance = Gfx_Context::GetInstance().GetInstance();
-			init_info.PhysicalDevice = Gfx_Context::GetDevice().GetPhysicalDevice();
-			init_info.Device = Gfx_Context::GetDevice().GetLogicalDevice();
-			init_info.QueueFamily = Gfx_Context::GetDevice().GetQueueFamilyIndices().Graphics;
-			init_info.Queue = Gfx_Context::GetDevice().GetQueue(Gfx_VulkanDevice::QueueFamilyFlags::Graphics);
+			init_info.Instance = Gfx_App::GetInstance().GetInstance();
+			init_info.PhysicalDevice = Gfx_App::GetDevice().GetPhysicalDevice();
+			init_info.Device = Gfx_App::GetDevice().GetLogicalDevice();
+			init_info.QueueFamily = Gfx_App::GetDevice().GetQueueFamilyIndices().Graphics;
+			init_info.Queue = Gfx_App::GetDevice().GetQueue(Gfx_VulkanDevice::QueueFamilyFlags::Graphics);
 			init_info.DescriptorPool = m_DescriptorPool;
 			init_info.PipelineCache = m_PipelineCache;
 			init_info.Allocator = nullptr;
@@ -109,7 +109,7 @@ namespace SmolEngine
 			init_info.ImageCount = 3;
 		}
 
-		ImGui_ImplVulkan_Init(&init_info, Gfx_Context::GetSwapchain().GetVkRenderPass());
+		ImGui_ImplVulkan_Init(&init_info, Gfx_App::GetSwapchain().GetVkRenderPass());
 
 		Gfx_CmdBuffer cmdBuffer{};
 		CmdBufferCreateDesc cmdDesc{};
@@ -144,7 +144,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanImGui::EndFrame()
 	{
-		Gfx_Window::Data* winData = Gfx_Context::GetSingleton()->GetWindow()->GetData();
+		Gfx_Window::Data* winData = Gfx_App::GetSingleton()->GetWindow()->GetData();
 		float width = static_cast<float>(winData->myWidth);
 		float height = static_cast<float>(winData->myHeight);
 
@@ -172,7 +172,7 @@ namespace SmolEngine
 	{
 		if (ImGui::GetDrawData()->CmdListsCount > 0)
 		{
-			VkCommandBuffer cmd = Gfx_Context::GetCommandBuffer()->GetBuffer();
+			VkCommandBuffer cmd = Gfx_App::GetCommandBuffer()->GetBuffer();
 			uint32_t width = target->GetWidth();
 			uint32_t height = target->GetHeight();
 
@@ -225,7 +225,7 @@ namespace SmolEngine
 
 	void Gfx_VulkanImGui::OnSetup()
 	{
-		m_Device = Gfx_Context::GetDevice().GetLogicalDevice();
+		m_Device = Gfx_App::GetDevice().GetLogicalDevice();
 
 		// Create Descriptor Pool
 		{

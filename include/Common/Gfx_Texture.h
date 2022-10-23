@@ -12,9 +12,8 @@ namespace SmolEngine
 	struct TextureCreateDesc
 	{
 		void* myUserData = nullptr;
-		Gfx_Sampler* mySampler = nullptr;
-		uint32_t myWidth = 0;
-		uint32_t myHeight = 0;
+		Ref<Gfx_Sampler> mySampler = nullptr;
+		glm::uvec2 mySize = { 0, 0 };
 		uint32_t myMipLevels = 1;
 		uint32_t myArrayLayers = 1;
 		Format myFormat = Format::R8_UNORM;
@@ -37,7 +36,7 @@ namespace SmolEngine
 		const VkDescriptorImageInfo& GetDescriptorImageInfo() const;
 		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;
 		VkDescriptorImageInfo GetMipImageView(uint32_t mip);
-		Gfx_PixelStorage* GetPixelStorage();
+		Ref<Gfx_PixelStorage> GetPixelStorage();
 		TextureUsage GetUsageFlags() const;
 		void* GetImGuiTexture() const;
 		uint32_t GetMips() const;
@@ -47,8 +46,9 @@ namespace SmolEngine
 		void LoadEX(TextureCreateDesc* info, void* data);
 
 		void* m_ImguiHandle;
+		Ref<Gfx_PixelStorage> m_PixelStorage;
+
 		TextureCreateDesc m_Desc;
-		Gfx_PixelStorage m_PixelStorage;
 		VkDescriptorImageInfo m_DescriptorImageInfo;
 		std::unordered_map<uint32_t, VkImageView> m_ImageViewMap;
 	};

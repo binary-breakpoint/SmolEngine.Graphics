@@ -23,6 +23,6 @@
 #include <string>
 
 #include "Common/Gfx_Log.h"
-#include "Gfx_Context.h"
+#include "Gfx_App.h"
 
 

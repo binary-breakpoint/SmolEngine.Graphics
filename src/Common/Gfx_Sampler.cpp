@@ -32,7 +32,7 @@ namespace SmolEngine
 		samplerCI.unnormalizedCoordinates = VK_FALSE;
 		samplerCI.compareEnable = desc->myCompareEnable;
 
-		auto& device = Gfx_Context::GetDevice();
+		auto& device = Gfx_App::GetDevice();
 		if (device.GetDeviceFeatures()->samplerAnisotropy && desc->myAnisotropyEnable)
 		{
 			samplerCI.maxAnisotropy = device.GetDeviceProperties()->limits.maxSamplerAnisotropy;

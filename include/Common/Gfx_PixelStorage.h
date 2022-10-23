@@ -2,17 +2,12 @@
 #include "Backend/Gfx_VulkanAllocator.h"
 #include "Common/Gfx_Flags.h"
 
-namespace cereal
-{
-	class access;
-}
 
 namespace SmolEngine
 {
 	struct PixelStorageCreateDesc
 	{
-		uint32_t myWidth = 0;
-		uint32_t myHeight = 0;
+		glm::uvec2 mySize = { 0, 0 };
 		uint32_t myMipLevels = 1;
 		uint32_t myArrayLayers = 1;
 		Format myFormat = Format::R8G8B8A8_UNORM;
@@ -20,14 +15,6 @@ namespace SmolEngine
 		VkImageUsageFlags myUsageFlags;
 		VkImageCreateFlags myCreateFlags;
 		VkImageLayout myLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	private:
-		friend class cereal::access;
-
-		template<typename Archive>
-		void serialize(Archive& archive)
-		{
-			archive(myWidth, myHeight, myMipLevels, myArrayLayers, myFormat);
-		}
 	};
 
 	class Gfx_PixelStorage
